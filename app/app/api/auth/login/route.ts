@@ -23,14 +23,6 @@ export async function POST(request: Request) {
     password,
   });
 
-  // #region agent log
-  if (error) {
-    fetch('http://127.0.0.1:7497/ingest/b42e58e2-caf9-48da-b647-cabab44684f1',{method:'POST',headers:{'Content-Type':'application/json','X-Debug-Session-Id':'64e5fa'},body:JSON.stringify({sessionId:'64e5fa',location:'api/auth/login/route.ts',message:'server login error',data:{message:error.message},timestamp:Date.now(),hypothesisId:'H2'})}).catch(()=>{});
-  } else {
-    fetch('http://127.0.0.1:7497/ingest/b42e58e2-caf9-48da-b647-cabab44684f1',{method:'POST',headers:{'Content-Type':'application/json','X-Debug-Session-Id':'64e5fa'},body:JSON.stringify({sessionId:'64e5fa',location:'api/auth/login/route.ts',message:'server login success',data:{hasSession:!!data?.session},timestamp:Date.now(),hypothesisId:'H3'})}).catch(()=>{});
-  }
-  // #endregion
-
   if (error) {
     return NextResponse.json({ error: error.message }, { status: 401 });
   }

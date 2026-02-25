@@ -35,14 +35,6 @@ export async function updateSession(request: NextRequest) {
   const isPublic = publicPaths.some((p) => pathname.startsWith(p));
   const isApi = pathname.startsWith("/api/");
 
-  // #region agent log
-  if (!user && !isPublic && !isApi) {
-    fetch('http://127.0.0.1:7497/ingest/b42e58e2-caf9-48da-b647-cabab44684f1',{method:'POST',headers:{'Content-Type':'application/json','X-Debug-Session-Id':'64e5fa'},body:JSON.stringify({sessionId:'64e5fa',location:'middleware.ts:redirect',message:'middleware redirect to login',data:{pathname,hasUser:!!user},timestamp:Date.now(),hypothesisId:'H3'})}).catch(()=>{});
-  } else if (user && pathname === "/") {
-    fetch('http://127.0.0.1:7497/ingest/b42e58e2-caf9-48da-b647-cabab44684f1',{method:'POST',headers:{'Content-Type':'application/json','X-Debug-Session-Id':'64e5fa'},body:JSON.stringify({sessionId:'64e5fa',location:'middleware.ts:allow',message:'middleware allow /',data:{pathname,hasUser:!!user},timestamp:Date.now(),hypothesisId:'H3'})}).catch(()=>{});
-  }
-  // #endregion
-
   if (!user && !isPublic && !isApi) {
     const url = request.nextUrl.clone();
     url.pathname = "/login";

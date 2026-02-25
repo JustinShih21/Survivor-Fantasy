@@ -14,9 +14,6 @@ export default function LoginPage() {
     e.preventDefault();
     setError(null);
     setLoading(true);
-    // #region agent log
-    fetch('http://127.0.0.1:7497/ingest/b42e58e2-caf9-48da-b647-cabab44684f1',{method:'POST',headers:{'Content-Type':'application/json','X-Debug-Session-Id':'64e5fa'},body:JSON.stringify({sessionId:'64e5fa',location:'login/page.tsx:handleLogin',message:'handleLogin started (api)',data:{hasEmail:!!email},timestamp:Date.now(),hypothesisId:'H1'})}).catch(()=>{});
-    // #endregion
 
     try {
       const res = await fetch("/api/auth/login", {
@@ -27,28 +24,15 @@ export default function LoginPage() {
 
       const data = await res.json().catch(() => ({}));
 
-      // #region agent log
-      fetch('http://127.0.0.1:7497/ingest/b42e58e2-caf9-48da-b647-cabab44684f1',{method:'POST',headers:{'Content-Type':'application/json','X-Debug-Session-Id':'64e5fa'},body:JSON.stringify({sessionId:'64e5fa',location:'login/page.tsx:after fetch',message:'after api auth/login',data:{ok:res.ok,status:res.status,error:data?.error},timestamp:Date.now(),hypothesisId:'H2'})}).catch(()=>{});
-      // #endregion
-
       if (res.ok) {
-        // #region agent log
-        fetch('http://127.0.0.1:7497/ingest/b42e58e2-caf9-48da-b647-cabab44684f1',{method:'POST',headers:{'Content-Type':'application/json','X-Debug-Session-Id':'64e5fa'},body:JSON.stringify({sessionId:'64e5fa',location:'login/page.tsx:before redirect',message:'redirecting to /',data:{},timestamp:Date.now(),hypothesisId:'H3'})}).catch(()=>{});
-        // #endregion
         window.location.href = "/";
         return;
       }
 
       setError(data?.error ?? "Login failed. Please try again.");
     } catch (err) {
-      // #region agent log
-      fetch('http://127.0.0.1:7497/ingest/b42e58e2-caf9-48da-b647-cabab44684f1',{method:'POST',headers:{'Content-Type':'application/json','X-Debug-Session-Id':'64e5fa'},body:JSON.stringify({sessionId:'64e5fa',location:'login/page.tsx:catch',message:'catch block',data:{errMessage:err instanceof Error?err.message:String(err)},timestamp:Date.now(),hypothesisId:'H5'})}).catch(()=>{});
-      // #endregion
       setError(err instanceof Error ? err.message : "Something went wrong. Please try again.");
     } finally {
-      // #region agent log
-      fetch('http://127.0.0.1:7497/ingest/b42e58e2-caf9-48da-b647-cabab44684f1',{method:'POST',headers:{'Content-Type':'application/json','X-Debug-Session-Id':'64e5fa'},body:JSON.stringify({sessionId:'64e5fa',location:'login/page.tsx:finally',message:'finally block',data:{},timestamp:Date.now(),hypothesisId:'H4'})}).catch(()=>{});
-      // #endregion
       setLoading(false);
     }
   };
