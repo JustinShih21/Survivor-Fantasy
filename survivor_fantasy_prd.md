@@ -21,7 +21,7 @@
 | **Captain System** | Implemented; per-episode captain selection with 2x multiplier; auto-assigned on tribe creation; slot always filled (auto-assign if unset); if captain is transferred out, the incoming player becomes captain for that episode |
 | **Scoring Engine** | Implemented; on-the-fly computation from point overrides (admin-driven) |
 | **Scoring source** | Implemented; user-facing points from **point_category_overrides** only (admin-driven); no raw episode_outcomes for main totals; BPS/breakdown used for display where applicable |
-| **Transfer System** | Implemented; sell/add swaps with -10 penalty per add; multiple simultaneous transfers |
+| **Transfer System** | Implemented; sell/add swaps with -5 penalty per add; multiple simultaneous transfers |
 | **Dynamic Pricing** | Implemented; ±3% adjustment per episode; frozen for eliminated players |
 | **Possession Tracking** | Implemented; admin-editable counts in `contestant_possessions`; idols, advantages, clues shown on Pick Team cards; tribe ribbon (horizontal only, no diagonal overlay on photo) |
 | **Points Page** | Implemented; episode navigation, contestant breakdown modals |
@@ -354,7 +354,7 @@ Users can **sell** and **add** players between episodes. Transfers are 1-for-1 s
 | **Window** | Opens after each episode airs; closes before next episode lock |
 | **Swap format** | Must sell and add equal numbers of players in one transaction |
 | **Sell** | Soft-delete: `removed_at_episode` set to current episode; frees budget; **no point penalty**; points earned while on team are permanent |
-| **Add** | Add player from active pool; costs budget; **-10 points per add** (team-level penalty, not shown in contestant breakdown) |
+| **Add** | Add player from active pool; costs budget; **-5 points per add** (team-level penalty, not shown in contestant breakdown) |
 | **Pool** | Only non-eliminated (active) contestants; eliminated players are unbuyable |
 | **Re-add** | If a previously sold player is added back, the existing `tribe_entries` row is reactivated with updated `added_at_episode` and `removed_at_episode = NULL` |
 | **Roster constraints** | Pre-merge: exactly 7 (min 1 per tribe); post-merge: exactly 5 |
@@ -536,7 +536,7 @@ All values below reflect the current implementation. Configurable via `scoring_c
 |-------|--------|-------|
 | Quit | -10 | |
 | Medevac | 0 | No penalty |
-| Add player (transfer) | -10 | Per add; sell has no penalty |
+| Add player (transfer) | -5 | Per add; sell has no penalty |
 
 Exact values configurable via admin; stored server-side as JSONB in `scoring_config` table. **Global**—same rules for all users and leagues.
 
@@ -568,7 +568,7 @@ The canonical scoring configuration stored in `scoring_config` (JSONB):
   "individual_immunity": 6,
   "confessionals": {"range_4_6": 2, "range_7_plus": 4},
   "advantages": {"clue_read": 2, "advantage_play": 5, "idol_play_per_vote": 2, "idol_failure": -2},
-  "other": {"quit": -10, "medevac": 0, "add_player_penalty": -10},
+  "other": {"quit": -10, "medevac": 0, "add_player_penalty": -5},
   "captain_multiplier": 2
 }
 ```
@@ -907,7 +907,7 @@ The `tribe_entries` table provides full roster history through temporal fields:
 
 **Roster for episode N:** A player is on the roster for episode N if `added_at_episode <= N` AND (`removed_at_episode IS NULL` OR `removed_at_episode >= N`). The `>=` semantics mean `removed_at_episode = N` indicates "last episode on roster was N" (sold in the transfer window after episode N).
 
-**Points are permanent:** Sold players retain all points earned while on the team. The add penalty (-10) is applied per transfer-in (players with `added_at_episode > 1`).
+**Points are permanent:** Sold players retain all points earned while on the team. The add penalty (-5) is applied per transfer-in (players with `added_at_episode > 1`).
 
 ### Relationships
 
@@ -1037,7 +1037,7 @@ Full scoring table displayed in a clean, readable format:
 | | Advantage played | +5 |
 | | Idol played (per vote nullified) | +2 |
 | | Idol played (failed) | -2 |
-| **Other** | Transfer add penalty | -10 per add |
+| **Other** | Transfer add penalty | -5 per add |
 | | Quit | -10 |
 
 #### 3. Captain System
@@ -1055,7 +1055,7 @@ Brief overview: "The top 3 performers each episode earn bonus points based on so
 #### 5. Transfers & Pricing
 - After each episode, you can sell players and add new ones
 - Sells: no penalty; frees budget at current price
-- Adds: -10 point penalty per player added
+- Adds: -5 point penalty per player added
 - Must sell and add equal numbers (1-for-1 swaps)
 - Prices adjust ±3% after each episode based on performance
 - Price floor: $50,000 / Price ceiling: $300,000
@@ -1250,7 +1250,7 @@ Use this checklist to confirm each PRD requirement works. Mark pass/fail and fix
 | **Scoring (9, 10)** | Points page shows last completed episode; selector locked to past | |
 | | "Get info" modal with breakdown; totals align with admin overrides | |
 | | Leaderboard uses same totals | |
-| **Transfers (6, 12)** | Sell/add 1-for-1; budget updates; -10 per add | |
+| **Transfers (6, 12)** | Sell/add 1-for-1; budget updates; -5 per add | |
 | | Eliminated unbuyable; multiple swaps in one submit | |
 | **Leagues (6, 12)** | Create league → appears in Your Leagues | |
 | | Join by code → appears; join via `/leagues/join?code=XXX` | |

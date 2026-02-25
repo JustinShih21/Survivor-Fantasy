@@ -10,7 +10,7 @@ import { CARD_CONTENT_MIN_H, CARD_MIN_WIDTH, CARD_WIDTH, PHOTO_HEIGHT } from "@/
 
 const BUDGET_CAP = 1_000_000;
 /** Point penalty per player added (transfer add); matches scoring_config.other.add_player_penalty */
-const ADD_PLAYER_PENALTY = -10;
+const ADD_PLAYER_PENALTY = -5;
 
 interface TransferWindowProps {
   currentEpisode: number;

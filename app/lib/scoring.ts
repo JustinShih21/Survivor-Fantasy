@@ -660,7 +660,7 @@ export function calculateRosterPoints(
   let captainBonusTotal = 0;
 
   // Add penalty per roster member added via transfer (added_at_episode > 1)
-  const addPenalty = scoringConfig.other.add_player_penalty ?? -10;
+  const addPenalty = scoringConfig.other.add_player_penalty ?? -5;
   const addCount = entries.filter((e) => e.added_at_episode > 1).length;
   const addPenaltiesTotal = addCount * addPenalty;
   breakdown.penalties += addPenaltiesTotal;
@@ -976,7 +976,7 @@ export function calculateRosterPointsWithBreakdown(
     }
 
     // Add penalty NOT in contestant breakdown - it's team-level only
-    const addPenalty = scoringConfig.other.add_player_penalty ?? -10;
+    const addPenalty = scoringConfig.other.add_player_penalty ?? -5;
     if (entry.added_at_episode > 1) {
       totalPoints += addPenalty;
     }
