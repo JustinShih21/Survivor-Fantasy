@@ -30,18 +30,29 @@ export default function TransfersPage() {
       .catch(() => setServerEpisode(null));
   }, []);
 
+  // Refetch prices when episode changes or when app-data is refreshed (so Transfers stays in sync with Stats)
   useEffect(() => {
     if (currentEpisode < 1) {
       queueMicrotask(() => setPricesLoading(false));
       return;
     }
-    queueMicrotask(() => setPricesLoading(true));
+    let cancelled = false;
+    setPricesLoading(true);
     fetch(`/api/prices?through=${Math.max(1, currentEpisode)}`, noStore)
       .then((r) => r.json())
-      .then(setPrices)
-      .catch(() => setPrices(null))
-      .finally(() => setPricesLoading(false));
-  }, [currentEpisode]);
+      .then((res) => {
+        if (!cancelled) setPrices(res);
+      })
+      .catch(() => {
+        if (!cancelled) setPrices(null);
+      })
+      .finally(() => {
+        if (!cancelled) setPricesLoading(false);
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, [currentEpisode, data]);
 
   const loading = appDataLoading || pricesLoading;
 
