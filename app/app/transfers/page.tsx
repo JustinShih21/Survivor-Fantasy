@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { TransferWindow } from "@/components/TransferWindow";
-import { useAppData } from "@/components/AppDataProvider";
+import { usePlayerCardData } from "@/lib/usePlayerCardData";
 
 const noStore = { cache: "no-store" as RequestCache };
 
@@ -14,7 +14,7 @@ interface PriceData {
 
 export default function TransfersPage() {
   const router = useRouter();
-  const { data, loading: appDataLoading, refetch } = useAppData();
+  const { data, loading: appDataLoading, refetch } = usePlayerCardData();
   const scores = data?.scores ?? null;
   const contestants = data?.contestants ?? [];
   const [serverEpisode, setServerEpisode] = useState<number | null>(null);

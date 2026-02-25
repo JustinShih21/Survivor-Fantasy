@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import { useParams } from "next/navigation";
 import Link from "next/link";
-import { useAppData } from "@/components/AppDataProvider";
+import { usePlayerCardData } from "@/lib/usePlayerCardData";
 import { PlayerDetailContent } from "@/components/PlayerDetailModal";
 import { getHighResPhotoUrl } from "@/lib/photo";
 import type { ContestantPointsSummary } from "@/lib/scoring";
@@ -11,7 +11,7 @@ import type { ContestantPointsSummary } from "@/lib/scoring";
 export default function PlayerPointsPage() {
   const params = useParams();
   const contestantId = typeof params?.contestantId === "string" ? params.contestantId : "";
-  const { data, loading } = useAppData();
+  const { data, loading } = usePlayerCardData();
   const scores = data?.scores ?? null;
   const contestants = data?.contestants ?? [];
   const currentEpisode = data?.season?.current_episode ?? 1;

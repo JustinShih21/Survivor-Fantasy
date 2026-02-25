@@ -3,10 +3,10 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import { TeamRosterDisplay } from "@/components/TeamRosterDisplay";
-import { useAppData } from "@/components/AppDataProvider";
+import { usePlayerCardData } from "@/lib/usePlayerCardData";
 
 export default function PickTeamPage() {
-  const { data, loading, refetch } = useAppData();
+  const { data, loading, refetch } = usePlayerCardData();
   const scores = data?.scores ?? null;
   const contestants = data?.contestants ?? [];
   const currentEpisode = data?.season?.current_episode ?? 1;
