@@ -54,15 +54,8 @@ export default function PickTeamPage() {
     if (!showEmptyState || refetchedOnce || loading) return;
     setRefetchedOnce(true);
     setRefetchingEmpty(true);
-    refetch()
-      .then(() =>
-        fetch(`/api/scores?through=${Math.max(1, currentEpisode)}`)
-          .then((r) => r.json())
-          .then(setScoresForEpisode)
-          .catch(() => {})
-      )
-      .finally(() => setRefetchingEmpty(false));
-  }, [showEmptyState, refetchedOnce, loading, refetch, currentEpisode]);
+    refetch().finally(() => setRefetchingEmpty(false));
+  }, [showEmptyState, refetchedOnce, loading, refetch]);
 
   if (loading || refetchingEmpty) {
     return (

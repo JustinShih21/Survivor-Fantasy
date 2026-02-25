@@ -22,6 +22,18 @@ export default function TransfersPage() {
   const captainId = (data?.captain?.picks?.[currentEpisode] ?? null) as string | null;
   const [prices, setPrices] = useState<PriceData | null>(null);
   const [pricesLoading, setPricesLoading] = useState(true);
+  const [refetchedOnce, setRefetchedOnce] = useState(false);
+  const [refetchingEmpty, setRefetchingEmpty] = useState(false);
+
+  const entriesLength = scores?.entries?.length ?? 0;
+  const showEmptyState = entriesLength === 0;
+
+  useEffect(() => {
+    if (!showEmptyState || refetchedOnce || appDataLoading) return;
+    setRefetchedOnce(true);
+    setRefetchingEmpty(true);
+    refetch().finally(() => setRefetchingEmpty(false));
+  }, [showEmptyState, refetchedOnce, appDataLoading, refetch]);
 
   useEffect(() => {
     fetch("/api/season", noStore)
@@ -54,7 +66,7 @@ export default function TransfersPage() {
     };
   }, [currentEpisode, data]);
 
-  const loading = appDataLoading || pricesLoading;
+  const loading = appDataLoading || pricesLoading || refetchingEmpty;
 
   const refreshAll = async () => {
     await refetch();
@@ -76,7 +88,7 @@ export default function TransfersPage() {
     );
   }
 
-  if (!scores?.entries?.length) {
+  if (showEmptyState) {
     return (
       <div className="space-y-6">
         <h1 className="text-2xl font-bold text-stone-100">Transfers</h1>

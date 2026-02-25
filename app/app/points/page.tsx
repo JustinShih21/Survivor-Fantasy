@@ -8,13 +8,25 @@ import type { ContestantPointsSummary } from "@/lib/scoring";
 import { useAppData } from "@/components/AppDataProvider";
 
 export default function PointsPage() {
-  const { data, loading } = useAppData();
+  const { data, loading, refetch } = useAppData();
   const scores = data?.scores ?? null;
   const contestants = data?.contestants ?? [];
   const currentEpisode = data?.season?.current_episode ?? 1;
   const captainPicks = data?.captain?.picks ?? {};
   const [viewingEpisode, setViewingEpisode] = useState(currentEpisode);
   const [eliminated, setEliminated] = useState<string[]>([]);
+  const [refetchedOnce, setRefetchedOnce] = useState(false);
+  const [refetchingEmpty, setRefetchingEmpty] = useState(false);
+
+  const entriesLength = scores?.entries?.length ?? 0;
+  const showEmptyState = entriesLength === 0;
+
+  useEffect(() => {
+    if (!showEmptyState || refetchedOnce || loading) return;
+    setRefetchedOnce(true);
+    setRefetchingEmpty(true);
+    refetch().finally(() => setRefetchingEmpty(false));
+  }, [showEmptyState, refetchedOnce, loading, refetch]);
 
   useEffect(() => {
     queueMicrotask(() => {
@@ -42,7 +54,7 @@ export default function PointsPage() {
       .catch(() => setEliminated([]));
   }, [viewingEpisode]);
 
-  if (loading) {
+  if (loading || refetchingEmpty) {
     return (
       <div className="flex justify-center py-12">
         <span className="text-stone-300/80">Loading...</span>
@@ -65,7 +77,7 @@ export default function PointsPage() {
     return true;
   });
 
-  if (!scores?.entries?.length) {
+  if (showEmptyState) {
     return (
       <div className="space-y-6">
         <h1 className="text-2xl font-bold text-stone-100">Points</h1>
