@@ -6,8 +6,10 @@ import {
   useState,
   useCallback,
   useEffect,
+  useRef,
   type ReactNode,
 } from "react";
+import { usePathname } from "next/navigation";
 
 export interface AppDataScores {
   total?: number;
@@ -73,7 +75,18 @@ export function useAppData() {
 
 const noStore = { cache: "no-store" as RequestCache };
 
+const APP_DATA_ROUTES = ["/", "/points", "/transfers", "/pick-team", "/leagues"];
+const REFRESH_MS = 120000;
+
+function isAppDataRoute(pathname: string): boolean {
+  return APP_DATA_ROUTES.some(
+    (route) => pathname === route || (route !== "/" && pathname.startsWith(route + "/"))
+  );
+}
+
 export function AppDataProvider({ children }: { children: ReactNode }) {
+  const pathname = usePathname();
+  const prevPathnameRef = useRef<string | null>(null);
   const [data, setData] = useState<AppData | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -107,6 +120,26 @@ export function AppDataProvider({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     fetchData();
+  }, [fetchData]);
+
+  useEffect(() => {
+    const current = pathname ?? "";
+    const prev = prevPathnameRef.current;
+    prevPathnameRef.current = current;
+    if (prev != null && prev !== current && data != null && isAppDataRoute(current)) {
+      fetchData(true);
+    }
+  }, [pathname, fetchData, data]);
+
+  useEffect(() => {
+    const onFocus = () => fetchData(true);
+    window.addEventListener("focus", onFocus);
+    return () => window.removeEventListener("focus", onFocus);
+  }, [fetchData]);
+
+  useEffect(() => {
+    const id = setInterval(() => fetchData(true), REFRESH_MS);
+    return () => clearInterval(id);
   }, [fetchData]);
 
   const refetch = useCallback(async () => {

@@ -16,18 +16,19 @@ export async function GET(request: NextRequest) {
     const cookie = request.headers.get("cookie") ?? "";
     const authHeaders: HeadersInit = cookie ? { cookie } : {};
 
+    const noStore = { cache: "no-store" as RequestCache };
     const [scoresRes, contestantsRes, seasonRes, captainRes] = await Promise.all([
-      fetch(`${origin}/api/scores`, { headers: authHeaders }),
-      fetch(`${origin}/api/contestants`),
-      fetch(`${origin}/api/season`),
-      fetch(`${origin}/api/captain`, { headers: authHeaders }),
+      fetch(`${origin}/api/scores`, { headers: authHeaders, ...noStore }),
+      fetch(`${origin}/api/contestants`, noStore),
+      fetch(`${origin}/api/season`, noStore),
+      fetch(`${origin}/api/captain`, { headers: authHeaders, ...noStore }),
     ]);
 
     if (!scoresRes.ok || !captainRes.ok) {
       const status = !scoresRes.ok ? scoresRes.status : captainRes.status;
       return NextResponse.json(
         { error: "Not authenticated" },
-        { status: status === 401 ? 401 : 500 }
+        { status: status === 401 ? 401 : 500, headers: { "Cache-Control": "no-store" } }
       );
     }
 
@@ -40,17 +41,20 @@ export async function GET(request: NextRequest) {
 
     const admin = auth ? await isAdmin(auth.supabase) : false;
 
-    return NextResponse.json({
-      scores,
-      contestants: Array.isArray(contestants) ? contestants : [],
-      season,
-      captain,
-      isAdmin: admin,
-    });
+    return NextResponse.json(
+      {
+        scores,
+        contestants: Array.isArray(contestants) ? contestants : [],
+        season,
+        captain,
+        isAdmin: admin,
+      },
+      { headers: { "Cache-Control": "no-store" } }
+    );
   } catch (err) {
     return NextResponse.json(
       { error: err instanceof Error ? err.message : "Unknown error" },
-      { status: 500 }
+      { status: 500, headers: { "Cache-Control": "no-store" } }
     );
   }
 }
