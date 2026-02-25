@@ -120,7 +120,7 @@ export default function TransfersPage() {
 
       <TransferWindow
         currentEpisode={currentEpisode}
-        entries={scores.entries}
+        entries={scores.entries ?? []}
         contestants={contestants}
         prices={prices}
         episodeCount={scores.episode_count ?? 6}
