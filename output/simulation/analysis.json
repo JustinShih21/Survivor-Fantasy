@@ -1,0 +1,447 @@
+{
+  "total_runs": 50000,
+  "total_avg": 406.34714,
+  "total_points_all_runs": 20317357,
+  "category_avg": {
+    "survival": 170.26354,
+    "challenges": 152.82624,
+    "tribal": 117.48868,
+    "advantages": 27.7582,
+    "placement": 6.55072,
+    "penalties": -68.54024
+  },
+  "category_pct": {
+    "survival": 41.901006120038154,
+    "challenges": 37.60977375157605,
+    "tribal": 28.913376872789108,
+    "advantages": 6.831154268736824,
+    "placement": 1.6120994477775825,
+    "penalties": -16.867410460917725
+  },
+  "event_totals": {
+    "survival_pre_merge": {
+      "count": 2127828,
+      "points": 4255656
+    },
+    "survival_post_merge": {
+      "count": 788829,
+      "points": 2366487
+    },
+    "survival_swap": {
+      "count": 945517,
+      "points": 1891034
+    },
+    "team_immunity_first": {
+      "count": 1256011,
+      "points": 3768033
+    },
+    "team_immunity_second_three": {
+      "count": 747737,
+      "points": 747737
+    },
+    "team_immunity_second_two": {
+      "count": 512980,
+      "points": 0
+    },
+    "team_immunity_last": {
+      "count": 747105,
+      "points": -747105
+    },
+    "team_reward_first": {
+      "count": 1254942,
+      "points": 2509884
+    },
+    "team_reward_second_three": {
+      "count": 749523,
+      "points": 749523
+    },
+    "team_reward_second_two": {
+      "count": 512689,
+      "points": 0
+    },
+    "individual_immunity": {
+      "count": 122648,
+      "points": 613240
+    },
+    "vote_matched": {
+      "count": 2937217,
+      "points": 5874434
+    },
+    "voted_out": {
+      "count": 309232,
+      "points": -3408482
+    },
+    "clue_read": {
+      "count": 53128,
+      "points": 53128
+    },
+    "advantage_play": {
+      "count": 7033,
+      "points": 28132
+    },
+    "idol_play": {
+      "count": 10398,
+      "points": 72786
+    },
+    "idol_failure": {
+      "count": 9265,
+      "points": -18530
+    },
+    "strategic_player": {
+      "count": 308466,
+      "points": 1233864
+    },
+    "final_tribal": {
+      "count": 40768,
+      "points": 203840
+    },
+    "win_season": {
+      "count": 13744,
+      "points": 123696
+    },
+    "quit": {
+      "count": 0,
+      "points": 0
+    }
+  },
+  "event_pct": {
+    "survival_pre_merge": 20.945913388242378,
+    "survival_post_merge": 11.64761243305416,
+    "survival_swap": 9.307480298741613,
+    "team_immunity_first": 18.545881730581392,
+    "team_immunity_second_three": 3.680286761708228,
+    "team_immunity_second_two": 0.0,
+    "team_immunity_last": -3.6771761208901332,
+    "team_reward_first": 12.353398131459716,
+    "team_reward_second_three": 3.689077275159362,
+    "team_reward_second_two": 0.0,
+    "individual_immunity": 3.018305973557486,
+    "vote_matched": 28.913376872789115,
+    "voted_out": -16.7762076533872,
+    "clue_read": 0.2614907047210914,
+    "advantage_play": 0.13846289160543865,
+    "idol_play": 0.3582454154839136,
+    "idol_failure": -0.09120280753052673,
+    "strategic_player": 6.072955256926381,
+    "final_tribal": 1.0032801018360804,
+    "win_season": 0.6088193459415021,
+    "quit": 0.0
+  },
+  "strategy_stats": {
+    "random": {
+      "mean": 421.6139,
+      "min": 94,
+      "max": 771,
+      "count": 10000
+    },
+    "challenge_beast": {
+      "mean": 370.828,
+      "min": 99,
+      "max": 666,
+      "count": 10000
+    },
+    "idol_hunter": {
+      "mean": 441.316,
+      "min": 187,
+      "max": 707,
+      "count": 10000
+    },
+    "utr": {
+      "mean": 376.3639,
+      "min": 99,
+      "max": 704,
+      "count": 10000
+    },
+    "balanced": {
+      "mean": 421.6139,
+      "min": 94,
+      "max": 771,
+      "count": 10000
+    }
+  },
+  "percentiles": {
+    "p10": 273,
+    "p25": 335,
+    "p50": 406,
+    "p75": 478,
+    "p90": 538
+  },
+  "examples": [
+    {
+      "label": "Lowest",
+      "total": 94,
+      "strategy": "random",
+      "scenario_id": 130,
+      "event_breakdown": {
+        "survival_pre_merge": {
+          "count": 26,
+          "points": 52
+        },
+        "survival_post_merge": {
+          "count": 0,
+          "points": 0
+        },
+        "survival_swap": {
+          "count": 2,
+          "points": 4
+        },
+        "team_immunity_first": {
+          "count": 10,
+          "points": 30
+        },
+        "team_immunity_second_three": {
+          "count": 10,
+          "points": 10
+        },
+        "team_immunity_second_two": {
+          "count": 4,
+          "points": 0
+        },
+        "team_immunity_last": {
+          "count": 11,
+          "points": -11
+        },
+        "team_reward_first": {
+          "count": 13,
+          "points": 26
+        },
+        "team_reward_second_three": {
+          "count": 9,
+          "points": 9
+        },
+        "team_reward_second_two": {
+          "count": 1,
+          "points": 0
+        },
+        "individual_immunity": {
+          "count": 0,
+          "points": 0
+        },
+        "vote_matched": {
+          "count": 21,
+          "points": 42
+        },
+        "voted_out": {
+          "count": 7,
+          "points": -76
+        },
+        "clue_read": {
+          "count": 0,
+          "points": 0
+        },
+        "advantage_play": {
+          "count": 0,
+          "points": 0
+        },
+        "idol_play": {
+          "count": 0,
+          "points": 0
+        },
+        "idol_failure": {
+          "count": 0,
+          "points": 0
+        },
+        "strategic_player": {
+          "count": 2,
+          "points": 8
+        },
+        "final_tribal": {
+          "count": 0,
+          "points": 0
+        },
+        "win_season": {
+          "count": 0,
+          "points": 0
+        },
+        "quit": {
+          "count": 0,
+          "points": 0
+        }
+      }
+    },
+    {
+      "label": "Median",
+      "total": 406,
+      "strategy": "random",
+      "scenario_id": 312,
+      "event_breakdown": {
+        "survival_pre_merge": {
+          "count": 44,
+          "points": 88
+        },
+        "survival_post_merge": {
+          "count": 13,
+          "points": 39
+        },
+        "survival_swap": {
+          "count": 25,
+          "points": 50
+        },
+        "team_immunity_first": {
+          "count": 30,
+          "points": 90
+        },
+        "team_immunity_second_three": {
+          "count": 15,
+          "points": 15
+        },
+        "team_immunity_second_two": {
+          "count": 12,
+          "points": 0
+        },
+        "team_immunity_last": {
+          "count": 15,
+          "points": -15
+        },
+        "team_reward_first": {
+          "count": 28,
+          "points": 56
+        },
+        "team_reward_second_three": {
+          "count": 15,
+          "points": 15
+        },
+        "team_reward_second_two": {
+          "count": 15,
+          "points": 0
+        },
+        "individual_immunity": {
+          "count": 1,
+          "points": 5
+        },
+        "vote_matched": {
+          "count": 65,
+          "points": 130
+        },
+        "voted_out": {
+          "count": 7,
+          "points": -79
+        },
+        "clue_read": {
+          "count": 0,
+          "points": 0
+        },
+        "advantage_play": {
+          "count": 0,
+          "points": 0
+        },
+        "idol_play": {
+          "count": 0,
+          "points": 0
+        },
+        "idol_failure": {
+          "count": 0,
+          "points": 0
+        },
+        "strategic_player": {
+          "count": 3,
+          "points": 12
+        },
+        "final_tribal": {
+          "count": 0,
+          "points": 0
+        },
+        "win_season": {
+          "count": 0,
+          "points": 0
+        },
+        "quit": {
+          "count": 0,
+          "points": 0
+        }
+      }
+    },
+    {
+      "label": "Highest",
+      "total": 771,
+      "strategy": "balanced",
+      "scenario_id": 302,
+      "event_breakdown": {
+        "survival_pre_merge": {
+          "count": 56,
+          "points": 112
+        },
+        "survival_post_merge": {
+          "count": 39,
+          "points": 117
+        },
+        "survival_swap": {
+          "count": 34,
+          "points": 68
+        },
+        "team_immunity_first": {
+          "count": 35,
+          "points": 105
+        },
+        "team_immunity_second_three": {
+          "count": 20,
+          "points": 20
+        },
+        "team_immunity_second_two": {
+          "count": 16,
+          "points": 0
+        },
+        "team_immunity_last": {
+          "count": 20,
+          "points": -20
+        },
+        "team_reward_first": {
+          "count": 35,
+          "points": 70
+        },
+        "team_reward_second_three": {
+          "count": 19,
+          "points": 19
+        },
+        "team_reward_second_two": {
+          "count": 18,
+          "points": 0
+        },
+        "individual_immunity": {
+          "count": 7,
+          "points": 35
+        },
+        "vote_matched": {
+          "count": 101,
+          "points": 202
+        },
+        "voted_out": {
+          "count": 4,
+          "points": -48
+        },
+        "clue_read": {
+          "count": 0,
+          "points": 0
+        },
+        "advantage_play": {
+          "count": 1,
+          "points": 4
+        },
+        "idol_play": {
+          "count": 1,
+          "points": 7
+        },
+        "idol_failure": {
+          "count": 0,
+          "points": 0
+        },
+        "strategic_player": {
+          "count": 14,
+          "points": 56
+        },
+        "final_tribal": {
+          "count": 3,
+          "points": 15
+        },
+        "win_season": {
+          "count": 1,
+          "points": 9
+        },
+        "quit": {
+          "count": 0,
+          "points": 0
+        }
+      }
+    }
+  ]
+}

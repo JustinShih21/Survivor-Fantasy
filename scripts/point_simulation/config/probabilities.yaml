@@ -1,0 +1,58 @@
+# Research-Based Survivor Probabilities
+# Sources: Reality Blurred, True Dork Times, Survivor Wiki, fan data
+# Last updated: Feb 2025
+# Updated for 24-contestant season with more variability
+
+# IDOL STATISTICS (per season, ~21 tribals with 24 players)
+# - 3-6 idols found for more variability
+# - ~50-70% success rate when played (more variance)
+# - Idol failure = -2 points (played incorrectly)
+idols:
+  finds_per_season_min: 3
+  finds_per_season_max: 6
+  successful_plays_per_season_min: 1
+  successful_plays_per_season_max: 4
+  failed_plays_per_season_min: 0
+  failed_plays_per_season_max: 3
+  play_success_rate: 0.55  # Per-play chance of success (more variability)
+
+# CLUE READS (per season)
+# - 1-4 clue-read events for more variability
+clues:
+  reads_per_season_min: 1
+  reads_per_season_max: 4
+  readers_per_clue_min: 1
+  readers_per_clue_max: 2
+
+# ADVANTAGES (non-idol: steal a vote, KiP, etc.)
+# - 0-2 successful plays for more variability
+advantages:
+  successful_plays_per_season_min: 0
+  successful_plays_per_season_max: 2
+
+# VOTED OUT WITH IDOL/ADVANTAGE IN POCKET
+voted_out_pocket:
+  probability_has_item: 0.17
+  probability_two_items: 0.03
+
+# VOTE COUNTS
+vote_counts:
+  pre_merge_min: 4
+  pre_merge_max: 7
+  post_merge_min: 5
+  post_merge_max: 10
+
+# VOTE MATCHED (on right side of vote)
+vote_matched:
+  pct_of_voters_min: 0.65
+  pct_of_voters_max: 0.95
+
+# STRATEGIC PLAYER (replaces fake idol trick)
+# - One per tribal where someone voted out
+strategic_player:
+  bonus_per_tribal: 1  # Always 1 per tribal
+
+# QUIT / MEDEVAC (rare)
+quit_medevac:
+  quit_probability: 0.02
+  medevac_probability: 0.05

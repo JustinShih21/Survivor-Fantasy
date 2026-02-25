@@ -1,0 +1,1811 @@
+{
+  "episode_trace": [
+    {
+      "episode": 1,
+      "phase": "pre_merge",
+      "voted_out": "c07",
+      "price_changes": [
+        [
+          "c07",
+          172500,
+          165000,
+          -7500,
+          -4.3478260869565215
+        ],
+        [
+          "c01",
+          135000,
+          137500,
+          2500,
+          1.8518518518518519
+        ],
+        [
+          "c03",
+          122500,
+          125000,
+          2500,
+          2.0408163265306123
+        ],
+        [
+          "c05",
+          192500,
+          195000,
+          2500,
+          1.2987012987012987
+        ],
+        [
+          "c08",
+          132500,
+          135000,
+          2500,
+          1.8867924528301887
+        ],
+        [
+          "c18",
+          125000,
+          127500,
+          2500,
+          2.0
+        ]
+      ],
+      "team_updates": [
+        {
+          "strategy": "value",
+          "style": "fixed",
+          "episode_pts": 54.0,
+          "cumulative_pts": 54.0,
+          "replacement": null,
+          "captain": "c03"
+        },
+        {
+          "strategy": "value",
+          "style": "replace",
+          "episode_pts": 54.0,
+          "cumulative_pts": 54.0,
+          "replacement": null,
+          "captain": "c03"
+        },
+        {
+          "strategy": "mid_tier",
+          "style": "fixed",
+          "episode_pts": 50.0,
+          "cumulative_pts": 50.0,
+          "replacement": null,
+          "captain": "c10"
+        },
+        {
+          "strategy": "mid_tier",
+          "style": "replace",
+          "episode_pts": 50.0,
+          "cumulative_pts": 50.0,
+          "replacement": null,
+          "captain": "c10"
+        },
+        {
+          "strategy": "random",
+          "style": "fixed",
+          "episode_pts": 0.0,
+          "cumulative_pts": 0.0,
+          "replacement": null,
+          "captain": "c07"
+        },
+        {
+          "strategy": "random",
+          "style": "replace",
+          "episode_pts": 0.0,
+          "cumulative_pts": -10.0,
+          "replacement": {
+            "out": "c07",
+            "in": "c19",
+            "budget_freed": 172500,
+            "viable_count": 10,
+            "add_penalty": -10
+          },
+          "captain": "c07"
+        }
+      ]
+    },
+    {
+      "episode": 2,
+      "phase": "pre_merge",
+      "voted_out": "c06",
+      "price_changes": [
+        [
+          "c02",
+          110000,
+          112500,
+          2500,
+          2.272727272727273
+        ],
+        [
+          "c06",
+          107500,
+          105000,
+          -2500,
+          -2.3255813953488373
+        ],
+        [
+          "c21",
+          237500,
+          240000,
+          2500,
+          1.0526315789473684
+        ]
+      ],
+      "team_updates": [
+        {
+          "strategy": "value",
+          "style": "fixed",
+          "episode_pts": 48.0,
+          "cumulative_pts": 102.0,
+          "replacement": null,
+          "captain": "c03"
+        },
+        {
+          "strategy": "value",
+          "style": "replace",
+          "episode_pts": 48.0,
+          "cumulative_pts": 102.0,
+          "replacement": null,
+          "captain": "c03"
+        },
+        {
+          "strategy": "mid_tier",
+          "style": "fixed",
+          "episode_pts": 50.0,
+          "cumulative_pts": 100.0,
+          "replacement": null,
+          "captain": "c10"
+        },
+        {
+          "strategy": "mid_tier",
+          "style": "replace",
+          "episode_pts": 50.0,
+          "cumulative_pts": 100.0,
+          "replacement": null,
+          "captain": "c10"
+        },
+        {
+          "strategy": "random",
+          "style": "fixed",
+          "episode_pts": 32.0,
+          "cumulative_pts": 32.0,
+          "replacement": null,
+          "captain": "c15"
+        },
+        {
+          "strategy": "random",
+          "style": "replace",
+          "episode_pts": 39.0,
+          "cumulative_pts": 29.0,
+          "replacement": null,
+          "captain": "c15"
+        }
+      ]
+    },
+    {
+      "episode": 3,
+      "phase": "pre_merge",
+      "voted_out": "c18",
+      "price_changes": [
+        [
+          "c18",
+          127500,
+          122500,
+          -5000,
+          -3.9215686274509802
+        ],
+        [
+          "c05",
+          195000,
+          197500,
+          2500,
+          1.2820512820512822
+        ]
+      ],
+      "team_updates": [
+        {
+          "strategy": "value",
+          "style": "fixed",
+          "episode_pts": 46.0,
+          "cumulative_pts": 148.0,
+          "replacement": null,
+          "captain": "c03"
+        },
+        {
+          "strategy": "value",
+          "style": "replace",
+          "episode_pts": 46.0,
+          "cumulative_pts": 148.0,
+          "replacement": null,
+          "captain": "c03"
+        },
+        {
+          "strategy": "mid_tier",
+          "style": "fixed",
+          "episode_pts": 29.0,
+          "cumulative_pts": 129.0,
+          "replacement": null,
+          "captain": "c10"
+        },
+        {
+          "strategy": "mid_tier",
+          "style": "replace",
+          "episode_pts": 29.0,
+          "cumulative_pts": 119.0,
+          "replacement": {
+            "out": "c18",
+            "in": "c19",
+            "budget_freed": 127500,
+            "viable_count": 10,
+            "add_penalty": -10
+          },
+          "captain": "c10"
+        },
+        {
+          "strategy": "random",
+          "style": "fixed",
+          "episode_pts": 39.0,
+          "cumulative_pts": 71.0,
+          "replacement": null,
+          "captain": "c15"
+        },
+        {
+          "strategy": "random",
+          "style": "replace",
+          "episode_pts": 42.0,
+          "cumulative_pts": 71.0,
+          "replacement": null,
+          "captain": "c15"
+        }
+      ]
+    },
+    {
+      "episode": 4,
+      "phase": "pre_merge",
+      "voted_out": "c17",
+      "price_changes": [
+        [
+          "c17",
+          142500,
+          137500,
+          -5000,
+          -3.508771929824561
+        ],
+        [
+          "c13",
+          177500,
+          180000,
+          2500,
+          1.408450704225352
+        ],
+        [
+          "c21",
+          240000,
+          242500,
+          2500,
+          1.0416666666666667
+        ]
+      ],
+      "team_updates": [
+        {
+          "strategy": "value",
+          "style": "fixed",
+          "episode_pts": 50.0,
+          "cumulative_pts": 198.0,
+          "replacement": null,
+          "captain": "c03"
+        },
+        {
+          "strategy": "value",
+          "style": "replace",
+          "episode_pts": 50.0,
+          "cumulative_pts": 198.0,
+          "replacement": null,
+          "captain": "c03"
+        },
+        {
+          "strategy": "mid_tier",
+          "style": "fixed",
+          "episode_pts": 43.0,
+          "cumulative_pts": 172.0,
+          "replacement": null,
+          "captain": "c10"
+        },
+        {
+          "strategy": "mid_tier",
+          "style": "replace",
+          "episode_pts": 50.0,
+          "cumulative_pts": 169.0,
+          "replacement": null,
+          "captain": "c10"
+        },
+        {
+          "strategy": "random",
+          "style": "fixed",
+          "episode_pts": 32.0,
+          "cumulative_pts": 103.0,
+          "replacement": null,
+          "captain": "c15"
+        },
+        {
+          "strategy": "random",
+          "style": "replace",
+          "episode_pts": 39.0,
+          "cumulative_pts": 110.0,
+          "replacement": null,
+          "captain": "c15"
+        }
+      ]
+    },
+    {
+      "episode": 5,
+      "phase": "pre_merge",
+      "voted_out": "c22",
+      "price_changes": [
+        [
+          "c22",
+          107500,
+          102500,
+          -5000,
+          -4.651162790697675
+        ]
+      ],
+      "team_updates": [
+        {
+          "strategy": "value",
+          "style": "fixed",
+          "episode_pts": 52.0,
+          "cumulative_pts": 250.0,
+          "replacement": null,
+          "captain": "c03"
+        },
+        {
+          "strategy": "value",
+          "style": "replace",
+          "episode_pts": 52.0,
+          "cumulative_pts": 250.0,
+          "replacement": null,
+          "captain": "c03"
+        },
+        {
+          "strategy": "mid_tier",
+          "style": "fixed",
+          "episode_pts": 44.0,
+          "cumulative_pts": 216.0,
+          "replacement": null,
+          "captain": "c10"
+        },
+        {
+          "strategy": "mid_tier",
+          "style": "replace",
+          "episode_pts": 49.0,
+          "cumulative_pts": 218.0,
+          "replacement": null,
+          "captain": "c10"
+        },
+        {
+          "strategy": "random",
+          "style": "fixed",
+          "episode_pts": 29.0,
+          "cumulative_pts": 132.0,
+          "replacement": null,
+          "captain": "c15"
+        },
+        {
+          "strategy": "random",
+          "style": "replace",
+          "episode_pts": 34.0,
+          "cumulative_pts": 134.0,
+          "replacement": {
+            "out": "c22",
+            "in": "c24",
+            "budget_freed": 107500,
+            "viable_count": 5,
+            "add_penalty": -10
+          },
+          "captain": "c15"
+        }
+      ]
+    },
+    {
+      "episode": 6,
+      "phase": "pre_merge",
+      "voted_out": "c03",
+      "price_changes": [
+        [
+          "c03",
+          125000,
+          120000,
+          -5000,
+          -4.0
+        ]
+      ],
+      "team_updates": [
+        {
+          "strategy": "value",
+          "style": "fixed",
+          "episode_pts": 20.0,
+          "cumulative_pts": 270.0,
+          "replacement": null,
+          "captain": "c03"
+        },
+        {
+          "strategy": "value",
+          "style": "replace",
+          "episode_pts": 20.0,
+          "cumulative_pts": 260.0,
+          "replacement": {
+            "out": "c03",
+            "in": "c19",
+            "budget_freed": 125000,
+            "viable_count": 8,
+            "add_penalty": -10
+          },
+          "captain": "c03"
+        },
+        {
+          "strategy": "mid_tier",
+          "style": "fixed",
+          "episode_pts": 25.0,
+          "cumulative_pts": 241.0,
+          "replacement": null,
+          "captain": "c10"
+        },
+        {
+          "strategy": "mid_tier",
+          "style": "replace",
+          "episode_pts": 30.0,
+          "cumulative_pts": 238.0,
+          "replacement": {
+            "out": "c03",
+            "in": "c19",
+            "budget_freed": 125000,
+            "viable_count": 8,
+            "add_penalty": -10
+          },
+          "captain": "c10"
+        },
+        {
+          "strategy": "random",
+          "style": "fixed",
+          "episode_pts": 37.0,
+          "cumulative_pts": 169.0,
+          "replacement": null,
+          "captain": "c15"
+        },
+        {
+          "strategy": "random",
+          "style": "replace",
+          "episode_pts": 51.0,
+          "cumulative_pts": 185.0,
+          "replacement": null,
+          "captain": "c15"
+        }
+      ]
+    },
+    {
+      "episode": 7,
+      "phase": "pre_merge",
+      "voted_out": "c11",
+      "price_changes": [
+        [
+          "c11",
+          152500,
+          147500,
+          -5000,
+          -3.278688524590164
+        ],
+        [
+          "c02",
+          112500,
+          115000,
+          2500,
+          2.2222222222222223
+        ],
+        [
+          "c21",
+          242500,
+          245000,
+          2500,
+          1.0309278350515463
+        ],
+        [
+          "c23",
+          195000,
+          197500,
+          2500,
+          1.2820512820512822
+        ]
+      ],
+      "team_updates": [
+        {
+          "strategy": "value",
+          "style": "fixed",
+          "episode_pts": 46.0,
+          "cumulative_pts": 316.0,
+          "replacement": null,
+          "captain": "c19"
+        },
+        {
+          "strategy": "value",
+          "style": "replace",
+          "episode_pts": 60.0,
+          "cumulative_pts": 320.0,
+          "replacement": null,
+          "captain": "c19"
+        },
+        {
+          "strategy": "mid_tier",
+          "style": "fixed",
+          "episode_pts": 39.0,
+          "cumulative_pts": 280.0,
+          "replacement": null,
+          "captain": "c10"
+        },
+        {
+          "strategy": "mid_tier",
+          "style": "replace",
+          "episode_pts": 53.0,
+          "cumulative_pts": 291.0,
+          "replacement": null,
+          "captain": "c10"
+        },
+        {
+          "strategy": "random",
+          "style": "fixed",
+          "episode_pts": 20.0,
+          "cumulative_pts": 189.0,
+          "replacement": null,
+          "captain": "c15"
+        },
+        {
+          "strategy": "random",
+          "style": "replace",
+          "episode_pts": 36.0,
+          "cumulative_pts": 221.0,
+          "replacement": null,
+          "captain": "c15"
+        }
+      ]
+    },
+    {
+      "episode": 8,
+      "phase": "swap",
+      "voted_out": "c01",
+      "price_changes": [
+        [
+          "c01",
+          137500,
+          132500,
+          -5000,
+          -3.6363636363636362
+        ],
+        [
+          "c16",
+          107500,
+          110000,
+          2500,
+          2.3255813953488373
+        ]
+      ],
+      "team_updates": [
+        {
+          "strategy": "value",
+          "style": "fixed",
+          "episode_pts": 42.0,
+          "cumulative_pts": 358.0,
+          "replacement": null,
+          "captain": "c19"
+        },
+        {
+          "strategy": "value",
+          "style": "replace",
+          "episode_pts": 50.0,
+          "cumulative_pts": 370.0,
+          "replacement": null,
+          "captain": "c19"
+        },
+        {
+          "strategy": "mid_tier",
+          "style": "fixed",
+          "episode_pts": 32.0,
+          "cumulative_pts": 312.0,
+          "replacement": null,
+          "captain": "c10"
+        },
+        {
+          "strategy": "mid_tier",
+          "style": "replace",
+          "episode_pts": 40.0,
+          "cumulative_pts": 331.0,
+          "replacement": null,
+          "captain": "c10"
+        },
+        {
+          "strategy": "random",
+          "style": "fixed",
+          "episode_pts": 41.0,
+          "cumulative_pts": 230.0,
+          "replacement": null,
+          "captain": "c15"
+        },
+        {
+          "strategy": "random",
+          "style": "replace",
+          "episode_pts": 49.0,
+          "cumulative_pts": 270.0,
+          "replacement": null,
+          "captain": "c15"
+        }
+      ]
+    },
+    {
+      "episode": 9,
+      "phase": "swap",
+      "voted_out": "c13",
+      "price_changes": [
+        [
+          "c13",
+          180000,
+          172500,
+          -7500,
+          -4.166666666666667
+        ],
+        [
+          "c05",
+          197500,
+          200000,
+          2500,
+          1.2658227848101267
+        ],
+        [
+          "c23",
+          197500,
+          200000,
+          2500,
+          1.2658227848101267
+        ]
+      ],
+      "team_updates": [
+        {
+          "strategy": "value",
+          "style": "fixed",
+          "episode_pts": 49.0,
+          "cumulative_pts": 407.0,
+          "replacement": null,
+          "captain": "c19"
+        },
+        {
+          "strategy": "value",
+          "style": "replace",
+          "episode_pts": 63.0,
+          "cumulative_pts": 433.0,
+          "replacement": null,
+          "captain": "c19"
+        },
+        {
+          "strategy": "mid_tier",
+          "style": "fixed",
+          "episode_pts": 50.0,
+          "cumulative_pts": 362.0,
+          "replacement": null,
+          "captain": "c10"
+        },
+        {
+          "strategy": "mid_tier",
+          "style": "replace",
+          "episode_pts": 64.0,
+          "cumulative_pts": 395.0,
+          "replacement": null,
+          "captain": "c10"
+        },
+        {
+          "strategy": "random",
+          "style": "fixed",
+          "episode_pts": 35.0,
+          "cumulative_pts": 265.0,
+          "replacement": null,
+          "captain": "c15"
+        },
+        {
+          "strategy": "random",
+          "style": "replace",
+          "episode_pts": 51.0,
+          "cumulative_pts": 321.0,
+          "replacement": null,
+          "captain": "c15"
+        }
+      ]
+    },
+    {
+      "episode": 10,
+      "phase": "swap",
+      "voted_out": "c16",
+      "price_changes": [
+        [
+          "c16",
+          110000,
+          105000,
+          -5000,
+          -4.545454545454546
+        ],
+        [
+          "c09",
+          152500,
+          155000,
+          2500,
+          1.639344262295082
+        ]
+      ],
+      "team_updates": [
+        {
+          "strategy": "value",
+          "style": "fixed",
+          "episode_pts": 24.0,
+          "cumulative_pts": 431.0,
+          "replacement": null,
+          "captain": "c19"
+        },
+        {
+          "strategy": "value",
+          "style": "replace",
+          "episode_pts": 36.0,
+          "cumulative_pts": 459.0,
+          "replacement": {
+            "out": "c16",
+            "in": "c24",
+            "budget_freed": 110000,
+            "viable_count": 5,
+            "add_penalty": -10
+          },
+          "captain": "c19"
+        },
+        {
+          "strategy": "mid_tier",
+          "style": "fixed",
+          "episode_pts": 36.0,
+          "cumulative_pts": 398.0,
+          "replacement": null,
+          "captain": "c10"
+        },
+        {
+          "strategy": "mid_tier",
+          "style": "replace",
+          "episode_pts": 48.0,
+          "cumulative_pts": 443.0,
+          "replacement": null,
+          "captain": "c10"
+        },
+        {
+          "strategy": "random",
+          "style": "fixed",
+          "episode_pts": 17.0,
+          "cumulative_pts": 282.0,
+          "replacement": null,
+          "captain": "c15"
+        },
+        {
+          "strategy": "random",
+          "style": "replace",
+          "episode_pts": 29.0,
+          "cumulative_pts": 340.0,
+          "replacement": {
+            "out": "c16",
+            "in": "c24",
+            "budget_freed": 110000,
+            "viable_count": 5,
+            "add_penalty": -10
+          },
+          "captain": "c15"
+        }
+      ]
+    },
+    {
+      "episode": 11,
+      "phase": "swap",
+      "voted_out": "c14",
+      "price_changes": [
+        [
+          "c14",
+          107500,
+          102500,
+          -5000,
+          -4.651162790697675
+        ],
+        [
+          "c10",
+          140000,
+          142500,
+          2500,
+          1.7857142857142858
+        ]
+      ],
+      "team_updates": [
+        {
+          "strategy": "value",
+          "style": "fixed",
+          "episode_pts": 37.0,
+          "cumulative_pts": 468.0,
+          "replacement": null,
+          "captain": "c19"
+        },
+        {
+          "strategy": "value",
+          "style": "replace",
+          "episode_pts": 58.0,
+          "cumulative_pts": 517.0,
+          "replacement": null,
+          "captain": "c19"
+        },
+        {
+          "strategy": "mid_tier",
+          "style": "fixed",
+          "episode_pts": 48.0,
+          "cumulative_pts": 446.0,
+          "replacement": null,
+          "captain": "c10"
+        },
+        {
+          "strategy": "mid_tier",
+          "style": "replace",
+          "episode_pts": 62.0,
+          "cumulative_pts": 505.0,
+          "replacement": null,
+          "captain": "c10"
+        },
+        {
+          "strategy": "random",
+          "style": "fixed",
+          "episode_pts": 17.0,
+          "cumulative_pts": 299.0,
+          "replacement": null,
+          "captain": "c15"
+        },
+        {
+          "strategy": "random",
+          "style": "replace",
+          "episode_pts": 38.0,
+          "cumulative_pts": 368.0,
+          "replacement": {
+            "out": "c14",
+            "in": "c24",
+            "budget_freed": 107500,
+            "viable_count": 3,
+            "add_penalty": -10
+          },
+          "captain": "c15"
+        }
+      ]
+    },
+    {
+      "episode": 12,
+      "phase": "swap",
+      "voted_out": "c20",
+      "price_changes": [
+        [
+          "c20",
+          107500,
+          102500,
+          -5000,
+          -4.651162790697675
+        ],
+        [
+          "c05",
+          200000,
+          202500,
+          2500,
+          1.25
+        ],
+        [
+          "c21",
+          245000,
+          247500,
+          2500,
+          1.0204081632653061
+        ],
+        [
+          "c23",
+          200000,
+          202500,
+          2500,
+          1.25
+        ]
+      ],
+      "team_updates": [
+        {
+          "strategy": "value",
+          "style": "fixed",
+          "episode_pts": 43.0,
+          "cumulative_pts": 511.0,
+          "replacement": null,
+          "captain": "c19"
+        },
+        {
+          "strategy": "value",
+          "style": "replace",
+          "episode_pts": 66.0,
+          "cumulative_pts": 583.0,
+          "replacement": null,
+          "captain": "c19"
+        },
+        {
+          "strategy": "mid_tier",
+          "style": "fixed",
+          "episode_pts": 52.0,
+          "cumulative_pts": 498.0,
+          "replacement": null,
+          "captain": "c10"
+        },
+        {
+          "strategy": "mid_tier",
+          "style": "replace",
+          "episode_pts": 66.0,
+          "cumulative_pts": 571.0,
+          "replacement": null,
+          "captain": "c10"
+        },
+        {
+          "strategy": "random",
+          "style": "fixed",
+          "episode_pts": 24.0,
+          "cumulative_pts": 323.0,
+          "replacement": null,
+          "captain": "c15"
+        },
+        {
+          "strategy": "random",
+          "style": "replace",
+          "episode_pts": 58.0,
+          "cumulative_pts": 426.0,
+          "replacement": null,
+          "captain": "c15"
+        }
+      ]
+    },
+    {
+      "episode": 13,
+      "phase": "post_merge",
+      "voted_out": "c09",
+      "price_changes": [
+        [
+          "c09",
+          155000,
+          150000,
+          -5000,
+          -3.225806451612903
+        ],
+        [
+          "c08",
+          135000,
+          137500,
+          2500,
+          1.8518518518518519
+        ]
+      ],
+      "team_updates": [
+        {
+          "strategy": "value",
+          "style": "fixed",
+          "episode_pts": 32.0,
+          "cumulative_pts": 543.0,
+          "replacement": null,
+          "captain": "c19"
+        },
+        {
+          "strategy": "value",
+          "style": "replace",
+          "episode_pts": 47.0,
+          "cumulative_pts": 630.0,
+          "replacement": null,
+          "captain": "c19"
+        },
+        {
+          "strategy": "mid_tier",
+          "style": "fixed",
+          "episode_pts": 28.0,
+          "cumulative_pts": 526.0,
+          "replacement": null,
+          "captain": "c10"
+        },
+        {
+          "strategy": "mid_tier",
+          "style": "replace",
+          "episode_pts": 38.0,
+          "cumulative_pts": 609.0,
+          "replacement": null,
+          "captain": "c10"
+        },
+        {
+          "strategy": "random",
+          "style": "fixed",
+          "episode_pts": 20.0,
+          "cumulative_pts": 343.0,
+          "replacement": null,
+          "captain": "c15"
+        },
+        {
+          "strategy": "random",
+          "style": "replace",
+          "episode_pts": 40.0,
+          "cumulative_pts": 466.0,
+          "replacement": null,
+          "captain": "c15"
+        }
+      ]
+    },
+    {
+      "episode": 14,
+      "phase": "post_merge",
+      "voted_out": "c04",
+      "price_changes": [
+        [
+          "c04",
+          110000,
+          107500,
+          -2500,
+          -2.272727272727273
+        ],
+        [
+          "c19",
+          122500,
+          125000,
+          2500,
+          2.0408163265306123
+        ]
+      ],
+      "team_updates": [
+        {
+          "strategy": "value",
+          "style": "fixed",
+          "episode_pts": 21.0,
+          "cumulative_pts": 564.0,
+          "replacement": null,
+          "captain": "c19"
+        },
+        {
+          "strategy": "value",
+          "style": "replace",
+          "episode_pts": 54.0,
+          "cumulative_pts": 674.0,
+          "replacement": {
+            "out": "c04",
+            "in": "c24",
+            "budget_freed": 110000,
+            "viable_count": 2,
+            "add_penalty": -10
+          },
+          "captain": "c19"
+        },
+        {
+          "strategy": "mid_tier",
+          "style": "fixed",
+          "episode_pts": 14.0,
+          "cumulative_pts": 540.0,
+          "replacement": null,
+          "captain": "c10"
+        },
+        {
+          "strategy": "mid_tier",
+          "style": "replace",
+          "episode_pts": 42.0,
+          "cumulative_pts": 641.0,
+          "replacement": {
+            "out": "c04",
+            "in": "c24",
+            "budget_freed": 110000,
+            "viable_count": 2,
+            "add_penalty": -10
+          },
+          "captain": "c10"
+        },
+        {
+          "strategy": "random",
+          "style": "fixed",
+          "episode_pts": 25.0,
+          "cumulative_pts": 368.0,
+          "replacement": null,
+          "captain": "c15"
+        },
+        {
+          "strategy": "random",
+          "style": "replace",
+          "episode_pts": 54.0,
+          "cumulative_pts": 520.0,
+          "replacement": null,
+          "captain": "c15"
+        }
+      ]
+    },
+    {
+      "episode": 15,
+      "phase": "post_merge",
+      "voted_out": "c24",
+      "price_changes": [
+        [
+          "c24",
+          107500,
+          102500,
+          -5000,
+          -4.651162790697675
+        ],
+        [
+          "c05",
+          202500,
+          205000,
+          2500,
+          1.2345679012345678
+        ],
+        [
+          "c15",
+          155000,
+          157500,
+          2500,
+          1.6129032258064515
+        ]
+      ],
+      "team_updates": [
+        {
+          "strategy": "value",
+          "style": "fixed",
+          "episode_pts": 4.0,
+          "cumulative_pts": 568.0,
+          "replacement": null,
+          "captain": "c19"
+        },
+        {
+          "strategy": "value",
+          "style": "replace",
+          "episode_pts": -14.0,
+          "cumulative_pts": 650.0,
+          "replacement": {
+            "out": "c24",
+            "in": "c12",
+            "budget_freed": 107500,
+            "viable_count": 1,
+            "add_penalty": -10
+          },
+          "captain": "c19"
+        },
+        {
+          "strategy": "mid_tier",
+          "style": "fixed",
+          "episode_pts": 6.0,
+          "cumulative_pts": 546.0,
+          "replacement": null,
+          "captain": "c10"
+        },
+        {
+          "strategy": "mid_tier",
+          "style": "replace",
+          "episode_pts": 2.0,
+          "cumulative_pts": 633.0,
+          "replacement": {
+            "out": "c24",
+            "in": "c12",
+            "budget_freed": 107500,
+            "viable_count": 1,
+            "add_penalty": -10
+          },
+          "captain": "c10"
+        },
+        {
+          "strategy": "random",
+          "style": "fixed",
+          "episode_pts": 26.0,
+          "cumulative_pts": 394.0,
+          "replacement": null,
+          "captain": "c15"
+        },
+        {
+          "strategy": "random",
+          "style": "replace",
+          "episode_pts": -11.0,
+          "cumulative_pts": 499.0,
+          "replacement": {
+            "out": "c24",
+            "in": "c12",
+            "budget_freed": 107500,
+            "viable_count": 1,
+            "add_penalty": -10
+          },
+          "captain": "c15"
+        }
+      ]
+    },
+    {
+      "episode": 16,
+      "phase": "post_merge",
+      "voted_out": "c05",
+      "price_changes": [
+        [
+          "c05",
+          205000,
+          197500,
+          -7500,
+          -3.658536585365854
+        ],
+        [
+          "c08",
+          137500,
+          140000,
+          2500,
+          1.8181818181818181
+        ]
+      ],
+      "team_updates": [
+        {
+          "strategy": "value",
+          "style": "fixed",
+          "episode_pts": 26.0,
+          "cumulative_pts": 594.0,
+          "replacement": null,
+          "captain": "c19"
+        },
+        {
+          "strategy": "value",
+          "style": "replace",
+          "episode_pts": 49.0,
+          "cumulative_pts": 699.0,
+          "replacement": null,
+          "captain": "c19"
+        },
+        {
+          "strategy": "mid_tier",
+          "style": "fixed",
+          "episode_pts": 18.0,
+          "cumulative_pts": 564.0,
+          "replacement": null,
+          "captain": "c10"
+        },
+        {
+          "strategy": "mid_tier",
+          "style": "replace",
+          "episode_pts": 41.0,
+          "cumulative_pts": 674.0,
+          "replacement": null,
+          "captain": "c10"
+        },
+        {
+          "strategy": "random",
+          "style": "fixed",
+          "episode_pts": 22.0,
+          "cumulative_pts": 416.0,
+          "replacement": null,
+          "captain": "c15"
+        },
+        {
+          "strategy": "random",
+          "style": "replace",
+          "episode_pts": 36.0,
+          "cumulative_pts": 535.0,
+          "replacement": null,
+          "captain": "c15"
+        }
+      ]
+    },
+    {
+      "episode": 17,
+      "phase": "post_merge",
+      "voted_out": "c19",
+      "price_changes": [
+        [
+          "c19",
+          125000,
+          120000,
+          -5000,
+          -4.0
+        ],
+        [
+          "c15",
+          157500,
+          160000,
+          2500,
+          1.5873015873015872
+        ]
+      ],
+      "team_updates": [
+        {
+          "strategy": "value",
+          "style": "fixed",
+          "episode_pts": -33.0,
+          "cumulative_pts": 561.0,
+          "replacement": null,
+          "captain": "c19"
+        },
+        {
+          "strategy": "value",
+          "style": "replace",
+          "episode_pts": -71.0,
+          "cumulative_pts": 618.0,
+          "replacement": {
+            "out": "c19",
+            "in": "c02",
+            "budget_freed": 125000,
+            "viable_count": 2,
+            "add_penalty": -10
+          },
+          "captain": "c19"
+        },
+        {
+          "strategy": "mid_tier",
+          "style": "fixed",
+          "episode_pts": -9.0,
+          "cumulative_pts": 555.0,
+          "replacement": null,
+          "captain": "c10"
+        },
+        {
+          "strategy": "mid_tier",
+          "style": "replace",
+          "episode_pts": -47.0,
+          "cumulative_pts": 617.0,
+          "replacement": {
+            "out": "c19",
+            "in": "c02",
+            "budget_freed": 125000,
+            "viable_count": 2,
+            "add_penalty": -10
+          },
+          "captain": "c10"
+        },
+        {
+          "strategy": "random",
+          "style": "fixed",
+          "episode_pts": -1.0,
+          "cumulative_pts": 415.0,
+          "replacement": null,
+          "captain": "c15"
+        },
+        {
+          "strategy": "random",
+          "style": "replace",
+          "episode_pts": -15.0,
+          "cumulative_pts": 510.0,
+          "replacement": {
+            "out": "c19",
+            "in": "c02",
+            "budget_freed": 125000,
+            "viable_count": 2,
+            "add_penalty": -10
+          },
+          "captain": "c15"
+        }
+      ]
+    },
+    {
+      "episode": 18,
+      "phase": "post_merge",
+      "voted_out": "c02",
+      "price_changes": [
+        [
+          "c02",
+          115000,
+          110000,
+          -5000,
+          -4.3478260869565215
+        ],
+        [
+          "c10",
+          142500,
+          145000,
+          2500,
+          1.7543859649122806
+        ],
+        [
+          "c23",
+          202500,
+          205000,
+          2500,
+          1.2345679012345678
+        ]
+      ],
+      "team_updates": [
+        {
+          "strategy": "value",
+          "style": "fixed",
+          "episode_pts": -25.0,
+          "cumulative_pts": 536.0,
+          "replacement": null,
+          "captain": "c02"
+        },
+        {
+          "strategy": "value",
+          "style": "replace",
+          "episode_pts": -50.0,
+          "cumulative_pts": 558.0,
+          "replacement": {
+            "out": "c02",
+            "in": "c12",
+            "budget_freed": 115000,
+            "viable_count": 1,
+            "add_penalty": -10
+          },
+          "captain": "c02"
+        },
+        {
+          "strategy": "mid_tier",
+          "style": "fixed",
+          "episode_pts": 10.0,
+          "cumulative_pts": 565.0,
+          "replacement": null,
+          "captain": "c10"
+        },
+        {
+          "strategy": "mid_tier",
+          "style": "replace",
+          "episode_pts": -1.0,
+          "cumulative_pts": 606.0,
+          "replacement": {
+            "out": "c02",
+            "in": "c12",
+            "budget_freed": 115000,
+            "viable_count": 1,
+            "add_penalty": -10
+          },
+          "captain": "c10"
+        },
+        {
+          "strategy": "random",
+          "style": "fixed",
+          "episode_pts": 18.0,
+          "cumulative_pts": 433.0,
+          "replacement": null,
+          "captain": "c15"
+        },
+        {
+          "strategy": "random",
+          "style": "replace",
+          "episode_pts": 7.0,
+          "cumulative_pts": 507.0,
+          "replacement": {
+            "out": "c02",
+            "in": "c12",
+            "budget_freed": 115000,
+            "viable_count": 1,
+            "add_penalty": -10
+          },
+          "captain": "c15"
+        }
+      ]
+    },
+    {
+      "episode": 19,
+      "phase": "post_merge",
+      "voted_out": "c08",
+      "price_changes": [
+        [
+          "c08",
+          140000,
+          135000,
+          -5000,
+          -3.5714285714285716
+        ],
+        [
+          "c12",
+          107500,
+          110000,
+          2500,
+          2.3255813953488373
+        ],
+        [
+          "c21",
+          247500,
+          250000,
+          2500,
+          1.0101010101010102
+        ]
+      ],
+      "team_updates": [
+        {
+          "strategy": "value",
+          "style": "fixed",
+          "episode_pts": 20.0,
+          "cumulative_pts": 556.0,
+          "replacement": null,
+          "captain": "c12"
+        },
+        {
+          "strategy": "value",
+          "style": "replace",
+          "episode_pts": 60.0,
+          "cumulative_pts": 618.0,
+          "replacement": null,
+          "captain": "c12"
+        },
+        {
+          "strategy": "mid_tier",
+          "style": "fixed",
+          "episode_pts": 10.0,
+          "cumulative_pts": 575.0,
+          "replacement": null,
+          "captain": "c10"
+        },
+        {
+          "strategy": "mid_tier",
+          "style": "replace",
+          "episode_pts": 30.0,
+          "cumulative_pts": 636.0,
+          "replacement": null,
+          "captain": "c10"
+        },
+        {
+          "strategy": "random",
+          "style": "fixed",
+          "episode_pts": 15.0,
+          "cumulative_pts": 448.0,
+          "replacement": null,
+          "captain": "c15"
+        },
+        {
+          "strategy": "random",
+          "style": "replace",
+          "episode_pts": 35.0,
+          "cumulative_pts": 542.0,
+          "replacement": null,
+          "captain": "c15"
+        }
+      ]
+    },
+    {
+      "episode": 20,
+      "phase": "post_merge",
+      "voted_out": "c15",
+      "price_changes": [
+        [
+          "c15",
+          160000,
+          155000,
+          -5000,
+          -3.125
+        ],
+        [
+          "c10",
+          145000,
+          147500,
+          2500,
+          1.7241379310344827
+        ],
+        [
+          "c23",
+          205000,
+          207500,
+          2500,
+          1.2195121951219512
+        ]
+      ],
+      "team_updates": [
+        {
+          "strategy": "value",
+          "style": "fixed",
+          "episode_pts": 10.0,
+          "cumulative_pts": 566.0,
+          "replacement": null,
+          "captain": "c12"
+        },
+        {
+          "strategy": "value",
+          "style": "replace",
+          "episode_pts": 30.0,
+          "cumulative_pts": 648.0,
+          "replacement": null,
+          "captain": "c12"
+        },
+        {
+          "strategy": "mid_tier",
+          "style": "fixed",
+          "episode_pts": 20.0,
+          "cumulative_pts": 595.0,
+          "replacement": null,
+          "captain": "c10"
+        },
+        {
+          "strategy": "mid_tier",
+          "style": "replace",
+          "episode_pts": 30.0,
+          "cumulative_pts": 666.0,
+          "replacement": null,
+          "captain": "c10"
+        },
+        {
+          "strategy": "random",
+          "style": "fixed",
+          "episode_pts": -26.0,
+          "cumulative_pts": 422.0,
+          "replacement": null,
+          "captain": "c15"
+        },
+        {
+          "strategy": "random",
+          "style": "replace",
+          "episode_pts": -16.0,
+          "cumulative_pts": 516.0,
+          "replacement": {
+            "out": "c15",
+            "in": "c10",
+            "budget_freed": 160000,
+            "viable_count": 2,
+            "add_penalty": -10
+          },
+          "captain": "c15"
+        }
+      ]
+    },
+    {
+      "episode": 21,
+      "phase": "post_merge",
+      "voted_out": "c12",
+      "price_changes": [
+        [
+          "c12",
+          110000,
+          105000,
+          -5000,
+          -4.545454545454546
+        ],
+        [
+          "c10",
+          147500,
+          150000,
+          2500,
+          1.694915254237288
+        ],
+        [
+          "c23",
+          207500,
+          210000,
+          2500,
+          1.2048192771084338
+        ]
+      ],
+      "team_updates": [
+        {
+          "strategy": "value",
+          "style": "fixed",
+          "episode_pts": -44.0,
+          "cumulative_pts": 522.0,
+          "replacement": null,
+          "captain": "c12"
+        },
+        {
+          "strategy": "value",
+          "style": "replace",
+          "episode_pts": -132.0,
+          "cumulative_pts": 516.0,
+          "replacement": null,
+          "captain": "c12"
+        },
+        {
+          "strategy": "mid_tier",
+          "style": "fixed",
+          "episode_pts": 20.0,
+          "cumulative_pts": 615.0,
+          "replacement": null,
+          "captain": "c10"
+        },
+        {
+          "strategy": "mid_tier",
+          "style": "replace",
+          "episode_pts": -24.0,
+          "cumulative_pts": 642.0,
+          "replacement": null,
+          "captain": "c10"
+        },
+        {
+          "strategy": "random",
+          "style": "fixed",
+          "episode_pts": 20.0,
+          "cumulative_pts": 442.0,
+          "replacement": null,
+          "captain": "c10"
+        },
+        {
+          "strategy": "random",
+          "style": "replace",
+          "episode_pts": -4.0,
+          "cumulative_pts": 512.0,
+          "replacement": null,
+          "captain": "c10"
+        }
+      ]
+    }
+  ],
+  "teams": [
+    {
+      "strategy": "value",
+      "fixed": {
+        "roster": [
+          "c02",
+          "c16",
+          "c24",
+          "c04",
+          "c12",
+          "c03",
+          "c19"
+        ],
+        "pts": 522.0
+      },
+      "replace": {
+        "roster": [
+          "c12",
+          "c12",
+          "c12"
+        ],
+        "pts": 516.0
+      }
+    },
+    {
+      "strategy": "mid_tier",
+      "fixed": {
+        "roster": [
+          "c02",
+          "c10",
+          "c24",
+          "c04",
+          "c03",
+          "c19",
+          "c18"
+        ],
+        "pts": 615.0
+      },
+      "replace": {
+        "roster": [
+          "c10",
+          "c12",
+          "c12"
+        ],
+        "pts": 642.0
+      }
+    },
+    {
+      "strategy": "random",
+      "fixed": {
+        "roster": [
+          "c07",
+          "c16",
+          "c22",
+          "c14",
+          "c10",
+          "c19",
+          "c15"
+        ],
+        "pts": 442.0
+      },
+      "replace": {
+        "roster": [
+          "c10",
+          "c12",
+          "c12",
+          "c10"
+        ],
+        "pts": 512.0
+      }
+    }
+  ],
+  "id_to_name": {
+    "c01": "Contestant 01",
+    "c02": "Contestant 02",
+    "c03": "Contestant 03",
+    "c04": "Contestant 04",
+    "c05": "Contestant 05",
+    "c06": "Contestant 06",
+    "c07": "Contestant 07",
+    "c08": "Contestant 08",
+    "c09": "Contestant 09",
+    "c10": "Contestant 10",
+    "c11": "Contestant 11",
+    "c12": "Contestant 12",
+    "c13": "Contestant 13",
+    "c14": "Contestant 14",
+    "c15": "Contestant 15",
+    "c16": "Contestant 16",
+    "c17": "Contestant 17",
+    "c18": "Contestant 18",
+    "c19": "Contestant 19",
+    "c20": "Contestant 20",
+    "c21": "Contestant 21",
+    "c22": "Contestant 22",
+    "c23": "Contestant 23",
+    "c24": "Contestant 24"
+  }
+}

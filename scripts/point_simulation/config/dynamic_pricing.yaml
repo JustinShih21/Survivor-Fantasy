@@ -1,0 +1,26 @@
+# Dynamic (Episode-Reactive) Pricing Configuration
+# Demand-based model: prices reflect expected demand from performance.
+# Strong performers (immunity, vote matched, survival) → demand up → price up.
+# Weak performers (voted out, poor challenges) → demand down → price down.
+# No universal inflation; prices differentiate based on performance.
+
+# How much prices move per episode (0.05 = ~5% max move; slower, more stable)
+price_reactivity: 0.05
+
+# Diversity compression: 0 = no homogenization; prices stay differentiated by performance
+diversity_compression_base: 0
+diversity_compression_late: 0
+
+# Value tolerance: base 10%; widens when compressed or late-season
+replacement_value_tolerance_base: 0.10
+replacement_value_tolerance_max: 0.18   # Cap for adaptive widening
+
+# Season progress thresholds (remaining players)
+late_season_threshold: 12   # Below this = late season
+highly_compressed_ratio: 0.35   # price_range/median < this = highly compressed
+
+# Season inflation: 1.0 = disabled. Prices stay demand-based, no universal rise.
+merge_episodes: 12          # Tribal episodes before merge (calibrated to merge_at 11-12)
+merge_price_multiplier: 1.0  # No inflation; demand-driven only
+merge_budget: 1780000       # Budget at merge
+target_merge_valid_pct: 0.70 # ~70% of combos valid at merge

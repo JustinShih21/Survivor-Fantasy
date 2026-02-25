@@ -1,0 +1,199 @@
+{
+  "combo_stats": {
+    "max_expected_fixed": {
+      "mean": 197.88,
+      "min": 36.0,
+      "max": 374.0,
+      "count": 250
+    },
+    "max_expected_replace": {
+      "mean": 293.64,
+      "min": -40.0,
+      "max": 682.0,
+      "count": 250
+    },
+    "value_fixed": {
+      "mean": 219.84,
+      "min": -29.0,
+      "max": 381.0,
+      "count": 250
+    },
+    "value_replace": {
+      "mean": 335.7,
+      "min": -25.0,
+      "max": 741.0,
+      "count": 250
+    },
+    "balanced_fixed": {
+      "mean": 197.88,
+      "min": 36.0,
+      "max": 374.0,
+      "count": 250
+    },
+    "balanced_replace": {
+      "mean": 293.64,
+      "min": -40.0,
+      "max": 682.0,
+      "count": 250
+    },
+    "mid_tier_fixed": {
+      "mean": 209.94,
+      "min": -11.0,
+      "max": 425.0,
+      "count": 250
+    },
+    "mid_tier_replace": {
+      "mean": 341.8,
+      "min": -25.0,
+      "max": 731.0,
+      "count": 250
+    },
+    "stars_and_scrubs_fixed": {
+      "mean": 197.7,
+      "min": -4.0,
+      "max": 376.0,
+      "count": 250
+    },
+    "stars_and_scrubs_replace": {
+      "mean": 327.48,
+      "min": 0.0,
+      "max": 788.0,
+      "count": 250
+    },
+    "five_premium_fixed": {
+      "mean": 197.88,
+      "min": 36.0,
+      "max": 374.0,
+      "count": 250
+    },
+    "five_premium_replace": {
+      "mean": 293.64,
+      "min": -40.0,
+      "max": 682.0,
+      "count": 250
+    },
+    "six_premium_fixed": {
+      "mean": 197.88,
+      "min": 36.0,
+      "max": 374.0,
+      "count": 250
+    },
+    "six_premium_replace": {
+      "mean": 293.64,
+      "min": -40.0,
+      "max": 682.0,
+      "count": 250
+    },
+    "random_fixed": {
+      "mean": 213.792,
+      "min": 2.0,
+      "max": 512.0,
+      "count": 250
+    },
+    "random_replace": {
+      "mean": 338.744,
+      "min": -33.0,
+      "max": 756.0,
+      "count": 250
+    }
+  },
+  "style_stats": {
+    "fixed": {
+      "mean": 204.099,
+      "count": 2000
+    },
+    "replace": {
+      "mean": 314.7855,
+      "count": 2000
+    }
+  },
+  "event_breakdown_agg": {
+    "survival_pre_merge": {
+      "count": 134002,
+      "points": 134002
+    },
+    "survival_post_merge": {
+      "count": 94533,
+      "points": 283599
+    },
+    "survival_swap": {
+      "count": 79684,
+      "points": 79684
+    },
+    "team_immunity_first": {
+      "count": 84852,
+      "points": 84852
+    },
+    "team_immunity_second_three": {
+      "count": 47099,
+      "points": 0
+    },
+    "team_immunity_second_two": {
+      "count": 42084,
+      "points": 0
+    },
+    "team_immunity_last": {
+      "count": 45564,
+      "points": 0
+    },
+    "team_reward_first": {
+      "count": 88949,
+      "points": 88949
+    },
+    "team_reward_second_three": {
+      "count": 45720,
+      "points": 0
+    },
+    "team_reward_second_two": {
+      "count": 40053,
+      "points": 0
+    },
+    "individual_immunity": {
+      "count": 16795,
+      "points": 100770
+    },
+    "vote_matched": {
+      "count": 229699,
+      "points": 229699
+    },
+    "voted_out": {
+      "count": 12291,
+      "points": -216274
+    },
+    "clue_read": {
+      "count": 6800,
+      "points": 13600
+    },
+    "advantage_play": {
+      "count": 663,
+      "points": 3315
+    },
+    "idol_play": {
+      "count": 1353,
+      "points": 10824
+    },
+    "idol_failure": {
+      "count": 973,
+      "points": -1946
+    },
+    "strategic_player": {
+      "count": 28305,
+      "points": 141525
+    },
+    "final_tribal": {
+      "count": 7793,
+      "points": 46758
+    },
+    "win_season": {
+      "count": 2610,
+      "points": 26100
+    },
+    "quit": {
+      "count": 0,
+      "points": 0
+    }
+  },
+  "captain_bonus_total": 140862.0,
+  "replacement_count": 12855,
+  "replacement_penalty_total": -128550.0
+}

@@ -1,0 +1,808 @@
+{
+  "num_scenarios": 50,
+  "replacement_events": 1050,
+  "avg_viable_replacements": 4.827619047619048,
+  "min_viable_replacements": 0,
+  "pct_with_3plus_viable": 74.57142857142857,
+  "merge_events": 150,
+  "avg_merge_valid_pct": 100.0,
+  "merge_valid_pct_target": 70.0,
+  "dynamic_config": {
+    "price_reactivity": 0.05,
+    "diversity_compression_base": 0,
+    "diversity_compression_late": 0,
+    "replacement_value_tolerance_base": 0.1,
+    "replacement_value_tolerance_max": 0.18,
+    "late_season_threshold": 12,
+    "highly_compressed_ratio": 0.35,
+    "merge_episodes": 12,
+    "merge_price_multiplier": 1.0,
+    "merge_budget": 1780000,
+    "target_merge_valid_pct": 0.7
+  },
+  "replacement_stats_sample": [
+    {
+      "scenario": 0,
+      "episode": 1,
+      "voted_out": "c07",
+      "viable_count": 10,
+      "best_value": 0.00050524,
+      "affordable_count": 19,
+      "viable_ids": [
+        "c04",
+        "c02",
+        "c12",
+        "c16",
+        "c24",
+        "c08",
+        "c19",
+        "c06",
+        "c03",
+        "c20"
+      ]
+    },
+    {
+      "scenario": 0,
+      "episode": 2,
+      "voted_out": "c06",
+      "viable_count": 6,
+      "best_value": 0.00050524,
+      "affordable_count": 6,
+      "viable_ids": [
+        "c12",
+        "c16",
+        "c14",
+        "c24",
+        "c22",
+        "c20"
+      ]
+    },
+    {
+      "scenario": 0,
+      "episode": 3,
+      "voted_out": "c18",
+      "viable_count": 11,
+      "best_value": 0.00050524,
+      "affordable_count": 11,
+      "viable_ids": [
+        "c04",
+        "c02",
+        "c12",
+        "c16",
+        "c14",
+        "c24",
+        "c08",
+        "c19",
+        "c22",
+        "c03",
+        "c20"
+      ]
+    },
+    {
+      "scenario": 0,
+      "episode": 4,
+      "voted_out": "c17",
+      "viable_count": 11,
+      "best_value": 0.00050524,
+      "affordable_count": 11,
+      "viable_ids": [
+        "c04",
+        "c02",
+        "c12",
+        "c16",
+        "c14",
+        "c24",
+        "c08",
+        "c19",
+        "c22",
+        "c03",
+        "c20"
+      ]
+    },
+    {
+      "scenario": 0,
+      "episode": 5,
+      "voted_out": "c22",
+      "viable_count": 5,
+      "best_value": 0.00050524,
+      "affordable_count": 5,
+      "viable_ids": [
+        "c12",
+        "c16",
+        "c14",
+        "c24",
+        "c20"
+      ]
+    },
+    {
+      "scenario": 0,
+      "episode": 6,
+      "voted_out": "c03",
+      "viable_count": 7,
+      "best_value": 0.00050524,
+      "affordable_count": 7,
+      "viable_ids": [
+        "c04",
+        "c02",
+        "c12",
+        "c16",
+        "c14",
+        "c24",
+        "c20"
+      ]
+    },
+    {
+      "scenario": 0,
+      "episode": 7,
+      "voted_out": "c11",
+      "viable_count": 7,
+      "best_value": 0.00050524,
+      "affordable_count": 11,
+      "viable_ids": [
+        "c04",
+        "c02",
+        "c12",
+        "c16",
+        "c24",
+        "c19",
+        "c20"
+      ]
+    },
+    {
+      "scenario": 0,
+      "episode": 8,
+      "voted_out": "c01",
+      "viable_count": 9,
+      "best_value": 0.00050524,
+      "affordable_count": 10,
+      "viable_ids": [
+        "c04",
+        "c02",
+        "c12",
+        "c16",
+        "c14",
+        "c24",
+        "c08",
+        "c19",
+        "c20"
+      ]
+    },
+    {
+      "scenario": 0,
+      "episode": 9,
+      "voted_out": "c13",
+      "viable_count": 7,
+      "best_value": 0.00050524,
+      "affordable_count": 12,
+      "viable_ids": [
+        "c04",
+        "c02",
+        "c12",
+        "c16",
+        "c24",
+        "c19",
+        "c20"
+      ]
+    },
+    {
+      "scenario": 0,
+      "episode": 10,
+      "voted_out": "c16",
+      "viable_count": 4,
+      "best_value": 0.00050524,
+      "affordable_count": 4,
+      "viable_ids": [
+        "c12",
+        "c14",
+        "c24",
+        "c20"
+      ]
+    },
+    {
+      "scenario": 0,
+      "episode": 11,
+      "voted_out": "c14",
+      "viable_count": 3,
+      "best_value": 0.00050524,
+      "affordable_count": 3,
+      "viable_ids": [
+        "c12",
+        "c24",
+        "c20"
+      ]
+    },
+    {
+      "scenario": 0,
+      "episode": 12,
+      "voted_out": "c20",
+      "viable_count": 2,
+      "best_value": 0.00050524,
+      "affordable_count": 2,
+      "viable_ids": [
+        "c12",
+        "c24"
+      ],
+      "merge_valid_pct": 100.0,
+      "merge_valid_count": 768,
+      "merge_total_tribe_valid": 768
+    },
+    {
+      "scenario": 0,
+      "episode": 13,
+      "voted_out": "c09",
+      "viable_count": 6,
+      "best_value": 0.00050524,
+      "affordable_count": 8,
+      "viable_ids": [
+        "c04",
+        "c02",
+        "c12",
+        "c24",
+        "c08",
+        "c19"
+      ],
+      "merge_valid_pct": 100.0,
+      "merge_valid_count": 320,
+      "merge_total_tribe_valid": 320
+    },
+    {
+      "scenario": 0,
+      "episode": 14,
+      "voted_out": "c04",
+      "viable_count": 2,
+      "best_value": 0.00050524,
+      "affordable_count": 2,
+      "viable_ids": [
+        "c12",
+        "c24"
+      ],
+      "merge_valid_pct": 100.0,
+      "merge_valid_count": 118,
+      "merge_total_tribe_valid": 118
+    },
+    {
+      "scenario": 0,
+      "episode": 15,
+      "voted_out": "c24",
+      "viable_count": 1,
+      "best_value": 0.0004904800000000001,
+      "affordable_count": 1,
+      "viable_ids": [
+        "c12"
+      ]
+    },
+    {
+      "scenario": 0,
+      "episode": 16,
+      "voted_out": "c05",
+      "viable_count": 4,
+      "best_value": 0.0004909714285714285,
+      "affordable_count": 6,
+      "viable_ids": [
+        "c02",
+        "c12",
+        "c08",
+        "c19"
+      ]
+    },
+    {
+      "scenario": 0,
+      "episode": 17,
+      "voted_out": "c19",
+      "viable_count": 2,
+      "best_value": 0.0004909714285714285,
+      "affordable_count": 2,
+      "viable_ids": [
+        "c02",
+        "c12"
+      ]
+    },
+    {
+      "scenario": 0,
+      "episode": 18,
+      "voted_out": "c02",
+      "viable_count": 1,
+      "best_value": 0.0004904800000000001,
+      "affordable_count": 1,
+      "viable_ids": [
+        "c12"
+      ]
+    },
+    {
+      "scenario": 0,
+      "episode": 19,
+      "voted_out": "c08",
+      "viable_count": 1,
+      "best_value": 0.0004904800000000001,
+      "affordable_count": 1,
+      "viable_ids": [
+        "c12"
+      ]
+    },
+    {
+      "scenario": 0,
+      "episode": 20,
+      "voted_out": "c15",
+      "viable_count": 1,
+      "best_value": 0.0004904800000000001,
+      "affordable_count": 2,
+      "viable_ids": [
+        "c12"
+      ]
+    },
+    {
+      "scenario": 0,
+      "episode": 21,
+      "voted_out": "c12",
+      "viable_count": 0,
+      "best_value": 0,
+      "affordable_count": 0,
+      "viable_ids": []
+    },
+    {
+      "scenario": 1,
+      "episode": 1,
+      "voted_out": "c20",
+      "viable_count": 6,
+      "best_value": 0.00050524,
+      "affordable_count": 6,
+      "viable_ids": [
+        "c12",
+        "c16",
+        "c14",
+        "c24",
+        "c06",
+        "c22"
+      ]
+    },
+    {
+      "scenario": 1,
+      "episode": 2,
+      "voted_out": "c22",
+      "viable_count": 5,
+      "best_value": 0.00050524,
+      "affordable_count": 5,
+      "viable_ids": [
+        "c12",
+        "c16",
+        "c14",
+        "c24",
+        "c06"
+      ]
+    },
+    {
+      "scenario": 1,
+      "episode": 3,
+      "voted_out": "c17",
+      "viable_count": 11,
+      "best_value": 0.00050524,
+      "affordable_count": 12,
+      "viable_ids": [
+        "c04",
+        "c02",
+        "c12",
+        "c18",
+        "c16",
+        "c14",
+        "c24",
+        "c08",
+        "c19",
+        "c06",
+        "c03"
+      ]
+    },
+    {
+      "scenario": 1,
+      "episode": 4,
+      "voted_out": "c15",
+      "viable_count": 11,
+      "best_value": 0.00050524,
+      "affordable_count": 13,
+      "viable_ids": [
+        "c04",
+        "c02",
+        "c12",
+        "c18",
+        "c16",
+        "c14",
+        "c24",
+        "c08",
+        "c19",
+        "c06",
+        "c03"
+      ]
+    },
+    {
+      "scenario": 1,
+      "episode": 5,
+      "voted_out": "c02",
+      "viable_count": 6,
+      "best_value": 0.00050524,
+      "affordable_count": 6,
+      "viable_ids": [
+        "c04",
+        "c12",
+        "c16",
+        "c14",
+        "c24",
+        "c06"
+      ]
+    },
+    {
+      "scenario": 1,
+      "episode": 6,
+      "voted_out": "c10",
+      "viable_count": 10,
+      "best_value": 0.00050524,
+      "affordable_count": 11,
+      "viable_ids": [
+        "c04",
+        "c12",
+        "c18",
+        "c16",
+        "c14",
+        "c24",
+        "c08",
+        "c19",
+        "c06",
+        "c03"
+      ]
+    },
+    {
+      "scenario": 1,
+      "episode": 7,
+      "voted_out": "c23",
+      "viable_count": 9,
+      "best_value": 0.00050524,
+      "affordable_count": 16,
+      "viable_ids": [
+        "c04",
+        "c12",
+        "c18",
+        "c16",
+        "c24",
+        "c08",
+        "c19",
+        "c06",
+        "c03"
+      ]
+    },
+    {
+      "scenario": 1,
+      "episode": 8,
+      "voted_out": "c05",
+      "viable_count": 9,
+      "best_value": 0.00050524,
+      "affordable_count": 15,
+      "viable_ids": [
+        "c04",
+        "c12",
+        "c18",
+        "c16",
+        "c24",
+        "c08",
+        "c19",
+        "c06",
+        "c03"
+      ]
+    },
+    {
+      "scenario": 1,
+      "episode": 9,
+      "voted_out": "c01",
+      "viable_count": 10,
+      "best_value": 0.00050524,
+      "affordable_count": 10,
+      "viable_ids": [
+        "c04",
+        "c12",
+        "c18",
+        "c16",
+        "c14",
+        "c24",
+        "c08",
+        "c19",
+        "c06",
+        "c03"
+      ]
+    },
+    {
+      "scenario": 1,
+      "episode": 10,
+      "voted_out": "c16",
+      "viable_count": 3,
+      "best_value": 0.00050524,
+      "affordable_count": 3,
+      "viable_ids": [
+        "c12",
+        "c24",
+        "c06"
+      ]
+    },
+    {
+      "scenario": 1,
+      "episode": 11,
+      "voted_out": "c04",
+      "viable_count": 3,
+      "best_value": 0.00050524,
+      "affordable_count": 3,
+      "viable_ids": [
+        "c12",
+        "c24",
+        "c06"
+      ]
+    },
+    {
+      "scenario": 1,
+      "episode": 12,
+      "voted_out": "c09",
+      "viable_count": 7,
+      "best_value": 0.00050524,
+      "affordable_count": 9,
+      "viable_ids": [
+        "c12",
+        "c18",
+        "c24",
+        "c08",
+        "c19",
+        "c06",
+        "c03"
+      ],
+      "merge_valid_pct": 100.0,
+      "merge_valid_count": 768,
+      "merge_total_tribe_valid": 768
+    },
+    {
+      "scenario": 1,
+      "episode": 13,
+      "voted_out": "c21",
+      "viable_count": 7,
+      "best_value": 0.00050524,
+      "affordable_count": 11,
+      "viable_ids": [
+        "c12",
+        "c18",
+        "c24",
+        "c08",
+        "c19",
+        "c06",
+        "c03"
+      ],
+      "merge_valid_pct": 100.0,
+      "merge_valid_count": 320,
+      "merge_total_tribe_valid": 320
+    },
+    {
+      "scenario": 1,
+      "episode": 14,
+      "voted_out": "c18",
+      "viable_count": 6,
+      "best_value": 0.00050524,
+      "affordable_count": 7,
+      "viable_ids": [
+        "c12",
+        "c24",
+        "c08",
+        "c19",
+        "c06",
+        "c03"
+      ],
+      "merge_valid_pct": 100.0,
+      "merge_valid_count": 112,
+      "merge_total_tribe_valid": 112
+    },
+    {
+      "scenario": 1,
+      "episode": 15,
+      "voted_out": "c11",
+      "viable_count": 6,
+      "best_value": 0.00050524,
+      "affordable_count": 7,
+      "viable_ids": [
+        "c12",
+        "c24",
+        "c08",
+        "c19",
+        "c06",
+        "c03"
+      ]
+    },
+    {
+      "scenario": 1,
+      "episode": 16,
+      "voted_out": "c03",
+      "viable_count": 4,
+      "best_value": 0.00050524,
+      "affordable_count": 5,
+      "viable_ids": [
+        "c12",
+        "c24",
+        "c19",
+        "c06"
+      ]
+    },
+    {
+      "scenario": 1,
+      "episode": 17,
+      "voted_out": "c07",
+      "viable_count": 5,
+      "best_value": 0.00050524,
+      "affordable_count": 6,
+      "viable_ids": [
+        "c12",
+        "c24",
+        "c08",
+        "c19",
+        "c06"
+      ]
+    },
+    {
+      "scenario": 1,
+      "episode": 18,
+      "voted_out": "c19",
+      "viable_count": 3,
+      "best_value": 0.00050524,
+      "affordable_count": 4,
+      "viable_ids": [
+        "c12",
+        "c24",
+        "c06"
+      ]
+    },
+    {
+      "scenario": 1,
+      "episode": 19,
+      "voted_out": "c06",
+      "viable_count": 1,
+      "best_value": 0.0004904800000000001,
+      "affordable_count": 1,
+      "viable_ids": [
+        "c12"
+      ]
+    },
+    {
+      "scenario": 1,
+      "episode": 20,
+      "voted_out": "c12",
+      "viable_count": 0,
+      "best_value": 0,
+      "affordable_count": 0,
+      "viable_ids": []
+    },
+    {
+      "scenario": 1,
+      "episode": 21,
+      "voted_out": "c24",
+      "viable_count": 0,
+      "best_value": 0,
+      "affordable_count": 0,
+      "viable_ids": []
+    },
+    {
+      "scenario": 2,
+      "episode": 1,
+      "voted_out": "c01",
+      "viable_count": 13,
+      "best_value": 0.00050524,
+      "affordable_count": 14,
+      "viable_ids": [
+        "c04",
+        "c02",
+        "c12",
+        "c18",
+        "c16",
+        "c14",
+        "c24",
+        "c08",
+        "c19",
+        "c06",
+        "c22",
+        "c03",
+        "c20"
+      ]
+    },
+    {
+      "scenario": 2,
+      "episode": 2,
+      "voted_out": "c16",
+      "viable_count": 6,
+      "best_value": 0.00050524,
+      "affordable_count": 6,
+      "viable_ids": [
+        "c12",
+        "c14",
+        "c24",
+        "c06",
+        "c22",
+        "c20"
+      ]
+    },
+    {
+      "scenario": 2,
+      "episode": 3,
+      "voted_out": "c22",
+      "viable_count": 5,
+      "best_value": 0.00050524,
+      "affordable_count": 5,
+      "viable_ids": [
+        "c12",
+        "c14",
+        "c24",
+        "c06",
+        "c20"
+      ]
+    },
+    {
+      "scenario": 2,
+      "episode": 4,
+      "voted_out": "c12",
+      "viable_count": 4,
+      "best_value": 0.00050524,
+      "affordable_count": 4,
+      "viable_ids": [
+        "c14",
+        "c24",
+        "c06",
+        "c20"
+      ]
+    },
+    {
+      "scenario": 2,
+      "episode": 5,
+      "voted_out": "c06",
+      "viable_count": 3,
+      "best_value": 0.00050524,
+      "affordable_count": 3,
+      "viable_ids": [
+        "c14",
+        "c24",
+        "c20"
+      ]
+    },
+    {
+      "scenario": 2,
+      "episode": 6,
+      "voted_out": "c05",
+      "viable_count": 6,
+      "best_value": 0.00050524,
+      "affordable_count": 16,
+      "viable_ids": [
+        "c04",
+        "c02",
+        "c24",
+        "c19",
+        "c03",
+        "c20"
+      ]
+    },
+    {
+      "scenario": 2,
+      "episode": 7,
+      "voted_out": "c02",
+      "viable_count": 4,
+      "best_value": 0.00050524,
+      "affordable_count": 4,
+      "viable_ids": [
+        "c04",
+        "c14",
+        "c24",
+        "c20"
+      ]
+    },
+    {
+      "scenario": 2,
+      "episode": 8,
+      "voted_out": "c19",
+      "viable_count": 5,
+      "best_value": 0.00050524,
+      "affordable_count": 5,
+      "viable_ids": [
+        "c04",
+        "c14",
+        "c24",
+        "c03",
+        "c20"
+      ]
+    }
+  ]
+}

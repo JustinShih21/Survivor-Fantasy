@@ -1,0 +1,41 @@
+# Episode Impact Bonus System (BPS) - Social-Dominant Weighting
+# Only episode rank bonus (1st +3, 2nd +2, 3rd +1) is added to main scores
+
+# A) Social & Strategic Impact (PRIMARY)
+social:
+  inclusion_in_plan: 3
+  safety_statement: 3
+  vote_info_correct: 3
+  advantage_info_correct: 3
+  initiates_strategic: 2
+  kept_commitment: 4
+  swing_label: 5
+  named_target_survives: 5
+
+# B) Advantage & Risk Impact (SECONDARY)
+advantage:
+  clue_found: 1
+  advantage_or_idol_found: 2
+  advantage_or_idol_played: 3
+  idol_nullifies_votes: 2  # per vote negated
+  holds_idol_through_tribal: 1
+  failed_idol_play: -1
+
+# C) Challenge Impact (TERTIARY)
+challenge:
+  wins_team_immunity: 1
+  wins_individual_immunity: 2
+  key_contributor: 1
+  costs_challenge: -1
+
+# D) Visibility & Narrative (TIE-BREAK)
+visibility:
+  confessionals_4_6: 1
+  confessionals_7_plus: 2
+  episode_narrator: 2
+
+# Episode rank bonus (added to main score)
+episode_rank_bonus:
+  first: 3
+  second: 2
+  third: 1

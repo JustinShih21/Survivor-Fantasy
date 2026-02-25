@@ -1,0 +1,43 @@
+-- Backfill scoring_config.config with bps key from seed so admin can edit BPS values.
+-- Only adds bps if not already present (config || ... merges; existing keys take precedence in ||).
+UPDATE scoring_config
+SET config = config || '{
+  "bps": {
+    "social": {
+      "inclusion_in_plan": 3,
+      "safety_statement": 3,
+      "vote_info_correct": 3,
+      "advantage_info_correct": 3,
+      "initiates_strategic": 2,
+      "kept_commitment": 4,
+      "swing_label": 5,
+      "named_target_survives": 5
+    },
+    "advantage": {
+      "clue_found": 1,
+      "advantage_or_idol_found": 2,
+      "advantage_or_idol_played": 3,
+      "idol_nullifies_votes": 2,
+      "holds_idol_through_tribal": 1,
+      "failed_idol_play": -1
+    },
+    "challenge": {
+      "wins_team_immunity": 1,
+      "wins_individual_immunity": 2,
+      "key_contributor": 1,
+      "costs_challenge": -1
+    },
+    "visibility": {
+      "confessionals_4_6": 1,
+      "confessionals_7_plus": 2,
+      "episode_narrator": 2
+    },
+    "episode_rank_bonus": {
+      "first": 3,
+      "second": 2,
+      "third": 1
+    }
+  }
+}'::jsonb
+WHERE id = 'default'
+  AND NOT (config ? 'bps');

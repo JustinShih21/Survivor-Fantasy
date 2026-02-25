@@ -1,0 +1,25 @@
+-- Update contestants with Survivor 50 cast names and photos
+UPDATE contestants SET name = 'Rick Devens', photo_url = 'https://static.wikia.nocookie.net/survivor/images/4/47/S50_Rick_Devens.jpg/revision/latest' WHERE id = 'c01';
+UPDATE contestants SET name = 'Cirie Fields', photo_url = 'https://static.wikia.nocookie.net/survivor/images/5/5c/S50_Cirie_Fields.jpg/revision/latest' WHERE id = 'c02';
+UPDATE contestants SET name = 'Emily Flippen', photo_url = 'https://static.wikia.nocookie.net/survivor/images/3/33/S50_Emily_Flippen.jpg/revision/latest' WHERE id = 'c03';
+UPDATE contestants SET name = 'Christian Hubicki', photo_url = 'https://static.wikia.nocookie.net/survivor/images/8/89/S50_Christian_Hubicki.jpg/revision/latest' WHERE id = 'c04';
+UPDATE contestants SET name = 'Joe Hunter', photo_url = 'https://static.wikia.nocookie.net/survivor/images/3/3e/S50_Joe_Hunter.jpg/revision/latest' WHERE id = 'c05';
+UPDATE contestants SET name = 'Jenna Lewis-Dougherty', photo_url = 'https://static.wikia.nocookie.net/survivor/images/e/e4/S50_Jenna_Lewis-Dougherty.jpg/revision/latest' WHERE id = 'c06';
+UPDATE contestants SET name = 'Savannah Louie', photo_url = 'https://static.wikia.nocookie.net/survivor/images/9/91/S50_Savannah_Louie.jpg/revision/latest' WHERE id = 'c07';
+UPDATE contestants SET name = 'Ozzy Lusth', photo_url = 'https://static.wikia.nocookie.net/survivor/images/f/f6/S50_Ozzy_Lusth.jpg/revision/latest' WHERE id = 'c08';
+UPDATE contestants SET name = 'Charlie Davis', photo_url = 'https://static.wikia.nocookie.net/survivor/images/8/84/S50_Charlie_Davis.jpg/revision/latest' WHERE id = 'c09';
+UPDATE contestants SET name = 'Tiffany Ervin', photo_url = 'https://static.wikia.nocookie.net/survivor/images/e/e0/S50_Tiffany_Nicole_Ervin.jpg/revision/latest' WHERE id = 'c10';
+UPDATE contestants SET name = 'Chrissy Hofbeck', photo_url = 'https://static.wikia.nocookie.net/survivor/images/b/b3/S50_Chrissy_Hofbeck.jpg/revision/latest' WHERE id = 'c11';
+UPDATE contestants SET name = 'Kamilla Karthigesu', photo_url = 'https://static.wikia.nocookie.net/survivor/images/e/e9/S50_Kamilla_Karthigesu.jpg/revision/latest' WHERE id = 'c12';
+UPDATE contestants SET name = 'Dee Valladares', photo_url = 'https://static.wikia.nocookie.net/survivor/images/2/2b/S50_Dee_Valladares.jpg/revision/latest' WHERE id = 'c13';
+UPDATE contestants SET name = 'Coach Wade', photo_url = 'https://static.wikia.nocookie.net/survivor/images/a/a8/S50_Coach_Wade.jpg/revision/latest' WHERE id = 'c14';
+UPDATE contestants SET name = 'Mike White', photo_url = 'https://static.wikia.nocookie.net/survivor/images/a/ad/S50_Mike_White.jpg/revision/latest' WHERE id = 'c15';
+UPDATE contestants SET name = 'Jonathan Young', photo_url = 'https://static.wikia.nocookie.net/survivor/images/2/2c/S50_Jonathan_Young.jpg/revision/latest' WHERE id = 'c16';
+UPDATE contestants SET name = 'Aubry Bracco', photo_url = 'https://static.wikia.nocookie.net/survivor/images/7/73/S50_Aubry_Bracco.jpg/revision/latest' WHERE id = 'c17';
+UPDATE contestants SET name = 'Q Burdette', photo_url = 'https://static.wikia.nocookie.net/survivor/images/f/f9/S50_Q_Burdette.jpg/revision/latest' WHERE id = 'c18';
+UPDATE contestants SET name = 'Colby Donaldson', photo_url = 'https://static.wikia.nocookie.net/survivor/images/8/82/S50_Colby_Donaldson.jpg/revision/latest' WHERE id = 'c19';
+UPDATE contestants SET name = 'Kyle Fraser', photo_url = 'https://static.wikia.nocookie.net/survivor/images/d/db/S50_Kyle_Fraser.jpg/revision/latest' WHERE id = 'c20';
+UPDATE contestants SET name = 'Angelina Keeley', photo_url = 'https://static.wikia.nocookie.net/survivor/images/0/00/S50_Angelina_Keeley.jpg/revision/latest' WHERE id = 'c21';
+UPDATE contestants SET name = 'Stephenie LaGrossa Kendrick', photo_url = 'https://static.wikia.nocookie.net/survivor/images/f/f5/S50_Stephenie_LaGrossa_Kendrick.jpg/revision/latest' WHERE id = 'c22';
+UPDATE contestants SET name = 'Genevieve Mushaluk', photo_url = 'https://static.wikia.nocookie.net/survivor/images/8/82/S50_Genevieve_Mushaluk.jpg/revision/latest' WHERE id = 'c23';
+UPDATE contestants SET name = 'Rizo Velovic', photo_url = 'https://static.wikia.nocookie.net/survivor/images/8/8b/S50_Rizo_Velovic.jpg/revision/latest' WHERE id = 'c24';

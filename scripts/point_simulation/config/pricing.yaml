@@ -1,0 +1,21 @@
+# Pricing System Configuration
+# Phase 1: Initial team building under budget
+# Roster: exactly 7 players required
+
+budget: 1000000
+roster_min: 7  # Exactly 7 players required
+roster_max: 7
+
+# Price bounds (dollars)
+price_min: 100000   # Higher floor = more expensive cheapest players
+price_max: 260000
+price_increment: 2500   # Finer granularity for more unique roster combinations
+
+# Monte Carlo runs for expected points estimation
+price_estimation_runs: 2000
+
+# Price scaling: top 7 by expected points must EXCEED budget (can't own all 7 premium)
+target_top7_sum: 1200000   # 7 premium > budget - impossible to buy all top 7
+# Calibrate so ~65% of team combos are valid under budget (35% excluded; ok to have fewer viable)
+target_valid_pct: 0.65
+price_curve: 1.8  # Exponent for non-linear mapping (higher = more spread)

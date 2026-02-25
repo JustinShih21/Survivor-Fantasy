@@ -1,0 +1,94 @@
+# Survivor S50 Season Template
+# Typical 14-episode structure: ~8 pre-merge, ~6 post-merge
+# Merge typically around episode 9-10
+
+episodes:
+  - id: 1
+    phase: pre_merge
+    immunity_type: team
+    immunity_teams: 3
+    reward_type: team
+    reward_teams: 3
+    tribal: true
+  - id: 2
+    phase: pre_merge
+    immunity_type: team
+    immunity_teams: 3
+    reward_type: team
+    reward_teams: 3
+    tribal: true
+  - id: 3
+    phase: pre_merge
+    immunity_type: team
+    immunity_teams: 3
+    reward_type: team
+    reward_teams: 3
+    tribal: true
+  - id: 4
+    phase: pre_merge
+    immunity_type: team
+    immunity_teams: 3
+    reward_type: team
+    reward_teams: 3
+    tribal: true
+  - id: 5
+    phase: pre_merge
+    immunity_type: team
+    immunity_teams: 3
+    reward_type: team
+    reward_teams: 3
+    tribal: true
+  - id: 6
+    phase: pre_merge
+    immunity_type: team
+    immunity_teams: 3
+    reward_type: team
+    reward_teams: 3
+    tribal: true
+  - id: 7
+    phase: pre_merge
+    immunity_type: team
+    immunity_teams: 3
+    reward_type: team
+    reward_teams: 3
+    tribal: true
+  - id: 8
+    phase: pre_merge
+    immunity_type: team
+    immunity_teams: 3
+    reward_type: team
+    reward_teams: 3
+    tribal: true
+  - id: 9
+    phase: pre_merge
+    immunity_type: team
+    immunity_teams: 3
+    reward_type: team
+    reward_teams: 3
+    tribal: true
+    merge_after: true  # Merge happens after this episode
+  - id: 10
+    phase: post_merge
+    immunity_type: individual
+    reward_type: individual  # Often combined or individual
+    tribal: true
+  - id: 11
+    phase: post_merge
+    immunity_type: individual
+    reward_type: individual
+    tribal: true
+  - id: 12
+    phase: post_merge
+    immunity_type: individual
+    reward_type: individual
+    tribal: true
+  - id: 13
+    phase: post_merge
+    immunity_type: individual
+    reward_type: individual
+    tribal: true
+    fire_making: true  # Final 4
+  - id: 14
+    phase: post_merge
+    tribal: false  # Finale - no tribal, just FTC
+    final_tribal: true

@@ -1,0 +1,146 @@
+[
+  {
+    "id": "c01",
+    "name": "Contestant 01",
+    "starting_tribe": "Tribe A",
+    "pre_merge_price": 145000
+  },
+  {
+    "id": "c02",
+    "name": "Contestant 02",
+    "starting_tribe": "Tribe A",
+    "pre_merge_price": 127500
+  },
+  {
+    "id": "c03",
+    "name": "Contestant 03",
+    "starting_tribe": "Tribe A",
+    "pre_merge_price": 102500
+  },
+  {
+    "id": "c04",
+    "name": "Contestant 04",
+    "starting_tribe": "Tribe A",
+    "pre_merge_price": 102500
+  },
+  {
+    "id": "c05",
+    "name": "Contestant 05",
+    "starting_tribe": "Tribe A",
+    "pre_merge_price": 212500
+  },
+  {
+    "id": "c06",
+    "name": "Contestant 06",
+    "starting_tribe": "Tribe A",
+    "pre_merge_price": 100000
+  },
+  {
+    "id": "c07",
+    "name": "Contestant 07",
+    "starting_tribe": "Tribe A",
+    "pre_merge_price": 127500
+  },
+  {
+    "id": "c08",
+    "name": "Contestant 08",
+    "starting_tribe": "Tribe A",
+    "pre_merge_price": 105000
+  },
+  {
+    "id": "c09",
+    "name": "Contestant 09",
+    "starting_tribe": "Tribe B",
+    "pre_merge_price": 127500
+  },
+  {
+    "id": "c10",
+    "name": "Contestant 10",
+    "starting_tribe": "Tribe B",
+    "pre_merge_price": 142500
+  },
+  {
+    "id": "c11",
+    "name": "Contestant 11",
+    "starting_tribe": "Tribe B",
+    "pre_merge_price": 155000
+  },
+  {
+    "id": "c12",
+    "name": "Contestant 12",
+    "starting_tribe": "Tribe B",
+    "pre_merge_price": 100000
+  },
+  {
+    "id": "c13",
+    "name": "Contestant 13",
+    "starting_tribe": "Tribe B",
+    "pre_merge_price": 152500
+  },
+  {
+    "id": "c14",
+    "name": "Contestant 14",
+    "starting_tribe": "Tribe B",
+    "pre_merge_price": 100000
+  },
+  {
+    "id": "c15",
+    "name": "Contestant 15",
+    "starting_tribe": "Tribe B",
+    "pre_merge_price": 142500
+  },
+  {
+    "id": "c16",
+    "name": "Contestant 16",
+    "starting_tribe": "Tribe B",
+    "pre_merge_price": 105000
+  },
+  {
+    "id": "c17",
+    "name": "Contestant 17",
+    "starting_tribe": "Tribe C",
+    "pre_merge_price": 125000
+  },
+  {
+    "id": "c18",
+    "name": "Contestant 18",
+    "starting_tribe": "Tribe C",
+    "pre_merge_price": 100000
+  },
+  {
+    "id": "c19",
+    "name": "Contestant 19",
+    "starting_tribe": "Tribe C",
+    "pre_merge_price": 110000
+  },
+  {
+    "id": "c20",
+    "name": "Contestant 20",
+    "starting_tribe": "Tribe C",
+    "pre_merge_price": 100000
+  },
+  {
+    "id": "c21",
+    "name": "Contestant 21",
+    "starting_tribe": "Tribe C",
+    "pre_merge_price": 232500
+  },
+  {
+    "id": "c22",
+    "name": "Contestant 22",
+    "starting_tribe": "Tribe C",
+    "pre_merge_price": 100000
+  },
+  {
+    "id": "c23",
+    "name": "Contestant 23",
+    "starting_tribe": "Tribe C",
+    "pre_merge_price": 157500
+  },
+  {
+    "id": "c24",
+    "name": "Contestant 24",
+    "starting_tribe": "Tribe C",
+    "pre_merge_price": 100000
+  }
+]
