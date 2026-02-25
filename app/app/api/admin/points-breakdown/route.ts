@@ -31,8 +31,9 @@ export interface ContestantBreakdownForEpisode {
 
 /**
  * GET /api/admin/points-breakdown?episode_id=N
- * Returns for the given episode: all contestants and each contestant's point breakdown
- * from point_category_overrides only (admin updates are the sole source of points).
+ * Returns for the given episode: all contestants and each contestant's point breakdown.
+ * Primary source: contestant_episode_points (canonical). Fallback: point_category_overrides
+ * when the canonical table has no rows for this episode (e.g. before first materialize).
  */
 export async function GET(request: NextRequest) {
   const auth = await getAuthenticatedUser();
@@ -55,9 +56,12 @@ export async function GET(request: NextRequest) {
     return NextResponse.json({ error: "Valid episode_id required" }, { status: 400 });
   }
 
-  const [contestantsRes, overridesRes] = await Promise.all([
+  const [contestantsRes, pointsRes] = await Promise.all([
     admin.from("contestants").select("id, name").order("id"),
-    admin.from("point_category_overrides").select("contestant_id, episode_id, category, points").eq("episode_id", episodeId),
+    admin
+      .from("contestant_episode_points")
+      .select("contestant_id, total_points, breakdown")
+      .eq("episode_id", episodeId),
   ]);
 
   if (contestantsRes.error) {
@@ -65,7 +69,56 @@ export async function GET(request: NextRequest) {
   }
 
   const contestants = (contestantsRes.data ?? []) as { id: string; name: string }[];
-  const overrideRows = (overridesRes.data ?? []) as { contestant_id: string; episode_id: number; category: string; points: number }[];
+  const pointsRows = (pointsRes.data ?? []) as {
+    contestant_id: string;
+    total_points: number;
+    breakdown: Record<string, number>;
+  }[];
+
+  if (pointsRows.length === 0) {
+    return respondFromOverrides(admin, episodeId, contestants);
+  }
+
+  const pointsByContestant = new Map(
+    pointsRows.map((r) => [
+      r.contestant_id,
+      { total: r.total_points, breakdown: r.breakdown ?? {} },
+    ])
+  );
+
+  const breakdowns: ContestantBreakdownForEpisode[] = contestants.map((c) => {
+    const row = pointsByContestant.get(c.id);
+    const total = row?.total ?? 0;
+    const breakdown = row?.breakdown ?? {};
+    const sources: PointsBreakdownSource[] = Object.entries(breakdown).map(
+      ([label, points]) => ({ label, points, isOverride: false })
+    );
+    return { contestant_id: c.id, total, sources };
+  });
+
+  return NextResponse.json({
+    episode_id: episodeId,
+    contestants,
+    breakdowns,
+  });
+}
+
+async function respondFromOverrides(
+  admin: Awaited<ReturnType<typeof createAdminClient>>,
+  episodeId: number,
+  contestants: { id: string; name: string }[]
+) {
+  const overridesRes = await admin
+    .from("point_category_overrides")
+    .select("contestant_id, episode_id, category, points")
+    .eq("episode_id", episodeId);
+
+  const overrideRows = (overridesRes.data ?? []) as {
+    contestant_id: string;
+    episode_id: number;
+    category: string;
+    points: number;
+  }[];
 
   const overrideByContestant = new Map<string, Map<string, number>>();
   for (const row of overrideRows) {
@@ -80,7 +133,11 @@ export async function GET(request: NextRequest) {
   const breakdowns: ContestantBreakdownForEpisode[] = contestants.map((c) => {
     const overrides = overrideByContestant.get(c.id);
     const sources: PointsBreakdownSource[] = overrides
-      ? Array.from(overrides.entries()).map(([label, points]) => ({ label, points, isOverride: true }))
+      ? Array.from(overrides.entries()).map(([label, points]) => ({
+          label,
+          points,
+          isOverride: true,
+        }))
       : [];
     const total = sources.reduce((sum, s) => sum + s.points, 0);
     return { contestant_id: c.id, total, sources };

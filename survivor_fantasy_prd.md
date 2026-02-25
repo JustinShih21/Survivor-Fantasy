@@ -428,7 +428,7 @@ After each episode, contestant prices adjust based on individual performance rel
 
 - Tribe roster scoped by user + phase; pre-merge and post-merge stored separately.
 - Budget enforcement at pre-merge lock and merge repick; $1M cap.
-- Prices computed on-the-fly via `lib/prices.ts` and `/api/prices` endpoint.
+- Prices read from canonical table `contestant_episode_prices` (materialized from episode_outcomes/formula); served via `/api/prices`.
 - Eliminated contestants: price frozen, unbuyable, cannot be added to any roster.
 
 ---
