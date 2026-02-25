@@ -108,7 +108,7 @@ function LeagueCard({
         <button
           type="button"
           onClick={copyCode}
-          className="shrink-0 px-3 py-1.5 rounded-lg bg-stone-700/60 text-stone-300 text-xs font-mono hover:bg-stone-600/60 transition-colors"
+          className="shrink-0 min-h-[44px] px-3 py-2 rounded-lg bg-stone-700/60 text-stone-300 text-xs font-mono hover:bg-stone-600/60 transition-colors touch-manipulation"
           title="Copy invite code"
         >
           {copied ? "Copied!" : league.invite_code}

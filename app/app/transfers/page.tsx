@@ -17,10 +17,18 @@ export default function TransfersPage() {
   const { data, loading: appDataLoading, refetch } = useAppData();
   const scores = data?.scores ?? null;
   const contestants = data?.contestants ?? [];
-  const currentEpisode = data?.season?.current_episode ?? 1;
+  const [serverEpisode, setServerEpisode] = useState<number | null>(null);
+  const currentEpisode = serverEpisode ?? data?.season?.current_episode ?? 1;
   const captainId = (data?.captain?.picks?.[currentEpisode] ?? null) as string | null;
   const [prices, setPrices] = useState<PriceData | null>(null);
   const [pricesLoading, setPricesLoading] = useState(true);
+
+  useEffect(() => {
+    fetch("/api/season", noStore)
+      .then((r) => r.json())
+      .then((d: { current_episode?: number }) => setServerEpisode(d?.current_episode ?? 1))
+      .catch(() => setServerEpisode(null));
+  }, []);
 
   useEffect(() => {
     if (currentEpisode < 1) {
@@ -39,7 +47,12 @@ export default function TransfersPage() {
 
   const refreshAll = async () => {
     await refetch();
-    const priceRes = await fetch(`/api/prices?through=${currentEpisode}`, noStore).then((r) => r.json());
+    const seasonRes = (await fetch("/api/season", noStore).then((r) =>
+      r.json()
+    )) as { current_episode?: number };
+    const episode = Math.max(1, seasonRes?.current_episode ?? currentEpisode);
+    if (seasonRes?.current_episode != null) setServerEpisode(seasonRes.current_episode);
+    const priceRes = await fetch(`/api/prices?through=${episode}`, noStore).then((r) => r.json());
     setPrices(priceRes);
     router.refresh();
   };

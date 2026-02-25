@@ -289,7 +289,7 @@ export function TransferWindow({
       ) : null}
 
       {hasMatchingSellsAdds && (
-        <div className="flex flex-col gap-2">
+        <div className="flex flex-col gap-2 md:static sticky bottom-0 left-0 right-0 z-10 p-4 -mx-4 md:mx-0 md:p-0 bg-black/95 md:bg-transparent pb-[env(safe-area-inset-bottom)] md:pb-0">
           {isPreseason ? (
             <p className="text-sm text-amber-200/90">
               Pre-season: draft only — changes are not saved.
@@ -306,7 +306,7 @@ export function TransferWindow({
                 type="button"
                 onClick={handleTransfer}
                 disabled={loading || !canConfirm}
-                className="min-h-[44px] px-4 py-2 rounded-xl bg-orange-600 hover:bg-orange-500 text-stone-950 font-bold disabled:opacity-50 touch-manipulation transition-colors"
+                className="min-h-[44px] w-full md:w-auto px-4 py-2 rounded-xl bg-orange-600 hover:bg-orange-500 text-stone-950 font-bold disabled:opacity-50 touch-manipulation transition-colors"
               >
                 {loading ? "Processing..." : "Confirm Transfer"}
               </button>

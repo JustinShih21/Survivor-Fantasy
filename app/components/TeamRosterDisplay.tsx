@@ -94,19 +94,19 @@ function DraggableCaptainSlot({
     <div
       ref={setRef}
       style={style}
-      className={`${CARD_WIDTH} ${CARD_MIN_WIDTH} rounded-xl min-h-[188px] transition-colors overflow-hidden ${
+      className={`${CARD_WIDTH} ${CARD_MIN_WIDTH} rounded-xl min-h-[200px] md:min-h-[188px] transition-colors overflow-hidden ${
         overlay
           ? "border-2 border-orange-500 bg-orange-900/30"
           : entry
             ? "bg-transparent"
-            : "stone-outline bg-stone-800/90 texture-sandy"
+            : "stone-outline bg-stone-800/90 texture-sandy border-2 border-dashed border-stone-600 md:border-solid"
       } ${isDragging ? "opacity-60" : ""}`}
     >
       {entry ? (
         <div
           {...listeners}
           {...attributes}
-          className="cursor-grab active:cursor-grabbing touch-manipulation w-full"
+          className="cursor-grab active:cursor-grabbing touch-manipulation w-full min-h-[200px] md:min-h-[188px] flex flex-col"
         >
           <PlayerCard
             contestantId={entry.contestant_id}
@@ -124,7 +124,7 @@ function DraggableCaptainSlot({
         <div
           {...listeners}
           {...attributes}
-          className="cursor-grab active:cursor-grabbing flex items-center justify-center min-h-[188px] p-4 touch-manipulation"
+          className="cursor-grab active:cursor-grabbing flex items-center justify-center min-h-[200px] md:min-h-[188px] p-4 touch-manipulation"
         >
           <span className="text-stone-300/70 text-sm text-center">
             Drag a player here to select captain
@@ -141,12 +141,14 @@ function DraggableRosterCard({
   possessions,
   contestantTribes,
   eliminated,
+  onTapSetCaptain,
 }: {
   entry: RosterEntry;
   contestants: { id: string; name: string; pre_merge_price?: number; photo_url?: string }[];
   possessions: Record<string, Possessions>;
   contestantTribes: Record<string, string>;
   eliminated: string[];
+  onTapSetCaptain?: (contestantId: string) => void;
 }) {
   const id = `roster-${entry.contestant_id}`;
   const contestantMap = new Map(contestants.map((c) => [c.id, c]));
@@ -203,6 +205,18 @@ function DraggableRosterCard({
           isVotedOut={isVotedOut}
         />
       </div>
+      {onTapSetCaptain && !isVotedOut && (
+        <button
+          type="button"
+          onClick={(e) => {
+            e.stopPropagation();
+            onTapSetCaptain(entry.contestant_id);
+          }}
+          className="md:hidden w-full min-h-[44px] py-2 text-xs font-medium text-orange-400 hover:text-orange-300 hover:bg-stone-800/80 border-t border-stone-700/50 touch-manipulation"
+        >
+          Set as captain
+        </button>
+      )}
     </div>
   );
 }
@@ -281,24 +295,38 @@ export function TeamRosterDisplay({
 
   const sensors = useSensors(
     useSensor(PointerSensor, { activationConstraint: { distance: 8 } }),
-    useSensor(TouchSensor, { activationConstraint: { delay: 200, tolerance: 8 } })
+    useSensor(TouchSensor, { activationConstraint: { delay: 250, tolerance: 10 } })
+  );
+
+  const handleTapSetCaptain = useCallback(
+    (contestantId: string) => {
+      if (contestantId === captainId) return;
+      const name = contestantMap.get(contestantId)?.name ?? contestantId;
+      setPendingCaptain({ id: contestantId, name });
+    },
+    [captainId, contestantMap]
   );
 
   return (
     <>
       <DndContext onDragEnd={handleDragEnd} sensors={sensors}>
         <div className="space-y-6">
-          <div className="flex flex-col items-center">
+          <div className="flex flex-col items-center w-full">
             <h3 className="sand-inscription mb-2 flex items-center gap-2 justify-center">
               <span className="text-orange-400/80">★</span> Captain
             </h3>
-            <DraggableCaptainSlot
+            <div className="w-full max-w-[180px] mx-auto md:max-w-none">
+              <DraggableCaptainSlot
               entry={captainEntry}
               contestants={contestants}
               possessions={possessions}
               contestantTribes={contestantTribes}
               eliminated={eliminated}
             />
+            </div>
+            <p className="md:sr-only text-xs text-stone-400 mt-2 text-center">
+              Drop a player here or tap &quot;Set as captain&quot; below a roster player
+            </p>
           </div>
 
           <div className="flex flex-col items-center">
@@ -312,6 +340,7 @@ export function TeamRosterDisplay({
                   possessions={possessions}
                   contestantTribes={contestantTribes}
                   eliminated={eliminated}
+                  onTapSetCaptain={handleTapSetCaptain}
                 />
               ))}
             </div>

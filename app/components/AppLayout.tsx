@@ -4,6 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { AuthProvider, useAuth } from "./AuthProvider";
 import { AppDataProvider, useAppData } from "./AppDataProvider";
+import { MobileNav } from "./MobileNav";
 
 const NAV_LINKS = [
   { href: "/", label: "Home" },
@@ -79,63 +80,66 @@ function AppLayoutInner({ children }: { children: React.ReactNode }) {
       <div className="min-h-screen relative bg-black">
         <div className="tribal-bg" aria-hidden />
         <div className="fire-glimmer" aria-hidden />
-        <header className="relative z-20 border-b-2 border-orange-800/50 bg-black shadow-xl sticky top-0">
+        <header className="relative z-20 border-b-2 border-orange-800/50 bg-black shadow-xl sticky top-0 pt-[env(safe-area-inset-top)]">
           <div className="max-w-2xl mx-auto px-4 py-3">
-            <div className="flex items-center justify-between mb-3">
+            <div className="flex items-center justify-between gap-2">
               <Link
                 href="/"
-                className="text-xl font-bold text-stone-100 tracking-wide"
+                className="text-xl font-bold text-stone-100 tracking-wide shrink-0 min-h-[44px] flex items-center"
               >
                 Survivor Fantasy Team
               </Link>
-              {loading ? (
-                <div className="flex items-center gap-2" aria-label="Checking auth">
-                  <div className="w-5 h-5 border-2 border-stone-600 border-t-orange-500 rounded-full animate-spin" />
-                  <span className="text-xs text-stone-400">Loading...</span>
-                </div>
-              ) : user ? (
-                <div className="flex items-center gap-2 flex-wrap justify-end">
-                  {profile && (
-                    <>
-                      <span className="text-sm text-stone-200 font-medium shrink-0">
-                        {profile.first_name && profile.last_name
-                          ? `${profile.first_name} ${profile.last_name}`
-                          : profile.tribe_name}
-                      </span>
-                      <span className="text-stone-600 shrink-0" aria-hidden>·</span>
-                    </>
-                  )}
-                  <Link
-                    href="/profile"
-                    className="text-sm text-stone-400 hover:text-stone-200 transition-colors shrink-0"
-                  >
-                    Profile
-                  </Link>
-                  <span className="text-stone-600 shrink-0" aria-hidden>·</span>
-                  <a
-                    href="/login"
-                    className="text-sm text-stone-400 hover:text-stone-200 transition-colors shrink-0 cursor-pointer"
-                    onClick={(e) => {
-                      e.preventDefault();
-                      try {
-                        signOut();
-                      } catch {
-                        // ensure redirect even if signOut throws
-                      }
-                      window.location.href = "/login";
-                    }}
-                  >
-                    Sign out
-                  </a>
-                </div>
-              ) : null}
+              <div className="flex items-center gap-2">
+                <MobileNav />
+                {loading ? (
+                  <div className="flex items-center gap-2" aria-label="Checking auth">
+                    <div className="w-5 h-5 border-2 border-stone-600 border-t-orange-500 rounded-full animate-spin" />
+                    <span className="text-xs text-stone-400 hidden sm:inline">Loading...</span>
+                  </div>
+                ) : user ? (
+                  <div className="hidden md:flex items-center gap-2 flex-wrap justify-end">
+                    {profile && (
+                      <>
+                        <span className="text-sm text-stone-200 font-medium shrink-0">
+                          {profile.first_name && profile.last_name
+                            ? `${profile.first_name} ${profile.last_name}`
+                            : profile.tribe_name}
+                        </span>
+                        <span className="text-stone-600 shrink-0" aria-hidden>·</span>
+                      </>
+                    )}
+                    <Link
+                      href="/profile"
+                      className="text-sm text-stone-400 hover:text-stone-200 transition-colors shrink-0 min-h-[44px] flex items-center"
+                    >
+                      Profile
+                    </Link>
+                    <span className="text-stone-600 shrink-0" aria-hidden>·</span>
+                    <a
+                      href="/login"
+                      className="text-sm text-stone-400 hover:text-stone-200 transition-colors shrink-0 cursor-pointer min-h-[44px] flex items-center"
+                      onClick={(e) => {
+                        e.preventDefault();
+                        try {
+                          signOut();
+                        } catch {
+                          // ensure redirect even if signOut throws
+                        }
+                        window.location.href = "/login";
+                      }}
+                    >
+                      Sign out
+                    </a>
+                  </div>
+                ) : null}
+              </div>
             </div>
-            <nav className="flex gap-1 overflow-x-auto pb-1 -mb-1 scrollbar-hide">
+            <nav className="hidden md:flex gap-1 overflow-x-auto pb-1 -mb-1 scrollbar-hide">
               <NavLinks pathname={pathname} />
             </nav>
           </div>
         </header>
-        <main className="relative z-10 max-w-2xl mx-auto px-4 py-6">
+        <main className="relative z-10 max-w-2xl mx-auto px-4 py-6 pb-[max(1.5rem,env(safe-area-inset-bottom))]">
           {children}
         </main>
       </div>

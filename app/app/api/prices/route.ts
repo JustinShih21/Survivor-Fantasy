@@ -6,6 +6,8 @@ import contestantsSeed from "@/seed/contestants.json";
 import episodeOutcomesSeed from "@/seed/episode_outcomes.json";
 import scoringConfigSeed from "@/seed/scoring_config.json";
 
+export const dynamic = "force-dynamic";
+
 export async function GET(request: Request) {
   try {
     const supabase = await createClient();
@@ -103,15 +105,18 @@ export async function GET(request: Request) {
       priceByEpisode[ep] = episodePrices;
     }
 
-    return NextResponse.json({
-      through,
-      prices: priceByEpisode,
-      base_prices: basePrices,
-    });
+    return NextResponse.json(
+      {
+        through,
+        prices: priceByEpisode,
+        base_prices: basePrices,
+      },
+      { headers: { "Cache-Control": "no-store" } }
+    );
   } catch (err) {
     return NextResponse.json(
       { error: err instanceof Error ? err.message : "Unknown error" },
-      { status: 500 }
+      { status: 500, headers: { "Cache-Control": "no-store" } }
     );
   }
 }

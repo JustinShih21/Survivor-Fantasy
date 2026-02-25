@@ -229,11 +229,11 @@ export function PlayerDetailModal({
 }: PlayerDetailModalProps) {
   return (
     <div
-      className="fixed inset-0 z-50 flex items-start justify-center pt-28 pb-4 px-4 bg-black/70 overflow-y-auto"
+      className="fixed inset-0 z-50 flex items-start justify-center pt-4 pb-[env(safe-area-inset-bottom)] px-0 md:pt-28 md:pb-4 md:px-4 bg-black/70 overflow-y-auto"
       onClick={onClose}
     >
       <div
-        className="w-full max-w-md max-h-[calc(100vh-8rem)] overflow-y-auto rounded-2xl shadow-2xl stone-outline texture-sandy bg-stone-900 shrink-0"
+        className="w-full min-h-[100vh] md:min-h-0 max-w-md max-h-[calc(100vh-2rem)] md:max-h-[calc(100vh-8rem)] overflow-y-auto rounded-none md:rounded-2xl shadow-2xl stone-outline texture-sandy bg-stone-900 shrink-0"
         onClick={(e) => e.stopPropagation()}
       >
         <div className="relative">
@@ -251,7 +251,7 @@ export function PlayerDetailModal({
           <button
             type="button"
             onClick={onClose}
-            className="absolute top-3 right-3 p-2 rounded-full bg-black/60 text-stone-200 hover:bg-black/80 transition-colors"
+            className="absolute top-3 right-3 w-11 h-11 flex items-center justify-center rounded-full bg-black/60 text-stone-200 hover:bg-black/80 transition-colors touch-manipulation"
             aria-label="Close"
           >
             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">

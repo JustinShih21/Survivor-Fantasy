@@ -101,7 +101,7 @@ export default function PointsPage() {
           type="button"
           onClick={() => setViewingEpisode((e) => Math.max(1, e - 1))}
           disabled={viewingEpisode <= 1}
-          className="p-2 rounded-lg bg-stone-700/80 text-stone-200 hover:bg-stone-600/80 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+          className="min-h-[44px] min-w-[44px] flex items-center justify-center p-2 rounded-lg bg-stone-700/80 text-stone-200 hover:bg-stone-600/80 disabled:opacity-40 disabled:cursor-not-allowed transition-colors touch-manipulation"
           aria-label="Previous week"
         >
           <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -120,7 +120,7 @@ export default function PointsPage() {
           type="button"
           onClick={() => setViewingEpisode((e) => Math.min(maxViewableEpisode, e + 1))}
           disabled={viewingEpisode >= maxViewableEpisode}
-          className="p-2 rounded-lg bg-stone-700/80 text-stone-200 hover:bg-stone-600/80 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+          className="min-h-[44px] min-w-[44px] flex items-center justify-center p-2 rounded-lg bg-stone-700/80 text-stone-200 hover:bg-stone-600/80 disabled:opacity-40 disabled:cursor-not-allowed transition-colors touch-manipulation"
           aria-label="Next week"
         >
           <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
