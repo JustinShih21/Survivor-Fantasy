@@ -84,7 +84,7 @@ export async function computeStandings(
     const list = entriesByUser.get(row.user_id) ?? [];
     list.push({
       contestant_id: row.contestant_id,
-      is_wild_card: row.is_wild_card,
+      is_wild_card: row.is_wild_card ?? false,
       added_at_episode: row.added_at_episode ?? 1,
       removed_at_episode: row.removed_at_episode ?? null,
     });
