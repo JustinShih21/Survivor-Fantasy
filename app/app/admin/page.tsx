@@ -745,6 +745,8 @@ export default function AdminPage() {
   const [currentEpisode, setCurrentEpisode] = useState<number>(1);
   const [saving, setSaving] = useState(false);
   const [message, setMessage] = useState<string | null>(null);
+  const [materializing, setMaterializing] = useState(false);
+  const [materializeMessage, setMaterializeMessage] = useState<string | null>(null);
 
   useEffect(() => {
     fetch("/api/season")
@@ -771,6 +773,28 @@ export default function AdminPage() {
       setMessage(e instanceof Error ? e.message : "Failed to update.");
     } finally {
       setSaving(false);
+    }
+  };
+
+  const handleMaterialize = async () => {
+    setMaterializing(true);
+    setMaterializeMessage(null);
+    try {
+      const res = await fetch("/api/admin/materialize", { method: "POST" });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) {
+        throw new Error(typeof data.error === "string" ? data.error : `Failed: ${res.status}`);
+      }
+      const prices = data.prices as { episodeCount?: number; rowCount?: number } | undefined;
+      const points = data.points as { episodeCount?: number; rowCount?: number } | undefined;
+      const parts: string[] = [];
+      if (prices) parts.push(`Prices: ${prices.rowCount ?? 0} rows for ${prices.episodeCount ?? 0} episode(s)`);
+      if (points) parts.push(`Points: ${points.rowCount ?? 0} rows for ${points.episodeCount ?? 0} episode(s)`);
+      setMaterializeMessage(parts.length ? parts.join(". ") : "Done.");
+    } catch (e) {
+      setMaterializeMessage(e instanceof Error ? e.message : "Materialize failed.");
+    } finally {
+      setMaterializing(false);
     }
   };
 
@@ -810,6 +834,28 @@ export default function AdminPage() {
           </button>
           {message && (
             <span className="text-sm text-stone-400">{message}</span>
+          )}
+        </div>
+      </section>
+
+      <section className="p-4 rounded-xl texture-sandy bg-stone-800/90 stone-outline">
+        <h2 className="text-lg font-semibold text-stone-200 mb-3">
+          Materialize prices &amp; points
+        </h2>
+        <p className="text-sm text-stone-400 mb-3">
+          Run this after changing current episode, point overrides, or contestant base prices. It fills the canonical tables (contestant_episode_prices, contestant_episode_points) so Stats, Transfers, Points, and Leaderboard all show the same data. Run once after running the migration if the new tables are empty.
+        </p>
+        <div className="flex flex-wrap items-center gap-3">
+          <button
+            type="button"
+            onClick={handleMaterialize}
+            disabled={materializing}
+            className="px-4 py-2 rounded bg-amber-600 text-white text-sm font-medium hover:bg-amber-500 disabled:opacity-50"
+          >
+            {materializing ? "Running…" : "Materialize prices & points"}
+          </button>
+          {materializeMessage && (
+            <span className="text-sm text-stone-400">{materializeMessage}</span>
           )}
         </div>
       </section>

@@ -3,6 +3,7 @@ import { createClient } from "@/lib/supabase/server";
 import { getAuthenticatedUser } from "@/lib/getUser";
 import { isAdmin } from "@/lib/admin";
 import { createAdminClient } from "@/lib/supabase/admin";
+import { materializePricesForEpisodes } from "@/lib/materializePrices";
 
 export const dynamic = "force-dynamic";
 
@@ -47,6 +48,12 @@ export async function POST(request: NextRequest) {
 
     if (error) {
       return NextResponse.json({ error: error.message }, { status: 500 });
+    }
+
+    try {
+      await materializePricesForEpisodes(episode, supabaseAdmin);
+    } catch {
+      // non-fatal: canonical table may not exist yet
     }
 
     return NextResponse.json({ current_episode: episode });

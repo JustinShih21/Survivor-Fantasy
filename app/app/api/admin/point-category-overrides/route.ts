@@ -3,6 +3,7 @@ import { getAuthenticatedUser } from "@/lib/getUser";
 import { isAdmin } from "@/lib/admin";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { POINT_BREAKDOWN_CATEGORIES } from "@/lib/scoring";
+import { materializePointsForEpisode } from "@/lib/materializePoints";
 
 export const dynamic = "force-dynamic";
 
@@ -102,6 +103,11 @@ export async function POST(request: NextRequest) {
       if (error) {
         return NextResponse.json({ error: error.message }, { status: 500 });
       }
+      try {
+        await materializePointsForEpisode(episode_id, admin);
+      } catch {
+        // non-fatal: canonical table may not exist yet
+      }
       return NextResponse.json({ contestant_id, episode_id, category, points: null });
     }
 
@@ -116,6 +122,11 @@ export async function POST(request: NextRequest) {
 
     if (error) {
       return NextResponse.json({ error: error.message }, { status: 500 });
+    }
+    try {
+      await materializePointsForEpisode(episode_id, admin);
+    } catch {
+      // non-fatal: canonical table may not exist yet
     }
     return NextResponse.json(data);
   } catch (err) {
@@ -151,6 +162,15 @@ export async function DELETE(request: NextRequest) {
     if (error) {
       return NextResponse.json({ error: error.message }, { status: 500 });
     }
+    const { data: seasonRow } = await admin.from("season_state").select("current_episode").eq("id", "current").single();
+    const currentEpisode = Math.max(1, (seasonRow as { current_episode?: number } | null)?.current_episode ?? 1);
+    for (let ep = 1; ep <= currentEpisode; ep++) {
+      try {
+        await materializePointsForEpisode(ep, admin);
+      } catch {
+        // non-fatal
+      }
+    }
     return NextResponse.json({ ok: true, cleared: "all" });
   }
 
@@ -181,6 +201,11 @@ export async function DELETE(request: NextRequest) {
 
   if (error) {
     return NextResponse.json({ error: error.message }, { status: 500 });
+  }
+  try {
+    await materializePointsForEpisode(ep, admin);
+  } catch {
+    // non-fatal
   }
   return NextResponse.json({ ok: true });
 }

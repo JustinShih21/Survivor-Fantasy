@@ -1,6 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getAuthenticatedUser } from "@/lib/getUser";
-import { getPricesForEpisode } from "@/lib/prices";
 import contestantsSeed from "@/seed/contestants.json";
 
 const BUDGET = 1_000_000;
@@ -78,14 +77,26 @@ export async function POST(request: NextRequest) {
     }
 
     // Validate adds: not eliminated, not already on roster
-    const contestants = contestantsSeed as { id: string; starting_tribe: string; pre_merge_price: number }[];
+    const [contestantsRes, pricesRes] = await Promise.all([
+      supabase.from("contestants").select("id, starting_tribe, pre_merge_price").order("id"),
+      supabase
+        .from("contestant_episode_prices")
+        .select("contestant_id, price")
+        .eq("episode_id", current_episode),
+    ]);
+    const contestants =
+      (contestantsRes.data ?? []).length > 0
+        ? (contestantsRes.data ?? []) as { id: string; starting_tribe: string; pre_merge_price: number }[]
+        : (contestantsSeed as { id: string; starting_tribe: string; pre_merge_price: number }[]);
     const tribeMap = new Map(contestants.map((c) => [c.id, c.starting_tribe]));
 
-    // Use dynamic prices (same as frontend) for budget validation
     const priceMap = new Map<string, number>();
-    const episodePrices = await getPricesForEpisode(current_episode);
-    for (const [cid, price] of Object.entries(episodePrices)) {
-      priceMap.set(cid, price);
+    for (const c of contestants) {
+      priceMap.set(c.id, c.pre_merge_price);
+    }
+    for (const row of pricesRes.data ?? []) {
+      const r = row as { contestant_id: string; price: number };
+      priceMap.set(r.contestant_id, r.price);
     }
 
     for (const add of adds) {

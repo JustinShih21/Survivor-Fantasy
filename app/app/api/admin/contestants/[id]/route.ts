@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { getAuthenticatedUser } from "@/lib/getUser";
 import { isAdmin } from "@/lib/admin";
 import { createAdminClient } from "@/lib/supabase/admin";
+import { materializePricesForEpisodes } from "@/lib/materializePrices";
 
 export const dynamic = "force-dynamic";
 
@@ -94,6 +95,17 @@ export async function PATCH(
       }
       return NextResponse.json({ error: error.message }, { status: 500 });
     }
+
+    if (updates.pre_merge_price !== undefined) {
+      try {
+        const { data: seasonRow } = await admin.from("season_state").select("current_episode").eq("id", "current").single();
+        const currentEpisode = Math.max(1, (seasonRow as { current_episode?: number } | null)?.current_episode ?? 1);
+        await materializePricesForEpisodes(currentEpisode, admin);
+      } catch {
+        // non-fatal
+      }
+    }
+
     return NextResponse.json(data);
   } catch (err) {
     return NextResponse.json(

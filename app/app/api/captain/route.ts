@@ -1,6 +1,10 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getAuthenticatedUser } from "@/lib/getUser";
 
+export const dynamic = "force-dynamic";
+
+const NO_STORE = { headers: { "Cache-Control": "no-store" } as HeadersInit };
+
 export async function GET() {
   const auth = await getAuthenticatedUser();
   if (!auth) {
@@ -14,7 +18,7 @@ export async function GET() {
   ]);
 
   if (picksError) {
-    return NextResponse.json({ error: picksError.message }, { status: 500 });
+    return NextResponse.json({ error: picksError.message }, { status: 500, ...NO_STORE });
   }
 
   const picks = (picksData ?? []).reduce(
@@ -27,7 +31,7 @@ export async function GET() {
 
   const currentEpisode = seasonData?.current_episode ?? 1;
   if (picks[currentEpisode]) {
-    return NextResponse.json({ picks });
+    return NextResponse.json({ picks }, NO_STORE);
   }
 
   // Auto-assign captain for current episode if none set: use first current roster member
@@ -53,7 +57,7 @@ export async function GET() {
     picks[currentEpisode] = firstEntry.contestant_id;
   }
 
-  return NextResponse.json({ picks });
+  return NextResponse.json({ picks }, NO_STORE);
 }
 
 export async function POST(request: NextRequest) {

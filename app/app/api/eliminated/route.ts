@@ -1,6 +1,10 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 
+export const dynamic = "force-dynamic";
+
+const NO_STORE = { headers: { "Cache-Control": "no-store" } as HeadersInit };
+
 export async function GET(request: NextRequest) {
   const supabase = await createClient();
   const { searchParams } = new URL(request.url);
@@ -13,7 +17,7 @@ export async function GET(request: NextRequest) {
     .order("episode_id");
 
   if (error) {
-    return NextResponse.json({ error: error.message }, { status: 500 });
+    return NextResponse.json({ error: error.message }, { status: 500, ...NO_STORE });
   }
 
   const eliminated = new Set<string>();
@@ -22,5 +26,5 @@ export async function GET(request: NextRequest) {
     if (votedOut) eliminated.add(votedOut);
   }
 
-  return NextResponse.json({ eliminated: Array.from(eliminated) });
+  return NextResponse.json({ eliminated: Array.from(eliminated) }, NO_STORE);
 }

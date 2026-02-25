@@ -1,108 +1,55 @@
 import { NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
-import { calculateContestantEpisodeBreakdown } from "@/lib/scoring";
-import type { EpisodeOutcome, ScoringConfig } from "@/lib/scoring";
-import contestantsSeed from "@/seed/contestants.json";
-import episodeOutcomesSeed from "@/seed/episode_outcomes.json";
-import scoringConfigSeed from "@/seed/scoring_config.json";
 
 export const dynamic = "force-dynamic";
 
+/**
+ * GET /api/prices?through=N
+ * Reads from canonical contestant_episode_prices. Builds same response shape as before.
+ */
 export async function GET(request: Request) {
   try {
     const supabase = await createClient();
     const { searchParams } = new URL(request.url);
     const through = Math.max(1, parseInt(searchParams.get("through") ?? "1", 10));
 
-    const [contestantsRes, outcomesRes, configRes] = await Promise.all([
-      supabase.from("contestants").select("id, pre_merge_price").order("id"),
-      supabase.from("episode_outcomes").select("episode_id, outcome").order("episode_id").lte("episode_id", through),
-      supabase.from("scoring_config").select("config").eq("id", "default").single(),
-    ]);
+    const { data: priceRows, error } = await supabase
+      .from("contestant_episode_prices")
+      .select("episode_id, contestant_id, price, price_change")
+      .lte("episode_id", through)
+      .order("episode_id")
+      .order("contestant_id");
 
-    const useSeed =
-      contestantsRes.error ||
-      outcomesRes.error ||
-      configRes.error ||
-      !configRes.data?.config;
+    if (error) {
+      return NextResponse.json(
+        { error: error.message },
+        { status: 500, headers: { "Cache-Control": "no-store" } }
+      );
+    }
 
-    const contestants = useSeed
-      ? (contestantsSeed as { id: string; pre_merge_price: number }[]).map(
-          (c) => ({ id: c.id, pre_merge_price: c.pre_merge_price })
-        )
-      : (contestantsRes.data ?? []);
-    const outcomes = useSeed
-      ? (episodeOutcomesSeed as EpisodeOutcome[]).filter(
-          (ep) => (ep.episode_id ?? 0) <= through
-        )
-      : (outcomesRes.data ?? []).map((r) => ({
-          ...(r.outcome as Record<string, unknown>),
-          episode_id: r.episode_id,
-        })) as EpisodeOutcome[];
-    const scoringConfig = (useSeed
-      ? scoringConfigSeed
-      : configRes.data?.config) as ScoringConfig;
+    const priceByEpisode: Record<
+      number,
+      Record<string, { price: number; change?: number }>
+    > = {};
+    const basePrices: Record<string, number> = {};
 
-    const eliminated = new Set<string>();
-    const priceByEpisode: Record<number, Record<string, { price: number; change?: number }>> = {};
-    const basePrices = Object.fromEntries(
-      contestants.map((c) => [c.id, c.pre_merge_price as number])
-    );
-
-    for (let ep = 1; ep <= through; ep++) {
-      const outcome = outcomes.find((o) => o.episode_id === ep);
-      if (!outcome) continue;
-
-      const votedOut = outcome.voted_out as string | null;
-      if (votedOut) eliminated.add(votedOut);
-
-      const active = outcome.active_contestants ?? [];
-      const avgPts =
-        active.length > 0
-          ? active.reduce(
-              (sum, cid) =>
-                sum +
-                calculateContestantEpisodeBreakdown(cid, outcome, scoringConfig)
-                  .total,
-              0
-            ) / active.length
-          : 0;
-
-      const episodePrices: Record<string, { price: number; change?: number }> = {};
-      const prevEpPrices = priceByEpisode[ep - 1];
-
-      for (const c of contestants) {
-        const cid = c.id;
-        const basePrice = basePrices[cid] ?? 150000;
-
-        if (eliminated.has(cid)) {
-          // Voted-out players keep their last price for selling (you can still sell them for their value)
-          const prev = prevEpPrices?.[cid]?.price ?? basePrice;
-          episodePrices[cid] = { price: prev, change: 0 };
-          continue;
-        }
-
-        if (!active.includes(cid)) {
-          const prev = prevEpPrices?.[cid]?.price ?? basePrice;
-          episodePrices[cid] = { price: prev, change: 0 };
-          continue;
-        }
-
-        const { total: pts } = calculateContestantEpisodeBreakdown(
-          cid,
-          outcome,
-          scoringConfig
-        );
-        const prevPrice = prevEpPrices?.[cid]?.price ?? basePrice;
-        const perfRatio = avgPts !== 0 ? (pts - avgPts) / Math.abs(avgPts) : 0;
-        const adjustment = Math.round(prevPrice * 0.03 * Math.max(-1, Math.min(1, perfRatio)));
-        const newPrice = Math.max(50000, Math.min(300000, prevPrice + adjustment));
-        const rounded = Math.round(newPrice / 5000) * 5000;
-
-        episodePrices[cid] = { price: rounded, change: rounded - prevPrice };
+    for (const row of priceRows ?? []) {
+      const r = row as {
+        episode_id: number;
+        contestant_id: string;
+        price: number;
+        price_change: number | null;
+      };
+      if (!priceByEpisode[r.episode_id]) {
+        priceByEpisode[r.episode_id] = {};
       }
-
-      priceByEpisode[ep] = episodePrices;
+      priceByEpisode[r.episode_id][r.contestant_id] = {
+        price: r.price,
+        change: r.price_change ?? undefined,
+      };
+      if (r.episode_id === 1) {
+        basePrices[r.contestant_id] = r.price;
+      }
     }
 
     return NextResponse.json(

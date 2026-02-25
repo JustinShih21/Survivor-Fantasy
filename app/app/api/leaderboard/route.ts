@@ -18,8 +18,11 @@ export async function GET() {
 
   const standings = await computeStandings(allUserIds);
 
-  return NextResponse.json({
-    standings,
-    current_user_id: user_id,
-  });
+  return NextResponse.json(
+    {
+      standings,
+      current_user_id: user_id,
+    },
+    { headers: { "Cache-Control": "no-store" } }
+  );
 }
