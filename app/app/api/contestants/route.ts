@@ -16,17 +16,27 @@ export async function GET() {
         .select("id, name, starting_tribe, pre_merge_price, photo_url")
         .order("id");
       if (fallbackRes.error || !fallbackRes.data?.length) {
-        return NextResponse.json(contestantsSeed as Record<string, unknown>[]);
+        return NextResponse.json(contestantsSeed as Record<string, unknown>[], {
+          headers: { "Cache-Control": "no-store" },
+        });
       }
-      return NextResponse.json(fallbackRes.data);
+      return NextResponse.json(fallbackRes.data, {
+        headers: { "Cache-Control": "no-store" },
+      });
     }
 
     if (!data || data.length === 0) {
-      return NextResponse.json(contestantsSeed as Record<string, unknown>[]);
+      return NextResponse.json(contestantsSeed as Record<string, unknown>[], {
+        headers: { "Cache-Control": "no-store" },
+      });
     }
 
-    return NextResponse.json(data);
+    return NextResponse.json(data, {
+      headers: { "Cache-Control": "no-store" },
+    });
   } catch {
-    return NextResponse.json(contestantsSeed as Record<string, unknown>[]);
+    return NextResponse.json(contestantsSeed as Record<string, unknown>[], {
+      headers: { "Cache-Control": "no-store" },
+    });
   }
 }

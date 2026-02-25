@@ -126,7 +126,7 @@ export function PlayerDetailContent({
                     content={({ active, payload }) => {
                       if (!active || !payload?.length) return null;
                       const p = payload[0];
-                      const subject = p.name ?? (p.payload?.subject as string);
+                      const subject = (p.payload?.subject as string) ?? p.name;
                       const value = typeof p.value === "number" ? p.value : (p.payload?.value as number);
                       return (
                         <div className="rounded-lg bg-stone-800 border border-stone-600 px-3 py-2 text-sm text-stone-100 shadow-xl">

@@ -32,7 +32,7 @@ export interface ContestantStats {
   physicality?: number;
 }
 
-const CACHE_CONTROL = "public, s-maxage=60, stale-while-revalidate=120";
+const CACHE_CONTROL = "no-store";
 
 function bucketCategory(label: string, points: number): Partial<Record<keyof ContestantStats, number>> {
   const lower = label.toLowerCase();
