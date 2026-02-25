@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { BudgetBar } from "./BudgetBar";
 import { ContestantCard } from "./ContestantCard";
 import { getTribeDisplayName } from "@/lib/tribes";
+import { useAppData } from "@/components/AppDataProvider";
 
 const BUDGET = 1_000_000;
 const ROSTER_SIZE = 7;
@@ -33,6 +34,7 @@ function groupByTribe(contestants: Contestant[]) {
 
 export function TribeBuilder() {
   const router = useRouter();
+  const { refetch } = useAppData();
   const [contestants, setContestants] = useState<Contestant[]>([]);
   const [selection, setSelection] = useState<Selection[]>([]);
   const [loading, setLoading] = useState(true);
@@ -113,6 +115,7 @@ export function TribeBuilder() {
         throw new Error(res.ok ? "Invalid response" : `Request failed (${res.status})`);
       }
       if (!res.ok) throw new Error(data.error ?? "Failed to submit");
+      await refetch();
       router.refresh();
       router.push("/pick-team");
     } catch (err) {

@@ -13,6 +13,8 @@ export default function PickTeamPage() {
   const captainId = (data?.captain?.picks?.[currentEpisode] ?? null) as string | null;
   const [eliminated, setEliminated] = useState<string[]>([]);
   const [scoresForEpisode, setScoresForEpisode] = useState(data?.scores ?? null);
+  const [refetchedOnce, setRefetchedOnce] = useState(false);
+  const [refetchingEmpty, setRefetchingEmpty] = useState(false);
 
   useEffect(() => {
     if (data?.scores) {
@@ -45,7 +47,24 @@ export default function PickTeamPage() {
     });
   };
 
-  if (loading) {
+  const entries = (scoresForEpisode ?? scores)?.entries ?? [];
+  const showEmptyState = entries.length === 0;
+
+  useEffect(() => {
+    if (!showEmptyState || refetchedOnce || loading) return;
+    setRefetchedOnce(true);
+    setRefetchingEmpty(true);
+    refetch()
+      .then(() =>
+        fetch(`/api/scores?through=${Math.max(1, currentEpisode)}`)
+          .then((r) => r.json())
+          .then(setScoresForEpisode)
+          .catch(() => {})
+      )
+      .finally(() => setRefetchingEmpty(false));
+  }, [showEmptyState, refetchedOnce, loading, refetch, currentEpisode]);
+
+  if (loading || refetchingEmpty) {
     return (
       <div className="flex justify-center py-12">
         <span className="text-stone-300/80">Loading...</span>
@@ -53,7 +72,7 @@ export default function PickTeamPage() {
     );
   }
 
-  if (!(scoresForEpisode ?? scores)?.entries?.length) {
+  if (showEmptyState) {
     return (
       <div className="space-y-6">
         <h1 className="text-2xl font-bold text-stone-100">Pick Team</h1>
@@ -78,7 +97,7 @@ export default function PickTeamPage() {
 
       <div className="p-6 rounded-2xl">
         <TeamRosterDisplay
-          entries={(scoresForEpisode ?? scores)?.entries ?? []}
+          entries={entries}
           contestants={contestants}
           currentEpisode={currentEpisode}
           captainId={captainId}
