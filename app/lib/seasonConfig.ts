@@ -57,3 +57,37 @@ function getDefaultFirstEpisodeAirtime(): Date {
 }
 
 export const FIRST_EPISODE_AIRTIME: Date = getDefaultFirstEpisodeAirtime();
+
+/**
+ * Next episode airtime: next Wednesday at 8pm America/Los_Angeles.
+ * After 8pm Wednesday passes, returns the following Wednesday 8pm (weekly reset).
+ */
+export function getNextEpisodeAirtime(): Date {
+  const now = new Date();
+  const dateF = new Intl.DateTimeFormat("en-CA", {
+    timeZone: LA,
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+  });
+  const dateParts = dateF.formatToParts(now);
+  const y = parseInt(dateParts.find((p) => p.type === "year")!.value, 10);
+  const m = parseInt(dateParts.find((p) => p.type === "month")!.value, 10);
+  const d = parseInt(dateParts.find((p) => p.type === "day")!.value, 10);
+  const hour = parseInt(
+    new Intl.DateTimeFormat("en-US", { timeZone: LA, hour: "numeric", hour12: false }).format(now),
+    10
+  );
+  // weekday: 0=Sun, 3=Wed, 6=Sat
+  const weekday = new Date(y, m - 1, d).getDay();
+  let daysToAdd: number;
+  if (weekday === 3) {
+    daysToAdd = hour >= 20 ? 7 : 0;
+  } else if (weekday < 3) {
+    daysToAdd = 3 - weekday;
+  } else {
+    daysToAdd = 10 - weekday;
+  }
+  const target = new Date(y, m - 1, d + daysToAdd);
+  return dateAt8pmPST(target.getFullYear(), target.getMonth() + 1, target.getDate());
+}

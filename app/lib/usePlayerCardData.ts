@@ -1,5 +1,6 @@
 "use client";
 
+import { useMemo } from "react";
 import useSWR from "swr";
 import type { ContestantStats } from "@/app/api/stats/route";
 
@@ -112,6 +113,8 @@ export interface UsePlayerCardDataResult {
   loading: boolean;
   error: string | null;
   refetch: () => Promise<void>;
+  /** Stable primitive for effect deps; same as data?.season?.current_episode ?? 1 */
+  currentEpisode: number;
 }
 
 /**
@@ -143,19 +146,21 @@ export function usePlayerCardData(): UsePlayerCardDataResult {
 
   const loading = scoresLoading || statsLoading || seasonLoading || captainLoading;
 
-  const data =
-    scores !== undefined && season !== undefined && captain !== undefined
-      ? {
-          scores: scores ?? null,
-          contestants: statsToContestants(stats),
-          season: { current_episode: season?.current_episode ?? 1 },
-          captain: { picks: captain?.picks ?? {} },
-        }
-      : null;
+  const currentEpisode = season?.current_episode ?? 1;
+
+  const data = useMemo(() => {
+    if (scores === undefined || season === undefined || captain === undefined) return null;
+    return {
+      scores: scores ?? null,
+      contestants: statsToContestants(stats),
+      season: { current_episode: season?.current_episode ?? 1 },
+      captain: { picks: captain?.picks ?? {} },
+    };
+  }, [scores, stats, season, captain]);
 
   const refetch = async () => {
     await Promise.all([mutateScores(), mutateStats(), mutateSeason(), mutateCaptain()]);
   };
 
-  return { data, loading, error: null, refetch };
+  return { data, loading, error: null, refetch, currentEpisode };
 }

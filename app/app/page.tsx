@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import { TribeBuilder } from "@/components/TribeBuilder";
-import { FIRST_EPISODE_AIRTIME } from "@/lib/seasonConfig";
+import { getNextEpisodeAirtime } from "@/lib/seasonConfig";
 import { useAppData } from "@/components/AppDataProvider";
 import type { ContestantPointsSummary } from "@/lib/scoring";
 
@@ -71,14 +71,14 @@ function getTimeLeft(until: Date): { days: number; hours: number; minutes: numbe
   return { days, hours, minutes, seconds, done: false };
 }
 
-function CountdownToFirstEpisode() {
-  const [timeLeft, setTimeLeft] = useState(() => getTimeLeft(FIRST_EPISODE_AIRTIME));
+function CountdownToNextEpisode() {
+  const [timeLeft, setTimeLeft] = useState(() => getTimeLeft(getNextEpisodeAirtime()));
 
   useEffect(() => {
     const interval = setInterval(() => {
-      const next = getTimeLeft(FIRST_EPISODE_AIRTIME);
+      const target = getNextEpisodeAirtime();
+      const next = getTimeLeft(target);
       setTimeLeft(next);
-      if (next.done) clearInterval(interval);
     }, 1000);
     return () => clearInterval(interval);
   }, []);
@@ -86,7 +86,7 @@ function CountdownToFirstEpisode() {
   return (
     <div className="p-4 rounded-xl texture-sandy bg-stone-800/80 stone-outline text-center">
       <h3 className="text-sm font-semibold text-stone-200/90 mb-2">
-        First episode
+        Next episode
       </h3>
       {timeLeft.done ? (
         <p className="text-lg font-bold text-orange-400">00:00:00</p>
@@ -96,7 +96,7 @@ function CountdownToFirstEpisode() {
         </p>
       )}
       <p className="text-xs text-stone-300/70 mt-1">
-        {timeLeft.done ? "Season starts!" : "Until first episode"}
+        {timeLeft.done ? "Tune in!" : "Until next episode (Wed 8pm PST)"}
       </p>
     </div>
   );
@@ -127,7 +127,7 @@ export default function Home() {
   if (!hasTribe) {
     return (
       <div className="space-y-6">
-        <CountdownToFirstEpisode />
+        <CountdownToNextEpisode />
         <div className="text-center">
           <h1 className="text-2xl font-bold text-stone-100">Build Your Tribe</h1>
           <p className="text-stone-300/80 text-sm mt-1">
@@ -142,7 +142,7 @@ export default function Home() {
 
   return (
     <div className="space-y-6">
-      <CountdownToFirstEpisode />
+      <CountdownToNextEpisode />
       <div className="text-center">
         <h1 className="text-2xl font-bold text-stone-100">Your Tribe</h1>
         <p className="text-stone-300/70 text-sm mt-1">

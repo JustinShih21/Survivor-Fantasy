@@ -5,24 +5,18 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { TransferWindow } from "@/components/TransferWindow";
 import { usePlayerCardData } from "@/lib/usePlayerCardData";
-
-const noStore = { cache: "no-store" as RequestCache };
-
-interface PriceData {
-  prices: Record<number, Record<string, { price: number; change?: number }>>;
-}
+import { usePrices } from "@/lib/usePrices";
 
 export default function TransfersPage() {
   const router = useRouter();
-  const { data, loading: appDataLoading, refetch } = usePlayerCardData();
+  const { data, loading: appDataLoading, refetch, currentEpisode: hookEpisode } = usePlayerCardData();
+  const effectiveEpisode = Math.max(1, hookEpisode);
+  const { prices, loading: pricesLoading, refetch: refetchPrices } = usePrices(effectiveEpisode);
+
   const scores = data?.scores ?? null;
   const contestants = data?.contestants ?? [];
-  const [serverEpisode, setServerEpisode] = useState<number | null>(null);
-  const currentEpisode = serverEpisode ?? data?.season?.current_episode ?? 1;
-  const effectiveEpisode = Math.max(1, currentEpisode);
+  const currentEpisode = hookEpisode;
   const captainId = (data?.captain?.picks?.[effectiveEpisode] ?? null) as string | null;
-  const [prices, setPrices] = useState<PriceData | null>(null);
-  const [pricesLoading, setPricesLoading] = useState(true);
   const [refetchedOnce, setRefetchedOnce] = useState(false);
   const [refetchingEmpty, setRefetchingEmpty] = useState(false);
 
@@ -36,48 +30,11 @@ export default function TransfersPage() {
     refetch().finally(() => setRefetchingEmpty(false));
   }, [showEmptyState, refetchedOnce, appDataLoading, refetch]);
 
-  useEffect(() => {
-    fetch("/api/season", noStore)
-      .then((r) => r.json())
-      .then((d: { current_episode?: number }) => setServerEpisode(d?.current_episode ?? 1))
-      .catch(() => setServerEpisode(null));
-  }, []);
-
-  // Refetch prices when episode changes or when app-data is refreshed (so Transfers stays in sync with Stats)
-  useEffect(() => {
-    if (currentEpisode < 1) {
-      queueMicrotask(() => setPricesLoading(false));
-      return;
-    }
-    let cancelled = false;
-    setPricesLoading(true);
-    fetch(`/api/prices?through=${Math.max(1, currentEpisode)}`, noStore)
-      .then((r) => r.json())
-      .then((res) => {
-        if (!cancelled) setPrices(res);
-      })
-      .catch(() => {
-        if (!cancelled) setPrices(null);
-      })
-      .finally(() => {
-        if (!cancelled) setPricesLoading(false);
-      });
-    return () => {
-      cancelled = true;
-    };
-  }, [currentEpisode, data]);
-
   const loading = appDataLoading || pricesLoading || refetchingEmpty;
 
   const refreshAll = async () => {
     await refetch();
-    const seasonRes = (await fetch("/api/season", noStore).then((r) =>
-      r.json()
-    )) as { current_episode?: number };
-    const episode = Math.max(1, seasonRes?.current_episode ?? currentEpisode);
-    if (seasonRes?.current_episode != null) setServerEpisode(seasonRes.current_episode);
-    const priceRes = await fetch(`/api/prices?through=${episode}`, noStore).then((r) => r.json());
-    setPrices(priceRes);
+    await refetchPrices();
     router.refresh();
   };
 
