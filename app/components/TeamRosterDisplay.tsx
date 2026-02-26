@@ -237,6 +237,9 @@ export function TeamRosterDisplay({
   } | null>(null);
   const [loading, setLoading] = useState(false);
 
+  /** Captain is always for at least episode 1 (season 0 = pre-season, still pick for ep 1). */
+  const effectiveEpisode = Math.max(1, currentEpisode);
+
   const captainEntry = captainId
     ? entries.find((e) => e.contestant_id === captainId) ?? null
     : null;
@@ -278,7 +281,7 @@ export function TeamRosterDisplay({
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          episode_id: currentEpisode,
+          episode_id: effectiveEpisode,
           contestant_id: pendingCaptain.id,
         }),
       });
@@ -289,7 +292,7 @@ export function TeamRosterDisplay({
     } finally {
       setLoading(false);
     }
-  }, [pendingCaptain, currentEpisode, onPicked]);
+  }, [pendingCaptain, effectiveEpisode, onPicked]);
 
   const handleCancel = useCallback(() => setPendingCaptain(null), []);
 
@@ -352,7 +355,7 @@ export function TeamRosterDisplay({
 
       <CaptainConfirmationModal
         contestantName={pendingCaptain?.name ?? ""}
-        episodeId={currentEpisode}
+        episodeId={effectiveEpisode}
         onConfirm={handleConfirm}
         onCancel={handleCancel}
         isOpen={!!pendingCaptain}
