@@ -10,7 +10,9 @@ export default function PickTeamPage() {
   const scores = data?.scores ?? null;
   const contestants = data?.contestants ?? [];
   const currentEpisode = data?.season?.current_episode ?? 1;
-  const captainId = (data?.captain?.picks?.[currentEpisode] ?? null) as string | null;
+  /** When season is 0 we still pick captain for episode 1; read from same key we write to. */
+  const effectiveEpisode = Math.max(1, currentEpisode);
+  const captainId = (data?.captain?.picks?.[effectiveEpisode] ?? null) as string | null;
   const [eliminated, setEliminated] = useState<string[]>([]);
   const [scoresForEpisode, setScoresForEpisode] = useState(data?.scores ?? null);
   const [refetchedOnce, setRefetchedOnce] = useState(false);

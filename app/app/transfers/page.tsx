@@ -19,7 +19,8 @@ export default function TransfersPage() {
   const contestants = data?.contestants ?? [];
   const [serverEpisode, setServerEpisode] = useState<number | null>(null);
   const currentEpisode = serverEpisode ?? data?.season?.current_episode ?? 1;
-  const captainId = (data?.captain?.picks?.[currentEpisode] ?? null) as string | null;
+  const effectiveEpisode = Math.max(1, currentEpisode);
+  const captainId = (data?.captain?.picks?.[effectiveEpisode] ?? null) as string | null;
   const [prices, setPrices] = useState<PriceData | null>(null);
   const [pricesLoading, setPricesLoading] = useState(true);
   const [refetchedOnce, setRefetchedOnce] = useState(false);
