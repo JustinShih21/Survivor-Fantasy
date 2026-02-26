@@ -40,8 +40,12 @@ function bucketCategory(
   const out: Partial<Record<keyof ContestantStats, number>> = {};
   if (lower.includes("episode rank bonus")) out.bonus_points = points;
   else if (lower.includes("immunity") && points > 0) out.challenges_won = 1;
-  else if (lower.includes("team reward") && lower.includes("1st") && points > 0)
+  else if (
+    ((lower.includes("team reward") && lower.includes("1st")) || lower.includes("win team reward")) &&
+    points > 0
+  )
     out.challenges_won = 1;
+  else if (lower.includes("win individual reward") && points > 0) out.challenges_won = 1;
   else if (lower.includes("confessional")) out.confessional_points = points;
   else if (
     lower.includes("vote matched") ||
