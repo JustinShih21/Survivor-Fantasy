@@ -315,14 +315,16 @@ export function TeamRosterDisplay({
             <h3 className="sand-inscription mb-2 flex items-center gap-2 justify-center">
               <span className="text-orange-400/80">★</span> Captain
             </h3>
-            <div className="w-full max-w-[180px] mx-auto md:max-w-none">
-              <DraggableCaptainSlot
-              entry={captainEntry}
-              contestants={contestants}
-              possessions={possessions}
-              contestantTribes={contestantTribes}
-              eliminated={eliminated}
-            />
+            <div className="w-full flex justify-center">
+              <div className="w-full max-w-[180px]">
+                <DraggableCaptainSlot
+                  entry={captainEntry}
+                  contestants={contestants}
+                  possessions={possessions}
+                  contestantTribes={contestantTribes}
+                  eliminated={eliminated}
+                />
+              </div>
             </div>
             <p className="md:sr-only text-xs text-stone-400 mt-2 text-center">
               Drop a player here or tap &quot;Set as captain&quot; below a roster player

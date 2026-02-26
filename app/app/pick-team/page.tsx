@@ -48,16 +48,17 @@ export default function PickTeamPage() {
   };
 
   const entries = (scoresForEpisode ?? scores)?.entries ?? [];
-  const showEmptyState = entries.length === 0;
+  const hasData = data != null;
+  const showEmptyState = hasData && entries.length === 0;
 
   useEffect(() => {
-    if (!showEmptyState || refetchedOnce || loading) return;
+    if (!hasData || entries.length > 0 || refetchedOnce || loading) return;
     setRefetchedOnce(true);
     setRefetchingEmpty(true);
     refetch().finally(() => setRefetchingEmpty(false));
-  }, [showEmptyState, refetchedOnce, loading, refetch]);
+  }, [hasData, entries.length, refetchedOnce, loading, refetch]);
 
-  if (loading || refetchingEmpty) {
+  if (loading || refetchingEmpty || !hasData) {
     return (
       <div className="flex justify-center py-12">
         <span className="text-stone-300/80">Loading...</span>

@@ -1,6 +1,6 @@
 /**
  * Survivor 50 tribe names and buff ribbon colors.
- * Tribe A = Cila (orange), Tribe B = Kalo (pink), Tribe C = Vatu (blue)
+ * Tribe A = Cila (orange), Tribe B = Kalo (blue), Tribe C = Vatu (pink)
  */
 export const TRIBE_CONFIG: Record<
   string,
@@ -13,13 +13,13 @@ export const TRIBE_CONFIG: Record<
   },
   "Tribe B": {
     name: "Kalo",
-    color: "pink",
-    ribbonColor: "bg-pink-600/90",
+    color: "blue",
+    ribbonColor: "bg-blue-600/90",
   },
   "Tribe C": {
     name: "Vatu",
-    color: "blue",
-    ribbonColor: "bg-blue-600/90",
+    color: "pink",
+    ribbonColor: "bg-pink-600/90",
   },
 };
 
