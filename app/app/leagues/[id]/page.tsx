@@ -7,10 +7,13 @@ import { StandingsTable, type Standing } from "@/components/StandingsTable";
 
 const noStore = { cache: "no-store" as RequestCache };
 
+type LeagueInfo = { id: string; name: string; invite_code: string };
+type LeagueApiSuccess = { league: LeagueInfo; standings: Standing[]; current_user_id: string };
+
 export default function LeaguePage() {
   const params = useParams();
   const id = params.id as string;
-  const [league, setLeague] = useState<{ id: string; name: string; invite_code: string } | null>(null);
+  const [league, setLeague] = useState<LeagueInfo | null>(null);
   const [standings, setStandings] = useState<Standing[]>([]);
   const [currentUserId, setCurrentUserId] = useState<string>("");
   const [loading, setLoading] = useState(true);
@@ -24,24 +27,24 @@ export default function LeaguePage() {
     setError(null);
     fetch(`/api/leagues/${id}`, noStore)
       .then((res) => {
-        if (cancelled) return res.json();
+        if (cancelled) return res.json() as Promise<LeagueApiSuccess | { error: string }>;
         if (res.status === 404) {
           setError("not_found");
-          return {};
+          return Promise.resolve(null);
         }
         if (res.status === 403) {
           setError("forbidden");
-          return {};
+          return Promise.resolve(null);
         }
         if (!res.ok) {
           setError("error");
-          return {};
+          return Promise.resolve(null);
         }
-        return res.json();
+        return res.json() as Promise<LeagueApiSuccess>;
       })
       .then((data) => {
         if (cancelled) return;
-        if (data.league) {
+        if (data && "league" in data && data.league) {
           setLeague(data.league);
           setStandings(data.standings ?? []);
           setCurrentUserId(data.current_user_id ?? "");
