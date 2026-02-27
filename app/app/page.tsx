@@ -103,10 +103,21 @@ function CountdownToNextEpisode() {
 }
 
 export default function Home() {
-  const { data, loading } = useAppData();
+  const { data, loading, refetch } = useAppData();
   const scores = data?.scores ?? null;
   const currentEpisode = data?.season?.current_episode ?? 1;
   const [viewingEpisode, setViewingEpisode] = useState(currentEpisode);
+  const [refetchedOnce, setRefetchedOnce] = useState(false);
+  const [refetchingEmpty, setRefetchingEmpty] = useState(false);
+
+  const hasTribe = (scores?.entries?.length ?? 0) > 0;
+
+  useEffect(() => {
+    if (!hasTribe || refetchedOnce || loading) return;
+    setRefetchedOnce(true);
+    setRefetchingEmpty(true);
+    refetch().finally(() => setRefetchingEmpty(false));
+  }, [hasTribe, refetchedOnce, loading, refetch]);
 
   useEffect(() => {
     queueMicrotask(() => {
@@ -114,15 +125,13 @@ export default function Home() {
     });
   }, [currentEpisode]);
 
-  if (loading) {
+  if (loading || refetchingEmpty) {
     return (
       <div className="flex justify-center py-12">
         <span className="text-stone-300/80">Loading...</span>
       </div>
     );
   }
-
-  const hasTribe = (scores?.entries?.length ?? 0) > 0;
 
   if (!hasTribe) {
     return (
