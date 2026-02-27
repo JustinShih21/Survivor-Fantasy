@@ -30,7 +30,7 @@ export default function TransfersPage() {
     refetch().finally(() => setRefetchingEmpty(false));
   }, [showEmptyState, refetchedOnce, appDataLoading, refetch]);
 
-  const loading = appDataLoading || pricesLoading || refetchingEmpty;
+  const loading = appDataLoading || refetchingEmpty;
 
   const refreshAll = async () => {
     await refetch();
