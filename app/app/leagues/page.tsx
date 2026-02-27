@@ -4,6 +4,7 @@ import { useState, useEffect, useCallback } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/components/AuthProvider";
+import { StandingsTable, type Standing } from "@/components/StandingsTable";
 
 interface League {
   id: string;
@@ -13,55 +14,7 @@ interface League {
   member_count: number;
 }
 
-interface Standing {
-  user_id: string;
-  tribe_name: string;
-  first_name: string;
-  last_name: string;
-  total_points: number;
-}
-
 const noStore = { cache: "no-store" as RequestCache };
-
-function StandingsTable({ standings, currentUserId }: { standings: Standing[]; currentUserId: string }) {
-  return (
-    <div className="rounded-lg overflow-hidden stone-outline">
-      <table className="w-full text-sm">
-        <thead>
-          <tr className="bg-stone-700/50 text-stone-200/90">
-            <th className="text-left px-4 py-3 font-semibold w-12">#</th>
-            <th className="text-left px-4 py-3 font-semibold">Tribe</th>
-            <th className="text-right px-4 py-3 font-semibold">Points</th>
-          </tr>
-        </thead>
-        <tbody>
-          {standings.map((s, i) => (
-            <tr
-              key={s.user_id}
-              className={`border-t border-stone-600/50 ${s.user_id === currentUserId ? "bg-orange-900/20" : "bg-stone-800/30"}`}
-            >
-              <td className="px-4 py-3 text-stone-300">{i + 1}</td>
-              <td className="px-4 py-3">
-                <div className="text-stone-100 font-medium">{s.tribe_name}</div>
-                <div className="text-stone-400 text-xs">{s.first_name} {s.last_name}</div>
-              </td>
-              <td className="px-4 py-3 text-right font-semibold text-orange-400">
-                {s.total_points} pts
-              </td>
-            </tr>
-          ))}
-          {standings.length === 0 && (
-            <tr>
-              <td colSpan={3} className="px-4 py-6 text-center text-stone-400">
-                No members with teams yet
-              </td>
-            </tr>
-          )}
-        </tbody>
-      </table>
-    </div>
-  );
-}
 
 function LeagueCard({
   league,
@@ -74,6 +27,7 @@ function LeagueCard({
   const [standings, setStandings] = useState<Standing[] | null>(null);
   const [loadingStandings, setLoadingStandings] = useState(false);
   const [copied, setCopied] = useState(false);
+  const [linkCopied, setLinkCopied] = useState(false);
 
   const loadStandings = useCallback(async () => {
     setLoadingStandings(true);
@@ -99,6 +53,13 @@ function LeagueCard({
     setTimeout(() => setCopied(false), 2000);
   };
 
+  const copyInviteLink = () => {
+    const origin = typeof window !== "undefined" ? window.location.origin : "";
+    navigator.clipboard.writeText(`${origin}/leagues/join?code=${league.invite_code}`);
+    setLinkCopied(true);
+    setTimeout(() => setLinkCopied(false), 2000);
+  };
+
   return (
     <div className="p-4 rounded-xl texture-sandy bg-stone-800/90 stone-outline space-y-3">
       <div className="flex items-start justify-between gap-3">
@@ -116,13 +77,28 @@ function LeagueCard({
         </button>
       </div>
 
-      <button
-        type="button"
-        onClick={toggleExpand}
-        className="text-sm text-orange-400 hover:text-orange-300 transition-colors"
-      >
-        {expanded ? "Hide standings ▲" : "View standings ▼"}
-      </button>
+      <div className="flex flex-wrap items-center gap-3">
+        <button
+          type="button"
+          onClick={toggleExpand}
+          className="text-sm text-orange-400 hover:text-orange-300 transition-colors"
+        >
+          {expanded ? "Hide standings ▲" : "View standings"}
+        </button>
+        <button
+          type="button"
+          onClick={copyInviteLink}
+          className="text-sm text-stone-400 hover:text-stone-300 transition-colors"
+        >
+          {linkCopied ? "Link copied!" : "Copy invite link"}
+        </button>
+        <Link
+          href={`/leagues/${league.id}`}
+          className="text-sm text-orange-400 hover:text-orange-300 transition-colors"
+        >
+          View full table
+        </Link>
+      </div>
 
       {expanded && (
         <div className="mt-2">
@@ -159,11 +135,18 @@ export default function LeaguesPage() {
 
   const fetchLeagues = useCallback(async () => {
     try {
+      setError(null);
       const res = await fetch("/api/leagues", noStore);
       const data = await res.json();
+      if (!res.ok) {
+        setError((data as { error?: string }).error ?? "Failed to load leagues");
+        setLeagues([]);
+        return;
+      }
       setLeagues(data.leagues ?? []);
     } catch {
       setError("Failed to load leagues");
+      setLeagues([]);
     } finally {
       setLoading(false);
     }
@@ -285,7 +268,10 @@ export default function LeaguesPage() {
       <section className="space-y-3">
         <h2 className="text-lg font-semibold text-stone-200">Your Leagues</h2>
         {leagues.length === 0 ? (
-          <p className="text-sm text-stone-400">You haven&apos;t joined any leagues yet. Create one or join with an invite code below.</p>
+          <div className="space-y-2">
+            <p className="text-sm text-stone-400">You haven&apos;t joined any leagues yet. Create one or join with an invite code below.</p>
+            <p className="text-xs text-stone-500">If you just joined a league, try refreshing the page. If leagues still don&apos;t appear, ensure the database migration for league members (00021) has been applied.</p>
+          </div>
         ) : (
           <div className="space-y-3">
             {leagues.map((l) => (
