@@ -55,8 +55,10 @@ export default function PickTeamPage() {
 
   useEffect(() => {
     if (!hasData || entries.length > 0 || refetchedOnce || loading) return;
-    setRefetchedOnce(true);
-    setRefetchingEmpty(true);
+    queueMicrotask(() => {
+      setRefetchedOnce(true);
+      setRefetchingEmpty(true);
+    });
     refetch().finally(() => setRefetchingEmpty(false));
   }, [hasData, entries.length, refetchedOnce, loading, refetch]);
 

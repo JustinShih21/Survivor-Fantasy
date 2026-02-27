@@ -1,4 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
+import type { NextRequest } from "next/server";
 import { GET, POST, DELETE } from "../route";
 
 type OverrideRow = { contestant_id: string; episode_id: number; category: string; points: number };
@@ -6,7 +7,7 @@ type OverrideRow = { contestant_id: string; episode_id: number; category: string
 const store: OverrideRow[] = [];
 
 function createChain(initialData: OverrideRow[] = store) {
-  let data = [...initialData];
+  const data = [...initialData];
   let episodeFilter: number | null = null;
   const chain = {
     order: () => chain,
@@ -115,19 +116,19 @@ describe("GET /api/admin/point-category-overrides", () => {
   it("returns 401 when not authenticated", async () => {
     const { getAuthenticatedUser } = await import("@/lib/getUser");
     vi.mocked(getAuthenticatedUser).mockResolvedValueOnce(null);
-    const res = await GET(new Request("http://localhost/api/admin/point-category-overrides"));
+    const res = await GET(new Request("http://localhost/api/admin/point-category-overrides") as NextRequest);
     expect(res.status).toBe(401);
   });
 
   it("returns 403 when not admin", async () => {
     const { isAdmin } = await import("@/lib/admin");
     vi.mocked(isAdmin).mockResolvedValueOnce(false);
-    const res = await GET(new Request("http://localhost/api/admin/point-category-overrides"));
+    const res = await GET(new Request("http://localhost/api/admin/point-category-overrides") as NextRequest);
     expect(res.status).toBe(403);
   });
 
   it("returns empty array when no overrides", async () => {
-    const res = await GET(new Request("http://localhost/api/admin/point-category-overrides"));
+    const res = await GET(new Request("http://localhost/api/admin/point-category-overrides") as NextRequest);
     expect(res.status).toBe(200);
     const json = await res.json();
     expect(Array.isArray(json)).toBe(true);
@@ -140,7 +141,7 @@ describe("GET /api/admin/point-category-overrides", () => {
       { contestant_id: "c02", episode_id: 2, category: "Survival", points: 10 }
     );
     const res = await GET(
-      new Request("http://localhost/api/admin/point-category-overrides?episode_id=1")
+      new Request("http://localhost/api/admin/point-category-overrides?episode_id=1") as NextRequest
     );
     expect(res.status).toBe(200);
     const json = await res.json();
@@ -165,7 +166,7 @@ describe("POST /api/admin/point-category-overrides", () => {
           category: "Invalid Category",
           points: 5,
         }),
-      })
+      }) as NextRequest
     );
     expect(res.status).toBe(400);
     const json = await res.json();
@@ -178,7 +179,7 @@ describe("POST /api/admin/point-category-overrides", () => {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ episode_id: 1, category: "Survival", points: 5 }),
-      })
+      }) as NextRequest
     );
     expect(res.status).toBe(400);
   });
@@ -194,7 +195,7 @@ describe("POST /api/admin/point-category-overrides", () => {
           category: "Survival",
           points: 5,
         }),
-      })
+      }) as NextRequest
     );
     expect(res.status).toBe(200);
     const json = await res.json();
@@ -215,7 +216,7 @@ describe("POST /api/admin/point-category-overrides", () => {
           category: "Survival",
           points: null,
         }),
-      })
+      }) as NextRequest
     );
     expect(res.status).toBe(200);
     const json = await res.json();
@@ -231,7 +232,7 @@ describe("DELETE /api/admin/point-category-overrides", () => {
 
   it("returns 400 when query params missing", async () => {
     const res = await DELETE(
-      new Request("http://localhost/api/admin/point-category-overrides")
+      new Request("http://localhost/api/admin/point-category-overrides") as NextRequest
     );
     expect(res.status).toBe(400);
   });
@@ -240,7 +241,7 @@ describe("DELETE /api/admin/point-category-overrides", () => {
     const res = await DELETE(
       new Request(
         "http://localhost/api/admin/point-category-overrides?contestant_id=c01&episode_id=1&category=Invalid"
-      )
+      ) as NextRequest
     );
     expect(res.status).toBe(400);
   });
@@ -250,7 +251,7 @@ describe("DELETE /api/admin/point-category-overrides", () => {
     const res = await DELETE(
       new Request(
         "http://localhost/api/admin/point-category-overrides?contestant_id=c01&episode_id=1&category=Survival"
-      )
+      ) as NextRequest
     );
     expect(res.status).toBe(200);
     const json = await res.json();

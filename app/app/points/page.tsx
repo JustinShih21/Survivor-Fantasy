@@ -23,8 +23,10 @@ export default function PointsPage() {
 
   useEffect(() => {
     if (!showEmptyState || refetchedOnce || loading) return;
-    setRefetchedOnce(true);
-    setRefetchingEmpty(true);
+    queueMicrotask(() => {
+      setRefetchedOnce(true);
+      setRefetchingEmpty(true);
+    });
     refetch().finally(() => setRefetchingEmpty(false));
   }, [showEmptyState, refetchedOnce, loading, refetch]);
 

@@ -1,4 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
+import type { NextRequest } from "next/server";
 import { GET, POST } from "../route";
 
 const hoisted = vi.hoisted(() => {
@@ -139,7 +140,7 @@ describe("POST /api/leagues", () => {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ name: "New League" }),
-      })
+      }) as NextRequest
     );
     expect(res.status).toBe(401);
   });
@@ -150,7 +151,7 @@ describe("POST /api/leagues", () => {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({}),
-      })
+      }) as NextRequest
     );
     expect(res1.status).toBe(400);
 
@@ -159,7 +160,7 @@ describe("POST /api/leagues", () => {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ name: "   " }),
-      })
+      }) as NextRequest
     );
     expect(res2.status).toBe(400);
   });
@@ -170,7 +171,7 @@ describe("POST /api/leagues", () => {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ name: "My New League" }),
-      })
+      }) as NextRequest
     );
     expect(res.status).toBe(200);
     const data = await res.json();

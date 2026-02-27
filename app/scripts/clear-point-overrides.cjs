@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-require-imports */
 /**
  * One-off: delete all rows from point_category_overrides (zeros all contestant points).
  * Run from app dir: node scripts/clear-point-overrides.cjs

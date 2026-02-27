@@ -11,7 +11,7 @@ export default function TransfersPage() {
   const router = useRouter();
   const { data, loading: appDataLoading, refetch, currentEpisode: hookEpisode } = usePlayerCardData();
   const effectiveEpisode = Math.max(1, hookEpisode);
-  const { prices, loading: pricesLoading, refetch: refetchPrices } = usePrices(effectiveEpisode);
+  const { prices, refetch: refetchPrices } = usePrices(effectiveEpisode);
 
   const scores = data?.scores ?? null;
   const contestants = data?.contestants ?? [];
@@ -25,8 +25,10 @@ export default function TransfersPage() {
 
   useEffect(() => {
     if (!showEmptyState || refetchedOnce || appDataLoading) return;
-    setRefetchedOnce(true);
-    setRefetchingEmpty(true);
+    queueMicrotask(() => {
+      setRefetchedOnce(true);
+      setRefetchingEmpty(true);
+    });
     refetch().finally(() => setRefetchingEmpty(false));
   }, [showEmptyState, refetchedOnce, appDataLoading, refetch]);
 

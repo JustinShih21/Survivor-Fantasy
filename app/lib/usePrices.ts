@@ -48,6 +48,8 @@ export function usePrices(throughEpisode: number): UsePricesResult {
   return {
     prices: data ?? null,
     loading: isLoading,
-    refetch: () => mutate(),
+    refetch: async () => {
+      await mutate();
+    },
   };
 }
