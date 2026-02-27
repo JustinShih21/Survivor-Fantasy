@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useCallback } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useAuth } from "@/components/AuthProvider";
 
 interface League {
@@ -137,6 +138,7 @@ function LeagueCard({
 }
 
 export default function LeaguesPage() {
+  const router = useRouter();
   const { user } = useAuth();
   const [leagues, setLeagues] = useState<League[]>([]);
   const [loading, setLoading] = useState(true);
@@ -195,10 +197,11 @@ export default function LeaguesPage() {
           name: data.league.name,
           invite_code: data.league.invite_code,
           created_by: data.league.created_by,
-          member_count: 1,
+          member_count: data.league.member_count ?? 1,
         },
       ]);
       await fetchLeagues();
+      router.refresh();
     } catch (err) {
       setError(err instanceof Error ? err.message : "Failed to create league");
     } finally {
@@ -221,7 +224,13 @@ export default function LeaguesPage() {
       });
       const data = await res.json();
       if (!res.ok) {
-        setJoinMsg({ type: "error", text: data.error ?? "Failed to join" });
+        if (res.status === 409) {
+          setJoinMsg({ type: "success", text: data.error ?? "You're already in this league." });
+          setJoinCode("");
+          fetchLeagues();
+        } else {
+          setJoinMsg({ type: "error", text: data.error ?? "Failed to join" });
+        }
         return;
       }
       setJoinMsg({ type: "success", text: `Joined "${data.league_name}"!` });

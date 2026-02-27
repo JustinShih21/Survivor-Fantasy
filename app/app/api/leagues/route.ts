@@ -86,7 +86,7 @@ export async function POST(request: NextRequest) {
       if (retryErr) return NextResponse.json({ error: retryErr.message }, { status: 500 });
 
       await supabase.from("league_members").insert({ league_id: retryLeague!.id, user_id });
-      return NextResponse.json({ league: retryLeague });
+      return NextResponse.json({ league: { ...retryLeague, member_count: 1 } });
     }
     return NextResponse.json({ error: createErr.message }, { status: 500 });
   }
@@ -97,5 +97,5 @@ export async function POST(request: NextRequest) {
 
   if (joinErr) return NextResponse.json({ error: joinErr.message }, { status: 500 });
 
-  return NextResponse.json({ league });
+  return NextResponse.json({ league: { ...league, member_count: 1 } });
 }

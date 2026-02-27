@@ -30,7 +30,7 @@ export async function POST(request: NextRequest) {
     .select("id")
     .eq("league_id", league.id)
     .eq("user_id", user_id)
-    .single();
+    .maybeSingle();
 
   if (existing) {
     return NextResponse.json({ error: "You are already a member of this league", league_name: league.name }, { status: 409 });
@@ -40,7 +40,13 @@ export async function POST(request: NextRequest) {
     .from("league_members")
     .insert({ league_id: league.id, user_id });
 
-  if (joinErr) return NextResponse.json({ error: joinErr.message }, { status: 500 });
+  if (joinErr) {
+    const isDuplicate = joinErr.code === "23505" || /unique|duplicate/i.test(joinErr.message ?? "");
+    if (isDuplicate) {
+      return NextResponse.json({ error: "You are already a member of this league", league_name: league.name }, { status: 409 });
+    }
+    return NextResponse.json({ error: joinErr.message }, { status: 500 });
+  }
 
   return NextResponse.json({ success: true, league_id: league.id, league_name: league.name });
 }
