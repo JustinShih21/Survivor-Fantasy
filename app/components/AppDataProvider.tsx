@@ -98,11 +98,33 @@ export function AppDataProvider({ children }: { children: ReactNode }) {
     }
     try {
       const res = await fetch("/api/app-data", noStore);
-      if (!res.ok) {
-        const err = await res.json().catch(() => ({}));
-        throw new Error(err.error ?? `Request failed: ${res.status}`);
+      // #region agent log
+      const raw = await res.json().catch(() => ({}));
+      if (typeof fetch !== "undefined") {
+        fetch("http://127.0.0.1:7497/ingest/b42e58e2-caf9-48da-b647-cabab44684f1", {
+          method: "POST",
+          headers: { "Content-Type": "application/json", "X-Debug-Session-Id": "a04a4f" },
+          body: JSON.stringify({
+            sessionId: "a04a4f",
+            location: "AppDataProvider.tsx:fetchData",
+            message: "app-data fetch completed",
+            data: {
+              resOk: res.ok,
+              resStatus: res.status,
+              hasScores: !!raw.scores,
+              entriesLength: raw.scores?.entries?.length ?? "n/a",
+              allEntriesLength: raw.scores?.all_entries?.length ?? "n/a",
+            },
+            timestamp: Date.now(),
+            hypothesisId: "H2_H3_H4",
+          }),
+        }).catch(() => {});
       }
-      const raw = await res.json();
+      // #endregion
+      if (!res.ok) {
+        const err = typeof raw === "object" && raw !== null ? raw : {};
+        throw new Error((err as { error?: string }).error ?? `Request failed: ${res.status}`);
+      }
       setData({
         scores: raw.scores ?? null,
         contestants: Array.isArray(raw.contestants) ? raw.contestants : [],

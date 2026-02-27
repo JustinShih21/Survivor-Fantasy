@@ -1,10 +1,11 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import { TribeBuilder } from "@/components/TribeBuilder";
 import { getNextEpisodeAirtime } from "@/lib/seasonConfig";
 import { useAppData } from "@/components/AppDataProvider";
+import { useAuth } from "@/components/AuthProvider";
 import type { ContestantPointsSummary } from "@/lib/scoring";
 
 interface HomeContentItem {
@@ -103,21 +104,57 @@ function CountdownToNextEpisode() {
 }
 
 export default function Home() {
+  const { user } = useAuth();
   const { data, loading, refetch } = useAppData();
   const scores = data?.scores ?? null;
   const currentEpisode = data?.season?.current_episode ?? 1;
   const [viewingEpisode, setViewingEpisode] = useState(currentEpisode);
   const [refetchedOnce, setRefetchedOnce] = useState(false);
   const [refetchingEmpty, setRefetchingEmpty] = useState(false);
+  const refetchedForUserRef = useRef(false);
 
   const hasTribe = (scores?.entries?.length ?? 0) > 0;
 
+  // #region agent log
+  if (typeof fetch !== "undefined") {
+    fetch("http://127.0.0.1:7497/ingest/b42e58e2-caf9-48da-b647-cabab44684f1", {
+      method: "POST",
+      headers: { "Content-Type": "application/json", "X-Debug-Session-Id": "a04a4f" },
+      body: JSON.stringify({
+        sessionId: "a04a4f",
+        location: "app/page.tsx:Home",
+        message: "Home render hasTribe decision",
+        data: {
+          hasTribe,
+          entriesLength: scores?.entries?.length ?? (data?.scores == null ? "no_scores" : 0),
+          allEntriesLength: scores?.all_entries?.length ?? "n/a",
+          loading,
+          refetchedOnce,
+          refetchingEmpty,
+          showingBuildScreen: !hasTribe && !loading && !refetchingEmpty,
+        },
+        timestamp: Date.now(),
+        hypothesisId: "H1_H4_H5",
+      }),
+    }).catch(() => {});
+  }
+  // #endregion
+
+  // Refetch when we have no tribe (e.g. initial load or stale data)
   useEffect(() => {
     if (!hasTribe || refetchedOnce || loading) return;
     setRefetchedOnce(true);
     setRefetchingEmpty(true);
     refetch().finally(() => setRefetchingEmpty(false));
   }, [hasTribe, refetchedOnce, loading, refetch]);
+
+  // When user is available but we still show no tribe, refetch once (auth may have become ready after first fetch)
+  useEffect(() => {
+    if (!user || hasTribe || refetchedForUserRef.current || loading) return;
+    refetchedForUserRef.current = true;
+    setRefetchingEmpty(true);
+    refetch().finally(() => setRefetchingEmpty(false));
+  }, [user, hasTribe, loading, refetch]);
 
   useEffect(() => {
     queueMicrotask(() => {
@@ -134,6 +171,22 @@ export default function Home() {
   }
 
   if (!hasTribe) {
+    // #region agent log
+    if (typeof fetch !== "undefined") {
+      fetch("http://127.0.0.1:7497/ingest/b42e58e2-caf9-48da-b647-cabab44684f1", {
+        method: "POST",
+        headers: { "Content-Type": "application/json", "X-Debug-Session-Id": "a04a4f" },
+        body: JSON.stringify({
+          sessionId: "a04a4f",
+          location: "app/page.tsx:BuildYourTribeBranch",
+          message: "Rendering Build Your Tribe screen",
+          data: { hasTribe, entriesLen: scores?.entries?.length ?? null },
+          timestamp: Date.now(),
+          hypothesisId: "H2",
+        }),
+      }).catch(() => {});
+    }
+    // #endregion
     return (
       <div className="space-y-6">
         <CountdownToNextEpisode />
