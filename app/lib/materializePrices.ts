@@ -1,7 +1,7 @@
 /**
  * Materialize contestant prices per episode into contestant_episode_prices.
- * Runs the same formula as lib/prices / api/prices and UPSERTs for episodes 1..through.
- * Use admin client for writes (bypasses RLS).
+ * Supports weighted performance-based adjustment: category weights and adjustment_rate
+ * from scoring_config (price_adjustment_weights, price_adjustment_rate). Use admin client for writes.
  */
 
 import type { SupabaseClient } from "@supabase/supabase-js";
@@ -10,6 +10,41 @@ import type { EpisodeOutcome, ScoringConfig } from "@/lib/scoring";
 import contestantsSeed from "@/seed/contestants.json";
 import episodeOutcomesSeed from "@/seed/episode_outcomes.json";
 import scoringConfigSeed from "@/seed/scoring_config.json";
+
+const PRICE_FLOOR = 50000;
+const PRICE_CEILING = 300000;
+const PRICE_ROUND = 5000;
+const DEFAULT_ADJUSTMENT_RATE = 0.03;
+
+type PriceAdjustmentConfig = {
+  adjustment_rate: number;
+  weights: Record<string, number>;
+};
+
+function getPriceAdjustmentConfig(config: ScoringConfig & Record<string, unknown>): PriceAdjustmentConfig {
+  const rate = config.price_adjustment_rate;
+  const adjustment_rate =
+    typeof rate === "number" && Number.isFinite(rate) && rate > 0 ? rate : DEFAULT_ADJUSTMENT_RATE;
+  const weights = (config.price_adjustment_weights as Record<string, number>) ?? {};
+  return { adjustment_rate, weights };
+}
+
+function breakdownFromSources(sources: { label: string; points: number }[]): Record<string, number> {
+  const out: Record<string, number> = {};
+  for (const { label, points } of sources) {
+    out[label] = (out[label] ?? 0) + points;
+  }
+  return out;
+}
+
+function weightedScore(breakdown: Record<string, number>, weights: Record<string, number>): number {
+  let sum = 0;
+  for (const [label, points] of Object.entries(breakdown)) {
+    const w = weights[label] ?? 1;
+    sum += w * points;
+  }
+  return sum;
+}
 
 export async function materializePricesForEpisodes(
   through: number,
@@ -46,7 +81,9 @@ export async function materializePricesForEpisodes(
       })) as EpisodeOutcome[];
   const scoringConfig = (useSeed
     ? scoringConfigSeed
-    : configRes.data?.config) as ScoringConfig;
+    : configRes.data?.config) as ScoringConfig & Record<string, unknown>;
+
+  const { adjustment_rate, weights } = getPriceAdjustmentConfig(scoringConfig);
 
   const basePrices = Object.fromEntries(
     contestants.map((c) => [c.id, c.pre_merge_price as number])
@@ -78,18 +115,19 @@ export async function materializePricesForEpisodes(
     if (votedOut) eliminated.add(votedOut);
 
     const active = outcome.active_contestants ?? [];
-    const avgPts =
-      active.length > 0
-        ? active.reduce(
-            (sum, cid) =>
-              sum +
-              calculateContestantEpisodeBreakdown(
-                cid,
-                outcome,
-                scoringConfig
-              ).total,
-            0
-          ) / active.length
+    const weightedScores: number[] = [];
+    for (const cid of active) {
+      const { sources } = calculateContestantEpisodeBreakdown(
+        cid,
+        outcome,
+        scoringConfig as ScoringConfig
+      );
+      const breakdown = breakdownFromSources(sources);
+      weightedScores.push(weightedScore(breakdown, weights));
+    }
+    const avgWeighted =
+      weightedScores.length > 0
+        ? weightedScores.reduce((a, b) => a + b, 0) / weightedScores.length
         : 0;
 
     const prevEpPrices = priceByEpisode[ep - 1];
@@ -111,22 +149,24 @@ export async function materializePricesForEpisodes(
         continue;
       }
 
-      const { total: pts } = calculateContestantEpisodeBreakdown(
+      const { sources } = calculateContestantEpisodeBreakdown(
         cid,
         outcome,
-        scoringConfig
+        scoringConfig as ScoringConfig
       );
+      const breakdown = breakdownFromSources(sources);
+      const wScore = weightedScore(breakdown, weights);
       const prevPrice = prevEpPrices?.[cid]?.price ?? basePrice;
-      const perfRatio =
-        avgPts !== 0 ? (pts - avgPts) / Math.abs(avgPts) : 0;
+      const denom = Math.abs(avgWeighted) || 1e-9;
+      const perfRatio = Math.max(-1, Math.min(1, (wScore - avgWeighted) / denom));
       const adjustment = Math.round(
-        prevPrice * 0.03 * Math.max(-1, Math.min(1, perfRatio))
+        prevPrice * adjustment_rate * perfRatio
       );
       const newPrice = Math.max(
-        50000,
-        Math.min(300000, prevPrice + adjustment)
+        PRICE_FLOOR,
+        Math.min(PRICE_CEILING, prevPrice + adjustment)
       );
-      const rounded = Math.round(newPrice / 5000) * 5000;
+      const rounded = Math.round(newPrice / PRICE_ROUND) * PRICE_ROUND;
 
       episodePrices[cid] = { price: rounded, change: rounded - prevPrice };
     }

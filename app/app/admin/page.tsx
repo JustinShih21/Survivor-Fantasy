@@ -741,6 +741,193 @@ function HomeContentSection() {
   );
 }
 
+type EpisodeOutcomeRow = { episode_id: number; voted_out: string | null };
+
+function EpisodeOutcomesSection() {
+  const [outcomes, setOutcomes] = useState<EpisodeOutcomeRow[]>([]);
+  const [contestants, setContestants] = useState<{ id: string; name: string }[]>([]);
+  const [currentEpisode, setCurrentEpisode] = useState(1);
+  const [loading, setLoading] = useState(true);
+  const [savingEpisodeId, setSavingEpisodeId] = useState<number | null>(null);
+
+  const load = () => {
+    setLoading(true);
+    Promise.all([
+      fetch("/api/admin/episode-outcomes").then((r) => (r.ok ? r.json() : null)),
+      fetch("/api/contestants").then((r) => (r.ok ? r.json() : [])),
+    ])
+      .then(([outcomesData, cont]) => {
+        const data = outcomesData as { outcomes?: EpisodeOutcomeRow[]; current_episode?: number } | null;
+        setOutcomes(Array.isArray(data?.outcomes) ? data.outcomes : []);
+        setCurrentEpisode(data?.current_episode ?? 1);
+        setContestants(Array.isArray(cont) ? cont.map((c: { id: string; name: string }) => ({ id: c.id, name: c.name })) : []);
+      })
+      .catch(() => {})
+      .finally(() => setLoading(false));
+  };
+
+  useEffect(() => {
+    load();
+  }, []);
+
+  const handleChange = async (episode_id: number, voted_out: string | null) => {
+    setSavingEpisodeId(episode_id);
+    try {
+      const res = await fetch("/api/admin/episode-outcomes", {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ episode_id, voted_out }),
+      });
+      if (res.ok) {
+        setOutcomes((prev) =>
+          prev.map((r) => (r.episode_id === episode_id ? { ...r, voted_out } : r))
+        );
+      }
+    } finally {
+      setSavingEpisodeId(null);
+    }
+  };
+
+  if (loading) {
+    return <p className="text-sm text-stone-500">Loading...</p>;
+  }
+
+  return (
+    <div className="space-y-3">
+      <div className="flex flex-wrap gap-4 items-center">
+        {outcomes.map((row) => (
+          <div key={row.episode_id} className="flex items-center gap-2">
+            <span className="text-stone-300 text-sm w-16">Ep {row.episode_id}</span>
+            <select
+              value={row.voted_out ?? ""}
+              onChange={(e) => handleChange(row.episode_id, e.target.value || null)}
+              disabled={savingEpisodeId === row.episode_id}
+              className="min-w-[140px] px-2 py-1.5 rounded bg-stone-700 text-stone-100 border border-stone-600 text-sm disabled:opacity-50"
+            >
+              <option value="">None</option>
+              {contestants.map((c) => (
+                <option key={c.id} value={c.id}>
+                  {c.name}
+                </option>
+              ))}
+            </select>
+            {savingEpisodeId === row.episode_id && (
+              <span className="text-xs text-stone-500">Saving...</span>
+            )}
+          </div>
+        ))}
+      </div>
+      {outcomes.length === 0 && <p className="text-sm text-stone-500">No episodes loaded.</p>}
+    </div>
+  );
+}
+
+function PriceAdjustmentSection() {
+  const [adjustmentRate, setAdjustmentRate] = useState(0.03);
+  const [weights, setWeights] = useState<Record<string, number>>({});
+  const [loading, setLoading] = useState(true);
+  const [saving, setSaving] = useState(false);
+
+  useEffect(() => {
+    fetch("/api/admin/price-adjustment-config")
+      .then((r) => (r.ok ? r.json() : null))
+      .then((data: { adjustment_rate?: number; weights?: Record<string, number> } | null) => {
+        if (data) {
+          setAdjustmentRate(
+            typeof data.adjustment_rate === "number" && data.adjustment_rate > 0
+              ? data.adjustment_rate
+              : 0.03
+          );
+          setWeights(typeof data.weights === "object" && data.weights !== null ? data.weights : {});
+        }
+      })
+      .catch(() => {})
+      .finally(() => setLoading(false));
+  }, []);
+
+  const setWeight = (category: string, value: number) => {
+    setWeights((prev) => {
+      const next = { ...prev };
+      if (value === 1) {
+        delete next[category];
+      } else {
+        next[category] = value;
+      }
+      return next;
+    });
+  };
+
+  const save = async () => {
+    setSaving(true);
+    try {
+      const res = await fetch("/api/admin/price-adjustment-config", {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          adjustment_rate: adjustmentRate,
+          weights: Object.keys(weights).length ? weights : undefined,
+        }),
+      });
+      if (!res.ok) {
+        const err = await res.json().catch(() => ({}));
+        throw new Error((err as { error?: string }).error ?? res.statusText);
+      }
+    } catch (e) {
+      alert(e instanceof Error ? e.message : "Failed to save");
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  if (loading) {
+    return <p className="text-sm text-stone-500">Loading...</p>;
+  }
+
+  return (
+    <div className="space-y-4">
+      <div className="flex flex-wrap items-center gap-3">
+        <label className="text-stone-300 text-sm">Adjustment rate (e.g. 0.03 = ±3% per episode)</label>
+        <input
+          type="number"
+          min={0.01}
+          max={1}
+          step={0.01}
+          value={adjustmentRate}
+          onChange={(e) => setAdjustmentRate(Number(e.target.value) || 0.03)}
+          className="w-20 px-2 py-1.5 rounded bg-stone-700 text-stone-100 border border-stone-600"
+        />
+      </div>
+      <div>
+        <p className="text-stone-400 text-sm mb-2">Category weights (default 1.0 if unset)</p>
+        <div className="flex flex-wrap gap-2 max-h-48 overflow-y-auto">
+          {(POINT_BREAKDOWN_CATEGORIES as readonly string[]).map((cat) => (
+            <div key={cat} className="flex items-center gap-1">
+              <label className="text-stone-400 text-xs whitespace-nowrap">{cat}</label>
+              <input
+                type="number"
+                min={0}
+                max={5}
+                step={0.25}
+                value={weights[cat] ?? 1}
+                onChange={(e) => setWeight(cat, Number(e.target.value) || 0)}
+                className="w-14 px-1 py-0.5 rounded bg-stone-700 text-stone-100 border border-stone-600 text-xs"
+              />
+            </div>
+          ))}
+        </div>
+      </div>
+      <button
+        type="button"
+        onClick={save}
+        disabled={saving}
+        className="px-3 py-1.5 rounded bg-orange-600 text-white text-sm font-medium hover:bg-orange-500 disabled:opacity-50"
+      >
+        {saving ? "Saving..." : "Save price adjustment config"}
+      </button>
+    </div>
+  );
+}
+
 export default function AdminPage() {
   const [currentEpisode, setCurrentEpisode] = useState<number>(1);
   const [saving, setSaving] = useState(false);
@@ -860,6 +1047,16 @@ export default function AdminPage() {
         </div>
       </section>
 
+      <section className="p-4 rounded-xl texture-sandy bg-stone-800/90 stone-outline">
+        <h2 className="text-lg font-semibold text-stone-200 mb-3">
+          Episode outcomes / Voted out
+        </h2>
+        <p className="text-sm text-stone-400 mb-3">
+          Set who was voted out each episode. Player cards will be grayed out and show &quot;Voted out&quot; everywhere once set. Run Materialize after changing outcomes if you want points/prices updated.
+        </p>
+        <EpisodeOutcomesSection />
+      </section>
+
       <section className="p-4 rounded-xl texture-sandy bg-stone-800/80 stone-outline">
         <h2 className="text-lg font-semibold text-stone-200 mb-2">Point overrides by category</h2>
         <p className="text-sm text-stone-400 mb-3">
@@ -882,6 +1079,14 @@ export default function AdminPage() {
           Edit base price and trait scores (Cognition, Strategy, Influence, Resilience 1–100) per contestant.
         </p>
         <PricingAndTraitsSection />
+      </section>
+
+      <section className="p-4 rounded-xl texture-sandy bg-stone-800/80 stone-outline">
+        <h2 className="text-lg font-semibold text-stone-200 mb-2">Price adjustment (repricing)</h2>
+        <p className="text-sm text-stone-400 mb-3">
+          Category weights and adjustment rate for the dynamic repricing formula. Weighted performance score is computed from point breakdown; above-average raises price, below-average lowers it. Default weight 1.0 for categories not set.
+        </p>
+        <PriceAdjustmentSection />
       </section>
 
       <section className="p-4 rounded-xl texture-sandy bg-stone-800/80 stone-outline">

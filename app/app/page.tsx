@@ -113,7 +113,8 @@ export default function Home() {
   const [refetchingEmpty, setRefetchingEmpty] = useState(false);
   const refetchedForUserRef = useRef(false);
 
-  const hasTribe = (scores?.entries?.length ?? 0) > 0;
+  const hasTribe =
+    (scores?.entries?.length ?? 0) > 0 || (scores?.all_entries?.length ?? 0) > 0;
 
   // #region agent log
   if (typeof fetch !== "undefined") {

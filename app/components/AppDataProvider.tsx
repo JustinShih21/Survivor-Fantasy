@@ -97,7 +97,7 @@ export function AppDataProvider({ children }: { children: ReactNode }) {
       setError(null);
     }
     try {
-      const res = await fetch("/api/app-data", noStore);
+      const res = await fetch("/api/app-data", { ...noStore, credentials: "include" });
       // #region agent log
       const raw = await res.json().catch(() => ({}));
       if (typeof fetch !== "undefined") {
