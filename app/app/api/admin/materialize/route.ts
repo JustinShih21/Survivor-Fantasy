@@ -1,6 +1,6 @@
 /**
  * POST /api/admin/materialize
- * Admin-only. Runs price and points materialization for the current episode range.
+ * Admin-only. Runs points and price materialization for the current episode range.
  * Use after migration backfill or when episode_outcomes / overrides are updated outside the app.
  */
 import { NextResponse } from "next/server";
@@ -9,10 +9,11 @@ import { isAdmin } from "@/lib/admin";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { materializePricesForEpisodes } from "@/lib/materializePrices";
 import { materializePointsForEpisode } from "@/lib/materializePoints";
+import { materializeOpportunityForecastsForEpisode } from "@/lib/opportunity/materializeForecasts";
 
 export const dynamic = "force-dynamic";
 
-export async function POST() {
+export async function POST(request: Request) {
   const auth = await getAuthenticatedUser();
   if (!auth) {
     return NextResponse.json({ error: "Not authenticated" }, { status: 401 });
@@ -33,6 +34,13 @@ export async function POST() {
   }
 
   try {
+    let body: { materialize_forecasts?: boolean; forecast_model?: string } = {};
+    try {
+      body = (await request.json()) as typeof body;
+    } catch {
+      // optional body
+    }
+
     const { data: seasonRow } = await admin
       .from("season_state")
       .select("current_episode")
@@ -41,19 +49,7 @@ export async function POST() {
 
     const currentEpisode = Math.max(1, seasonRow?.current_episode ?? 1);
 
-    const priceResult = await materializePricesForEpisodes(currentEpisode, admin);
-
-    const { data: overrideEpisodes } = await admin
-      .from("point_category_overrides")
-      .select("episode_id")
-      .then((r) => ({ data: r.data ?? [], error: r.error }));
-
-    const episodeIds =
-      overrideEpisodes.length > 0
-        ? [...new Set((overrideEpisodes as { episode_id: number }[]).map((r) => r.episode_id))].sort(
-            (a, b) => a - b
-          )
-        : Array.from({ length: currentEpisode }, (_, i) => i + 1);
+    const episodeIds = Array.from({ length: currentEpisode }, (_, i) => i + 1);
 
     let pointsRowCount = 0;
     for (const epId of episodeIds) {
@@ -61,10 +57,25 @@ export async function POST() {
       pointsRowCount += result.rowCount;
     }
 
+    let forecastResult:
+      | { episodeId: number; modelVersion: string; mappingCount: number; rowCount: number; skippedCount: number }
+      | null = null;
+    if (body.materialize_forecasts === true) {
+      forecastResult = await materializeOpportunityForecastsForEpisode(currentEpisode + 1, admin, {
+        modelVersion: body.forecast_model?.trim() || "kalshi-v1",
+        provider: "kalshi",
+      });
+    }
+
+    const priceResult = await materializePricesForEpisodes(currentEpisode, admin, {
+      pointMaterializedEpisodeIds: episodeIds,
+    });
+
     return NextResponse.json({
       ok: true,
       prices: { episodeCount: priceResult.episodeCount, rowCount: priceResult.rowCount },
       points: { episodeCount: episodeIds.length, rowCount: pointsRowCount },
+      forecasts: forecastResult,
     });
   } catch (err) {
     return NextResponse.json(

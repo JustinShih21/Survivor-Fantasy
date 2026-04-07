@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import Link from "next/link";
 import { POINT_BREAKDOWN_CATEGORIES, type PointBreakdownCategory } from "@/lib/scoring";
 
@@ -16,6 +16,48 @@ type PointsBreakdownResponse = {
     total: number;
     sources: { label: string; points: number; isOverride: boolean }[];
   }[];
+};
+
+type PriceAuditContestant = {
+  contestant_id: string;
+  prev_price: number;
+  new_price: number;
+  price_change: number;
+  weighted_score: number;
+  field_avg: number;
+  perf_ratio: number;
+  category_contributions: Record<string, number>;
+};
+
+type PriceAuditResponse = {
+  episode: number;
+  run_at: string | null;
+  adjustment_rate: number | null;
+  contestants: PriceAuditContestant[];
+};
+
+type MarketMappingRow = {
+  id: string;
+  provider: string;
+  market_ticker: string;
+  episode_id: number;
+  contestant_id: string;
+  category: string;
+  side: "yes" | "no";
+  transform: "direct" | "inverse";
+  confidence: number;
+  is_active: boolean;
+  notes: string | null;
+};
+
+type ForecastRow = {
+  contestant_id: string;
+  contestant_name: string;
+  category: string;
+  probability: number | null;
+  expected_value: number | null;
+  model_version: string;
+  created_at: string;
 };
 
 function PointCategoryOverridesSection() {
@@ -825,13 +867,26 @@ function EpisodeOutcomesSection() {
 function PriceAdjustmentSection() {
   const [adjustmentRate, setAdjustmentRate] = useState(0.03);
   const [weights, setWeights] = useState<Record<string, number>>({});
+  const [opportunityEnabled, setOpportunityEnabled] = useState(false);
+  const [opportunityAlpha, setOpportunityAlpha] = useState(0);
+  const [opportunityMinCoverage, setOpportunityMinCoverage] = useState(0.4);
+  const [maxExternalComponentPct, setMaxExternalComponentPct] = useState(0.01);
+  const [opportunityModelVersion, setOpportunityModelVersion] = useState("kalshi-v1");
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
 
   useEffect(() => {
     fetch("/api/admin/price-adjustment-config")
       .then((r) => (r.ok ? r.json() : null))
-      .then((data: { adjustment_rate?: number; weights?: Record<string, number> } | null) => {
+      .then((data: {
+        adjustment_rate?: number;
+        weights?: Record<string, number>;
+        opportunity_enabled?: boolean;
+        opportunity_alpha?: number;
+        opportunity_min_coverage?: number;
+        max_external_component_pct?: number;
+        opportunity_model_version?: string;
+      } | null) => {
         if (data) {
           setAdjustmentRate(
             typeof data.adjustment_rate === "number" && data.adjustment_rate > 0
@@ -839,6 +894,21 @@ function PriceAdjustmentSection() {
               : 0.03
           );
           setWeights(typeof data.weights === "object" && data.weights !== null ? data.weights : {});
+          setOpportunityEnabled(data.opportunity_enabled === true);
+          setOpportunityAlpha(
+            typeof data.opportunity_alpha === "number" ? data.opportunity_alpha : 0
+          );
+          setOpportunityMinCoverage(
+            typeof data.opportunity_min_coverage === "number" ? data.opportunity_min_coverage : 0.4
+          );
+          setMaxExternalComponentPct(
+            typeof data.max_external_component_pct === "number" ? data.max_external_component_pct : 0.01
+          );
+          setOpportunityModelVersion(
+            typeof data.opportunity_model_version === "string" && data.opportunity_model_version.trim() !== ""
+              ? data.opportunity_model_version
+              : "kalshi-v1"
+          );
         }
       })
       .catch(() => {})
@@ -866,6 +936,11 @@ function PriceAdjustmentSection() {
         body: JSON.stringify({
           adjustment_rate: adjustmentRate,
           weights: Object.keys(weights).length ? weights : undefined,
+          opportunity_enabled: opportunityEnabled,
+          opportunity_alpha: opportunityAlpha,
+          opportunity_min_coverage: opportunityMinCoverage,
+          max_external_component_pct: maxExternalComponentPct,
+          opportunity_model_version: opportunityModelVersion.trim() || "kalshi-v1",
         }),
       });
       if (!res.ok) {
@@ -916,6 +991,68 @@ function PriceAdjustmentSection() {
           ))}
         </div>
       </div>
+      <div className="border-t border-stone-700 pt-3 space-y-3">
+        <p className="text-stone-300 text-sm font-medium">Opportunity blend (forecast signal)</p>
+        <div className="flex flex-wrap items-center gap-4">
+          <label className="flex items-center gap-2 text-stone-300 text-sm">
+            <input
+              type="checkbox"
+              checked={opportunityEnabled}
+              onChange={(e) => setOpportunityEnabled(e.target.checked)}
+              className="rounded"
+            />
+            Enable external forecast blend
+          </label>
+          <label className="text-stone-300 text-sm">
+            Alpha
+            <input
+              type="number"
+              min={0}
+              max={1}
+              step={0.05}
+              value={opportunityAlpha}
+              onChange={(e) => setOpportunityAlpha(Number(e.target.value) || 0)}
+              className="ml-2 w-20 px-2 py-1 rounded bg-stone-700 text-stone-100 border border-stone-600"
+            />
+          </label>
+          <label className="text-stone-300 text-sm">
+            Min coverage
+            <input
+              type="number"
+              min={0}
+              max={1}
+              step={0.05}
+              value={opportunityMinCoverage}
+              onChange={(e) => setOpportunityMinCoverage(Number(e.target.value) || 0)}
+              className="ml-2 w-20 px-2 py-1 rounded bg-stone-700 text-stone-100 border border-stone-600"
+            />
+          </label>
+          <label className="text-stone-300 text-sm">
+            Max external pct
+            <input
+              type="number"
+              min={0}
+              max={1}
+              step={0.005}
+              value={maxExternalComponentPct}
+              onChange={(e) => setMaxExternalComponentPct(Number(e.target.value) || 0)}
+              className="ml-2 w-24 px-2 py-1 rounded bg-stone-700 text-stone-100 border border-stone-600"
+            />
+          </label>
+          <label className="text-stone-300 text-sm">
+            Forecast model
+            <input
+              type="text"
+              value={opportunityModelVersion}
+              onChange={(e) => setOpportunityModelVersion(e.target.value)}
+              className="ml-2 w-32 px-2 py-1 rounded bg-stone-700 text-stone-100 border border-stone-600"
+            />
+          </label>
+        </div>
+        <p className="text-xs text-stone-500">
+          With alpha = 0, external forecasts are shadow-only. Increase gradually after audit validation.
+        </p>
+      </div>
       <button
         type="button"
         onClick={save}
@@ -924,6 +1061,600 @@ function PriceAdjustmentSection() {
       >
         {saving ? "Saving..." : "Save price adjustment config"}
       </button>
+    </div>
+  );
+}
+
+function PriceAuditSection() {
+  const [episodeCount, setEpisodeCount] = useState(MAX_EPISODES);
+  const [selectedEpisode, setSelectedEpisode] = useState(1);
+  const [contestantNames, setContestantNames] = useState<Record<string, string>>({});
+  const [audit, setAudit] = useState<PriceAuditResponse | null>(null);
+  const [loadingMeta, setLoadingMeta] = useState(true);
+  const [loadingAudit, setLoadingAudit] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    Promise.all([fetch("/api/season").then((r) => r.json()), fetch("/api/contestants").then((r) => r.json())])
+      .then(([season, contestants]) => {
+        const current = (season as { current_episode?: number }).current_episode ?? 1;
+        const count = Math.max(MAX_EPISODES, current);
+        setEpisodeCount(count);
+        setSelectedEpisode((prev) => Math.min(Math.max(1, prev), count));
+
+        const byId: Record<string, string> = {};
+        for (const c of Array.isArray(contestants) ? contestants : []) {
+          const row = c as { id?: string; name?: string };
+          if (row.id) byId[row.id] = row.name ?? row.id;
+        }
+        setContestantNames(byId);
+      })
+      .finally(() => setLoadingMeta(false));
+  }, []);
+
+  useEffect(() => {
+    if (selectedEpisode < 1) return;
+    fetch(`/api/admin/price-audit?episode=${selectedEpisode}`)
+      .then(async (res) => {
+        if (!res.ok) {
+          const body = await res.json().catch(() => ({}));
+          const msg =
+            body && typeof body === "object" && "error" in body && typeof (body as { error: unknown }).error === "string"
+              ? (body as { error: string }).error
+              : res.statusText || "Failed";
+          throw new Error(msg);
+        }
+        return (await res.json()) as PriceAuditResponse;
+      })
+      .then((data) => setAudit(data))
+      .catch((e) => setError(e instanceof Error ? e.message : "Failed to load audit"))
+      .finally(() => setLoadingAudit(false));
+  }, [selectedEpisode]);
+
+  const episodes = Array.from({ length: episodeCount }, (_, i) => i + 1);
+
+  const formatMoney = (value: number) => `$${value.toLocaleString()}`;
+  const formatDelta = (value: number) => `${value >= 0 ? "+" : ""}$${value.toLocaleString()}`;
+  const formatContribution = (value: number) => `${value >= 0 ? "+" : ""}${value.toFixed(2)}`;
+
+  const topContributions = (contributions: Record<string, number>) => {
+    const ranked = Object.entries(contributions)
+      .sort((a, b) => Math.abs(b[1]) - Math.abs(a[1]))
+      .slice(0, 3);
+
+    if (ranked.length === 0) return "—";
+    return ranked.map(([label, value]) => `${label}: ${formatContribution(value)}`).join(" | ");
+  };
+
+  const contestantName = (contestantId: string) => contestantNames[contestantId] ?? contestantId;
+
+  if (loadingMeta) {
+    return <p className="text-sm text-stone-500">Loading...</p>;
+  }
+
+  return (
+    <div className="space-y-3">
+      <div className="flex flex-wrap items-center gap-3">
+        <label className="text-stone-300 text-sm">Episode</label>
+        <select
+          value={selectedEpisode}
+          onChange={(e) => {
+            setError(null);
+            setLoadingAudit(true);
+            setSelectedEpisode(Number(e.target.value));
+          }}
+          className="px-2 py-1.5 rounded bg-stone-700 text-stone-100 border border-stone-600 text-sm"
+        >
+          {episodes.map((ep) => (
+            <option key={ep} value={ep}>
+              Episode {ep}
+            </option>
+          ))}
+        </select>
+        {audit?.run_at ? (
+          <span className="text-xs text-stone-400">
+            Run: {new Date(audit.run_at).toLocaleString()} (rate {audit.adjustment_rate ?? 0})
+          </span>
+        ) : null}
+      </div>
+
+      {loadingAudit ? (
+        <p className="text-sm text-stone-500">Loading price audit...</p>
+      ) : error ? (
+        <p className="text-sm text-red-300">{error}</p>
+      ) : !audit || audit.contestants.length === 0 ? (
+        <p className="text-sm text-stone-500">No audit rows found for this episode yet.</p>
+      ) : (
+        <div className="overflow-x-auto max-h-[420px] overflow-y-auto">
+          <table className="w-full text-sm text-left">
+            <thead>
+              <tr className="text-stone-400 border-b border-stone-600 sticky top-0 bg-stone-800/95 z-10">
+                <th className="py-2 pr-2">Contestant</th>
+                <th className="py-2 pr-2">Prev price</th>
+                <th className="py-2 pr-2">New price</th>
+                <th className="py-2 pr-2">Delta</th>
+                <th className="py-2 pr-2">Perf ratio</th>
+                <th className="py-2 pr-2">Top contributions</th>
+              </tr>
+            </thead>
+            <tbody>
+              {audit.contestants.map((row) => (
+                <tr key={row.contestant_id} className="border-b border-stone-700/50">
+                  <td className="py-1.5 pr-2 text-stone-200">{contestantName(row.contestant_id)}</td>
+                  <td className="py-1.5 pr-2 text-stone-300">{formatMoney(row.prev_price)}</td>
+                  <td className="py-1.5 pr-2 text-stone-300">{formatMoney(row.new_price)}</td>
+                  <td className={`py-1.5 pr-2 ${row.price_change >= 0 ? "text-emerald-300" : "text-red-300"}`}>
+                    {formatDelta(row.price_change)}
+                  </td>
+                  <td className="py-1.5 pr-2 text-stone-300">{row.perf_ratio.toFixed(3)}</td>
+                  <td className="py-1.5 pr-2 text-stone-300">{topContributions(row.category_contributions)}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      )}
+    </div>
+  );
+}
+
+function MarketIngestSection() {
+  const [status, setStatus] = useState("open");
+  const [limit, setLimit] = useState(200);
+  const [maxPages, setMaxPages] = useState(5);
+  const [dryRun, setDryRun] = useState(false);
+  const [running, setRunning] = useState(false);
+  const [message, setMessage] = useState<string | null>(null);
+
+  const runIngest = async () => {
+    setRunning(true);
+    setMessage(null);
+    try {
+      const res = await fetch("/api/admin/markets/ingest/kalshi", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          status,
+          limit,
+          max_pages: maxPages,
+          dry_run: dryRun,
+        }),
+      });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) {
+        throw new Error(typeof data.error === "string" ? data.error : `Failed: ${res.status}`);
+      }
+      setMessage(
+        `Fetched ${data.fetched_count ?? 0} market(s). Upserted ${data.markets_upserted ?? 0}, snapshots ${data.snapshots_inserted ?? 0}.`
+      );
+    } catch (e) {
+      setMessage(e instanceof Error ? e.message : "Ingest failed.");
+    } finally {
+      setRunning(false);
+    }
+  };
+
+  return (
+    <div className="space-y-3">
+      <div className="flex flex-wrap items-center gap-3">
+        <label className="text-stone-300 text-sm">Status</label>
+        <select
+          value={status}
+          onChange={(e) => setStatus(e.target.value)}
+          className="px-2 py-1.5 rounded bg-stone-700 text-stone-100 border border-stone-600 text-sm"
+        >
+          <option value="open">open</option>
+          <option value="active">active</option>
+          <option value="closed">closed</option>
+        </select>
+        <label className="text-stone-300 text-sm">Limit</label>
+        <input
+          type="number"
+          min={1}
+          max={1000}
+          value={limit}
+          onChange={(e) => setLimit(Number(e.target.value) || 200)}
+          className="w-20 px-2 py-1.5 rounded bg-stone-700 text-stone-100 border border-stone-600"
+        />
+        <label className="text-stone-300 text-sm">Max pages</label>
+        <input
+          type="number"
+          min={1}
+          max={50}
+          value={maxPages}
+          onChange={(e) => setMaxPages(Number(e.target.value) || 5)}
+          className="w-20 px-2 py-1.5 rounded bg-stone-700 text-stone-100 border border-stone-600"
+        />
+        <label className="flex items-center gap-2 text-stone-300 text-sm">
+          <input
+            type="checkbox"
+            checked={dryRun}
+            onChange={(e) => setDryRun(e.target.checked)}
+            className="rounded"
+          />
+          Dry run
+        </label>
+        <button
+          type="button"
+          onClick={runIngest}
+          disabled={running}
+          className="px-3 py-1.5 rounded bg-orange-600 text-white text-sm font-medium hover:bg-orange-500 disabled:opacity-50"
+        >
+          {running ? "Running..." : "Ingest Kalshi markets"}
+        </button>
+      </div>
+      {message ? <p className="text-sm text-stone-400">{message}</p> : null}
+    </div>
+  );
+}
+
+function MarketMappingsSection() {
+  const [contestants, setContestants] = useState<{ id: string; name: string }[]>([]);
+  const [episodeCount, setEpisodeCount] = useState(MAX_EPISODES);
+  const [selectedEpisode, setSelectedEpisode] = useState(1);
+  const [rows, setRows] = useState<MarketMappingRow[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [saving, setSaving] = useState(false);
+  const [message, setMessage] = useState<string | null>(null);
+  const [form, setForm] = useState({
+    market_ticker: "",
+    contestant_id: "",
+    category: POINT_BREAKDOWN_CATEGORIES[0] as string,
+    side: "yes" as "yes" | "no",
+    transform: "direct" as "direct" | "inverse",
+    confidence: 1,
+    notes: "",
+  });
+
+  useEffect(() => {
+    Promise.all([
+      fetch("/api/contestants").then((r) => r.json()),
+      fetch("/api/season").then((r) => r.json()),
+    ])
+      .then(([cont, season]) => {
+        const contestList = Array.isArray(cont) ? (cont as { id: string; name: string }[]) : [];
+        setContestants(contestList);
+        if (contestList.length > 0) {
+          setForm((prev) => ({
+            ...prev,
+            contestant_id: prev.contestant_id || contestList[0].id,
+          }));
+        }
+        const current = (season as { current_episode?: number }).current_episode ?? 1;
+        setEpisodeCount(Math.max(MAX_EPISODES, current + 1));
+      })
+      .finally(() => setLoading(false));
+  }, []);
+
+  useEffect(() => {
+    fetch(`/api/admin/market-mappings?episode=${selectedEpisode}&include_inactive=true`)
+      .then((r) => (r.ok ? r.json() : []))
+      .then((data: MarketMappingRow[]) => setRows(Array.isArray(data) ? data : []))
+      .catch(() => setRows([]));
+  }, [selectedEpisode]);
+
+  const saveMapping = async () => {
+    setSaving(true);
+    setMessage(null);
+    try {
+      const res = await fetch("/api/admin/market-mappings", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          provider: "kalshi",
+          market_ticker: form.market_ticker.trim(),
+          episode_id: selectedEpisode,
+          contestant_id: form.contestant_id,
+          category: form.category,
+          side: form.side,
+          transform: form.transform,
+          confidence: form.confidence,
+          notes: form.notes.trim() || null,
+        }),
+      });
+      const body = await res.json().catch(() => ({}));
+      if (!res.ok) {
+        throw new Error(typeof body.error === "string" ? body.error : `Failed: ${res.status}`);
+      }
+      setRows((prev) => {
+        const row = body as MarketMappingRow;
+        const without = prev.filter((r) => r.id !== row.id);
+        return [...without, row].sort((a, b) => a.contestant_id.localeCompare(b.contestant_id));
+      });
+      setForm((prev) => ({ ...prev, market_ticker: "", notes: "" }));
+      setMessage("Mapping saved.");
+    } catch (e) {
+      setMessage(e instanceof Error ? e.message : "Failed to save mapping.");
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  const deleteMapping = async (id: string) => {
+    const res = await fetch(`/api/admin/market-mappings/${id}`, { method: "DELETE" });
+    if (res.ok) {
+      setRows((prev) => prev.filter((r) => r.id !== id));
+    }
+  };
+
+  const contestantName = (id: string) => contestants.find((c) => c.id === id)?.name ?? id;
+  const episodes = Array.from({ length: episodeCount }, (_, i) => i + 1);
+
+  if (loading) return <p className="text-sm text-stone-500">Loading...</p>;
+
+  return (
+    <div className="space-y-4">
+      <div className="flex flex-wrap items-center gap-3">
+        <label className="text-stone-300 text-sm">Episode</label>
+        <select
+          value={selectedEpisode}
+          onChange={(e) => setSelectedEpisode(Number(e.target.value))}
+          className="px-2 py-1.5 rounded bg-stone-700 text-stone-100 border border-stone-600 text-sm"
+        >
+          {episodes.map((ep) => (
+            <option key={ep} value={ep}>
+              Episode {ep}
+            </option>
+          ))}
+        </select>
+        <input
+          type="text"
+          placeholder="Market ticker"
+          value={form.market_ticker}
+          onChange={(e) => setForm((prev) => ({ ...prev, market_ticker: e.target.value }))}
+          className="px-2 py-1.5 rounded bg-stone-700 text-stone-100 border border-stone-600 text-sm w-44"
+        />
+        <select
+          value={form.contestant_id}
+          onChange={(e) => setForm((prev) => ({ ...prev, contestant_id: e.target.value }))}
+          className="px-2 py-1.5 rounded bg-stone-700 text-stone-100 border border-stone-600 text-sm min-w-[140px]"
+        >
+          {contestants.map((c) => (
+            <option key={c.id} value={c.id}>
+              {c.name}
+            </option>
+          ))}
+        </select>
+        <select
+          value={form.category}
+          onChange={(e) => setForm((prev) => ({ ...prev, category: e.target.value }))}
+          className="px-2 py-1.5 rounded bg-stone-700 text-stone-100 border border-stone-600 text-sm min-w-[170px]"
+        >
+          {POINT_BREAKDOWN_CATEGORIES.map((cat) => (
+            <option key={cat} value={cat}>
+              {cat}
+            </option>
+          ))}
+        </select>
+        <select
+          value={form.side}
+          onChange={(e) => setForm((prev) => ({ ...prev, side: e.target.value as "yes" | "no" }))}
+          className="px-2 py-1.5 rounded bg-stone-700 text-stone-100 border border-stone-600 text-sm"
+        >
+          <option value="yes">yes</option>
+          <option value="no">no</option>
+        </select>
+        <select
+          value={form.transform}
+          onChange={(e) =>
+            setForm((prev) => ({ ...prev, transform: e.target.value as "direct" | "inverse" }))
+          }
+          className="px-2 py-1.5 rounded bg-stone-700 text-stone-100 border border-stone-600 text-sm"
+        >
+          <option value="direct">direct</option>
+          <option value="inverse">inverse</option>
+        </select>
+        <input
+          type="number"
+          min={0}
+          max={5}
+          step={0.1}
+          value={form.confidence}
+          onChange={(e) => setForm((prev) => ({ ...prev, confidence: Number(e.target.value) || 0 }))}
+          className="w-20 px-2 py-1.5 rounded bg-stone-700 text-stone-100 border border-stone-600 text-sm"
+        />
+        <button
+          type="button"
+          onClick={saveMapping}
+          disabled={saving}
+          className="px-3 py-1.5 rounded bg-orange-600 text-white text-sm font-medium hover:bg-orange-500 disabled:opacity-50"
+        >
+          {saving ? "Saving..." : "Add mapping"}
+        </button>
+      </div>
+      <input
+        type="text"
+        placeholder="Notes (optional)"
+        value={form.notes}
+        onChange={(e) => setForm((prev) => ({ ...prev, notes: e.target.value }))}
+        className="w-full px-2 py-1.5 rounded bg-stone-700 text-stone-100 border border-stone-600 text-sm"
+      />
+      {message ? <p className="text-sm text-stone-400">{message}</p> : null}
+
+      <div className="overflow-x-auto max-h-[360px] overflow-y-auto">
+        <table className="w-full text-sm text-left">
+          <thead>
+            <tr className="text-stone-400 border-b border-stone-600 sticky top-0 bg-stone-800/95 z-10">
+              <th className="py-2 pr-2">Contestant</th>
+              <th className="py-2 pr-2">Ticker</th>
+              <th className="py-2 pr-2">Category</th>
+              <th className="py-2 pr-2">Side</th>
+              <th className="py-2 pr-2">Transform</th>
+              <th className="py-2 pr-2">Conf</th>
+              <th className="py-2 pr-2">Active</th>
+              <th className="py-2 pr-2"></th>
+            </tr>
+          </thead>
+          <tbody>
+            {rows.map((row) => (
+              <tr key={row.id} className="border-b border-stone-700/50">
+                <td className="py-1.5 pr-2 text-stone-200">{contestantName(row.contestant_id)}</td>
+                <td className="py-1.5 pr-2 text-stone-300">{row.market_ticker}</td>
+                <td className="py-1.5 pr-2 text-stone-300">{row.category}</td>
+                <td className="py-1.5 pr-2 text-stone-300">{row.side}</td>
+                <td className="py-1.5 pr-2 text-stone-300">{row.transform}</td>
+                <td className="py-1.5 pr-2 text-stone-300">{row.confidence}</td>
+                <td className="py-1.5 pr-2 text-stone-300">{row.is_active ? "yes" : "no"}</td>
+                <td className="py-1.5 pr-2">
+                  <button
+                    type="button"
+                    onClick={() => deleteMapping(row.id)}
+                    className="text-xs px-2 py-0.5 rounded bg-red-900/50 text-red-200 hover:bg-red-800/50"
+                  >
+                    Delete
+                  </button>
+                </td>
+              </tr>
+            ))}
+            {rows.length === 0 ? (
+              <tr>
+                <td className="py-2 text-stone-500" colSpan={8}>
+                  No mappings for this episode.
+                </td>
+              </tr>
+            ) : null}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  );
+}
+
+function ForecastsSection() {
+  const [episodeCount, setEpisodeCount] = useState(MAX_EPISODES);
+  const [selectedEpisode, setSelectedEpisode] = useState(1);
+  const [modelVersion, setModelVersion] = useState("kalshi-v1");
+  const [loading, setLoading] = useState(true);
+  const [running, setRunning] = useState(false);
+  const [message, setMessage] = useState<string | null>(null);
+  const [rows, setRows] = useState<ForecastRow[]>([]);
+  const [runAt, setRunAt] = useState<string | null>(null);
+
+  useEffect(() => {
+    fetch("/api/season")
+      .then((r) => r.json())
+      .then((season) => {
+        const current = (season as { current_episode?: number }).current_episode ?? 1;
+        setEpisodeCount(Math.max(MAX_EPISODES, current + 1));
+      })
+      .finally(() => setLoading(false));
+  }, []);
+
+  const loadForecasts = useCallback(async () => {
+    const res = await fetch(
+      `/api/admin/forecasts?episode=${selectedEpisode}&model=${encodeURIComponent(modelVersion)}`
+    );
+    const body = await res.json().catch(() => ({}));
+    if (!res.ok) {
+      throw new Error(typeof body.error === "string" ? body.error : `Failed: ${res.status}`);
+    }
+    setRows(Array.isArray(body.forecasts) ? (body.forecasts as ForecastRow[]) : []);
+    setRunAt(typeof body.run_at === "string" ? body.run_at : null);
+  }, [selectedEpisode, modelVersion]);
+
+  useEffect(() => {
+    loadForecasts().catch(() => {
+      setRows([]);
+      setRunAt(null);
+    });
+  }, [loadForecasts]);
+
+  const materialize = async () => {
+    setRunning(true);
+    setMessage(null);
+    try {
+      const res = await fetch("/api/admin/forecasts/materialize", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ episode: selectedEpisode, model: modelVersion }),
+      });
+      const body = await res.json().catch(() => ({}));
+      if (!res.ok) {
+        throw new Error(typeof body.error === "string" ? body.error : `Failed: ${res.status}`);
+      }
+      setMessage(
+        `Materialized ${body.rowCount ?? 0} row(s), skipped ${body.skippedCount ?? 0}, mappings ${body.mappingCount ?? 0}.`
+      );
+      await loadForecasts();
+    } catch (e) {
+      setMessage(e instanceof Error ? e.message : "Failed to materialize forecasts.");
+    } finally {
+      setRunning(false);
+    }
+  };
+
+  const episodes = Array.from({ length: episodeCount }, (_, i) => i + 1);
+  if (loading) return <p className="text-sm text-stone-500">Loading...</p>;
+
+  return (
+    <div className="space-y-3">
+      <div className="flex flex-wrap items-center gap-3">
+        <label className="text-stone-300 text-sm">Episode</label>
+        <select
+          value={selectedEpisode}
+          onChange={(e) => setSelectedEpisode(Number(e.target.value))}
+          className="px-2 py-1.5 rounded bg-stone-700 text-stone-100 border border-stone-600 text-sm"
+        >
+          {episodes.map((ep) => (
+            <option key={ep} value={ep}>
+              Episode {ep}
+            </option>
+          ))}
+        </select>
+        <label className="text-stone-300 text-sm">Model</label>
+        <input
+          type="text"
+          value={modelVersion}
+          onChange={(e) => setModelVersion(e.target.value)}
+          className="w-32 px-2 py-1.5 rounded bg-stone-700 text-stone-100 border border-stone-600 text-sm"
+        />
+        <button
+          type="button"
+          onClick={materialize}
+          disabled={running}
+          className="px-3 py-1.5 rounded bg-orange-600 text-white text-sm font-medium hover:bg-orange-500 disabled:opacity-50"
+        >
+          {running ? "Running..." : "Materialize forecasts"}
+        </button>
+        {runAt ? (
+          <span className="text-xs text-stone-400">Last run: {new Date(runAt).toLocaleString()}</span>
+        ) : null}
+      </div>
+      {message ? <p className="text-sm text-stone-400">{message}</p> : null}
+
+      <div className="overflow-x-auto max-h-[360px] overflow-y-auto">
+        <table className="w-full text-sm text-left">
+          <thead>
+            <tr className="text-stone-400 border-b border-stone-600 sticky top-0 bg-stone-800/95 z-10">
+              <th className="py-2 pr-2">Contestant</th>
+              <th className="py-2 pr-2">Category</th>
+              <th className="py-2 pr-2">Probability</th>
+              <th className="py-2 pr-2">Expected value</th>
+            </tr>
+          </thead>
+          <tbody>
+            {rows.map((row, idx) => (
+              <tr key={`${row.contestant_id}-${row.category}-${idx}`} className="border-b border-stone-700/50">
+                <td className="py-1.5 pr-2 text-stone-200">{row.contestant_name}</td>
+                <td className="py-1.5 pr-2 text-stone-300">{row.category}</td>
+                <td className="py-1.5 pr-2 text-stone-300">
+                  {row.probability == null ? "—" : row.probability.toFixed(3)}
+                </td>
+                <td className="py-1.5 pr-2 text-stone-300">
+                  {row.expected_value == null ? "—" : row.expected_value.toFixed(3)}
+                </td>
+              </tr>
+            ))}
+            {rows.length === 0 ? (
+              <tr>
+                <td className="py-2 text-stone-500" colSpan={4}>
+                  No forecasts found for this episode/model.
+                </td>
+              </tr>
+            ) : null}
+          </tbody>
+        </table>
+      </div>
     </div>
   );
 }
@@ -1087,6 +1818,42 @@ export default function AdminPage() {
           Category weights and adjustment rate for the dynamic repricing formula. Weighted performance score is computed from point breakdown; above-average raises price, below-average lowers it. Default weight 1.0 for categories not set.
         </p>
         <PriceAdjustmentSection />
+      </section>
+
+      <section className="p-4 rounded-xl texture-sandy bg-stone-800/80 stone-outline">
+        <details className="space-y-3">
+          <summary className="text-lg font-semibold text-stone-200 cursor-pointer">
+            Price Audit
+          </summary>
+          <p className="text-sm text-stone-400">
+            Inspect why prices changed by episode: previous/new price, performance ratio, and top weighted category contributions.
+          </p>
+          <PriceAuditSection />
+        </details>
+      </section>
+
+      <section className="p-4 rounded-xl texture-sandy bg-stone-800/80 stone-outline">
+        <h2 className="text-lg font-semibold text-stone-200 mb-2">Prediction markets ingest</h2>
+        <p className="text-sm text-stone-400 mb-3">
+          Pull current Kalshi market data into local snapshot tables for forecasting.
+        </p>
+        <MarketIngestSection />
+      </section>
+
+      <section className="p-4 rounded-xl texture-sandy bg-stone-800/80 stone-outline">
+        <h2 className="text-lg font-semibold text-stone-200 mb-2">Prediction market mappings</h2>
+        <p className="text-sm text-stone-400 mb-3">
+          Map market tickers to contestant/category opportunities for a target episode.
+        </p>
+        <MarketMappingsSection />
+      </section>
+
+      <section className="p-4 rounded-xl texture-sandy bg-stone-800/80 stone-outline">
+        <h2 className="text-lg font-semibold text-stone-200 mb-2">Opportunity forecasts</h2>
+        <p className="text-sm text-stone-400 mb-3">
+          Materialize expected values from mapped market probabilities and preview per contestant/category rows.
+        </p>
+        <ForecastsSection />
       </section>
 
       <section className="p-4 rounded-xl texture-sandy bg-stone-800/80 stone-outline">
