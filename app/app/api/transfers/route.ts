@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getAuthenticatedUser } from "@/lib/getUser";
 import contestantsSeed from "@/seed/contestants.json";
+import { extractVotedOutIds } from "@/lib/votedOut";
 
 const BUDGET = 1_000_000;
 const ROSTER_SIZE = 7;
@@ -72,8 +73,10 @@ export async function POST(request: NextRequest) {
 
     const eliminated = new Set<string>();
     for (const row of outcomes ?? []) {
-      const votedOut = (row.outcome as Record<string, unknown>)?.voted_out as string | undefined;
-      if (votedOut) eliminated.add(votedOut);
+      const votedOutIds = extractVotedOutIds(row.outcome as Record<string, unknown>);
+      for (const id of votedOutIds) {
+        eliminated.add(id);
+      }
     }
 
     // Validate adds: not eliminated, not already on roster

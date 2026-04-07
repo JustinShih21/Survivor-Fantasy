@@ -783,7 +783,11 @@ function HomeContentSection() {
   );
 }
 
-type EpisodeOutcomeRow = { episode_id: number; voted_out: string | null };
+type EpisodeOutcomeRow = {
+  episode_id: number;
+  voted_out_ids?: string[];
+  voted_out?: string | null;
+};
 
 function EpisodeOutcomesSection() {
   const [outcomes, setOutcomes] = useState<EpisodeOutcomeRow[]>([]);
@@ -791,6 +795,17 @@ function EpisodeOutcomesSection() {
   const [currentEpisode, setCurrentEpisode] = useState(1);
   const [loading, setLoading] = useState(true);
   const [savingEpisodeId, setSavingEpisodeId] = useState<number | null>(null);
+
+  const normalizeVotedOutIds = (row: EpisodeOutcomeRow): string[] => {
+    const ids = Array.isArray(row.voted_out_ids)
+      ? row.voted_out_ids.filter((id): id is string => typeof id === "string" && id.trim() !== "")
+      : [];
+    if (ids.length > 0) return ids;
+    if (typeof row.voted_out === "string" && row.voted_out.trim() !== "") {
+      return [row.voted_out];
+    }
+    return [];
+  };
 
   const load = () => {
     setLoading(true);
@@ -812,17 +827,17 @@ function EpisodeOutcomesSection() {
     load();
   }, []);
 
-  const handleChange = async (episode_id: number, voted_out: string | null) => {
+  const handleChange = async (episode_id: number, voted_out_ids: string[]) => {
     setSavingEpisodeId(episode_id);
     try {
       const res = await fetch("/api/admin/episode-outcomes", {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ episode_id, voted_out }),
+        body: JSON.stringify({ episode_id, voted_out_ids }),
       });
       if (res.ok) {
         setOutcomes((prev) =>
-          prev.map((r) => (r.episode_id === episode_id ? { ...r, voted_out } : r))
+          prev.map((r) => (r.episode_id === episode_id ? { ...r, voted_out_ids, voted_out: voted_out_ids[0] ?? null } : r))
         );
       }
     } finally {
@@ -836,26 +851,43 @@ function EpisodeOutcomesSection() {
 
   return (
     <div className="space-y-3">
-      <div className="flex flex-wrap gap-4 items-center">
+      <p className="text-xs text-stone-500">Select zero, one, or multiple contestants per episode (Cmd/Ctrl-click for multi-select).</p>
+      <div className="grid gap-3 md:grid-cols-2">
         {outcomes.map((row) => (
-          <div key={row.episode_id} className="flex items-center gap-2">
-            <span className="text-stone-300 text-sm w-16">Ep {row.episode_id}</span>
+          <div key={row.episode_id} className="rounded border border-stone-700 p-2">
+            <div className="flex items-center justify-between mb-2">
+              <span className="text-stone-300 text-sm font-medium">Ep {row.episode_id}</span>
+              {savingEpisodeId === row.episode_id && (
+                <span className="text-xs text-stone-500">Saving...</span>
+              )}
+            </div>
             <select
-              value={row.voted_out ?? ""}
-              onChange={(e) => handleChange(row.episode_id, e.target.value || null)}
+              multiple
+              size={5}
+              value={normalizeVotedOutIds(row)}
+              onChange={(e) =>
+                handleChange(
+                  row.episode_id,
+                  Array.from(e.currentTarget.selectedOptions).map((opt) => opt.value)
+                )
+              }
               disabled={savingEpisodeId === row.episode_id}
-              className="min-w-[140px] px-2 py-1.5 rounded bg-stone-700 text-stone-100 border border-stone-600 text-sm disabled:opacity-50"
+              className="w-full px-2 py-1.5 rounded bg-stone-700 text-stone-100 border border-stone-600 text-sm disabled:opacity-50"
             >
-              <option value="">None</option>
               {contestants.map((c) => (
                 <option key={c.id} value={c.id}>
                   {c.name}
                 </option>
               ))}
             </select>
-            {savingEpisodeId === row.episode_id && (
-              <span className="text-xs text-stone-500">Saving...</span>
-            )}
+            <button
+              type="button"
+              onClick={() => handleChange(row.episode_id, [])}
+              disabled={savingEpisodeId === row.episode_id}
+              className="mt-2 text-xs px-2 py-1 rounded bg-stone-700 text-stone-300 border border-stone-600 hover:bg-stone-600 disabled:opacity-50"
+            >
+              Clear
+            </button>
           </div>
         ))}
       </div>
@@ -1783,7 +1815,7 @@ export default function AdminPage() {
           Episode outcomes / Voted out
         </h2>
         <p className="text-sm text-stone-400 mb-3">
-          Set who was voted out each episode. Player cards will be grayed out and show &quot;Voted out&quot; everywhere once set. Run Materialize after changing outcomes if you want points/prices updated.
+          Set who was voted out each episode (supports multiple eliminations). Player cards will be grayed out and show &quot;Voted out&quot; everywhere once set. Run Materialize after changing outcomes if you want points/prices updated.
         </p>
         <EpisodeOutcomesSection />
       </section>

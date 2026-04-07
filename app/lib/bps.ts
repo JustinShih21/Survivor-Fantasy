@@ -43,18 +43,19 @@ export interface BPSConfig {
   };
 }
 
-function contestantWentToTribal(cid: string, ep: EpisodeOutcome): boolean {
-  if (ep.immunity_type === "individual") return true;
-  const teamResult = ep.team_immunity_results ?? {};
-  const tribes = ep.contestant_tribes ?? {};
-  const immunityTeams = ep.immunity_teams ?? 3;
-  for (const [tribe, result] of Object.entries(teamResult)) {
-    if (tribes[tribe]?.includes(cid)) {
-      const losingResult = immunityTeams === 2 ? 2 : immunityTeams;
-      return result === losingResult;
-    }
+function getVotedOutIds(ep: EpisodeOutcome): string[] {
+  const out: string[] = [];
+  for (const raw of ep.voted_out_ids ?? []) {
+    if (typeof raw !== "string") continue;
+    const id = raw.trim();
+    if (!id) continue;
+    if (!out.includes(id)) out.push(id);
   }
-  return false;
+  if (typeof ep.voted_out === "string") {
+    const id = ep.voted_out.trim();
+    if (id && !out.includes(id)) out.push(id);
+  }
+  return out;
 }
 
 /**
@@ -67,8 +68,8 @@ export function calculateBPSPerContestant(
 ): number {
   let pts = 0;
   const active = ep.active_contestants ?? [];
-  const votedOut = ep.voted_out;
-  if (!active.includes(cid) && votedOut !== cid) return 0;
+  const votedOutIds = getVotedOutIds(ep);
+  if (!active.includes(cid) && !votedOutIds.includes(cid)) return 0;
 
   // A) Social & Strategic
   if ((ep.inclusion_in_plan ?? []).includes(cid)) pts += config.social.inclusion_in_plan;
@@ -136,8 +137,10 @@ export function getEpisodeRankBonuses(
     if (ep.final_tribal) continue; // No BPS for final tribal
 
     const active = ep.active_contestants ?? [];
-    const votedOut = ep.voted_out;
-    const participants = votedOut ? [...active, votedOut] : [...active];
+    const participants = [...active];
+    for (const votedOutId of getVotedOutIds(ep)) {
+      if (!participants.includes(votedOutId)) participants.push(votedOutId);
+    }
     if (participants.length === 0) continue;
 
     const scores: { cid: string; bps: number }[] = participants.map((cid) => ({

@@ -10,6 +10,7 @@ import type { EpisodeOutcome, ScoringConfig } from "@/lib/scoring";
 import contestantsSeed from "@/seed/contestants.json";
 import episodeOutcomesSeed from "@/seed/episode_outcomes.json";
 import scoringConfigSeed from "@/seed/scoring_config.json";
+import { extractVotedOutIds } from "@/lib/votedOut";
 
 const PRICE_FLOOR = 50000;
 const PRICE_CEILING = 300000;
@@ -379,8 +380,10 @@ export async function materializePricesForEpisodes(
       continue;
     }
 
-    const votedOut = outcome.voted_out as string | null;
-    if (votedOut) eliminated.add(votedOut);
+    const votedOutIds = extractVotedOutIds(outcome as Record<string, unknown>);
+    for (const id of votedOutIds) {
+      eliminated.add(id);
+    }
 
     const active = outcome.active_contestants ?? [];
     const activeSet = new Set(active);

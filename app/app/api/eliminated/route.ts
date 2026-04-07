@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
+import { extractVotedOutIds } from "@/lib/votedOut";
 
 export const dynamic = "force-dynamic";
 
@@ -22,8 +23,10 @@ export async function GET(request: NextRequest) {
 
   const eliminated = new Set<string>();
   for (const row of data ?? []) {
-    const votedOut = (row.outcome as Record<string, unknown>)?.voted_out as string | undefined;
-    if (votedOut) eliminated.add(votedOut);
+    const votedOutIds = extractVotedOutIds(row.outcome as Record<string, unknown>);
+    for (const id of votedOutIds) {
+      eliminated.add(id);
+    }
   }
 
   return NextResponse.json({ eliminated: Array.from(eliminated) }, NO_STORE);

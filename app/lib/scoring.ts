@@ -26,9 +26,11 @@ export interface EpisodeOutcome {
   active_contestants?: string[];
   survived?: string[];
   voted_out?: string | null;
+  voted_out_ids?: string[];
   vote_matched?: string[];
   voted_out_votes?: number;
   voted_out_pocket_items?: number;
+  voted_out_pocket_items_by_contestant?: Record<string, number>;
   team_immunity_results?: Record<string, number>;
   team_reward_results?: Record<string, number>;
   contestant_tribes?: Record<string, string[]>;
@@ -187,8 +189,8 @@ export function computePossessionsThroughEpisode(
     const epNum = ep.episode_id ?? 0;
     if (epNum < 1 || epNum > throughEpisode) continue;
 
-    if (ep.voted_out) {
-      const p = get(ep.voted_out);
+    for (const votedOutId of getVotedOutIds(ep)) {
+      const p = get(votedOutId);
       p.idols = 0;
       p.advantages = 0;
       p.clues = 0;
@@ -275,6 +277,54 @@ function contestantWentToTribal(cid: string, ep: EpisodeOutcome): boolean {
   return false;
 }
 
+function getVotedOutIds(ep: EpisodeOutcome): string[] {
+  const out: string[] = [];
+
+  for (const raw of ep.voted_out_ids ?? []) {
+    if (typeof raw !== "string") continue;
+    const id = raw.trim();
+    if (!id) continue;
+    if (!out.includes(id)) out.push(id);
+  }
+
+  if (typeof ep.voted_out === "string") {
+    const id = ep.voted_out.trim();
+    if (id && !out.includes(id)) out.push(id);
+  }
+
+  return out;
+}
+
+function getVotesForVotedOutContestant(
+  ep: EpisodeOutcome,
+  cid: string,
+  primaryVotedOut: string | null
+): number {
+  const byContestant = ep.votes_received?.[cid];
+  if (typeof byContestant === "number" && Number.isFinite(byContestant)) {
+    return byContestant;
+  }
+  if (primaryVotedOut === cid) {
+    return ep.voted_out_votes ?? 0;
+  }
+  return 0;
+}
+
+function getPocketItemsForVotedOutContestant(
+  ep: EpisodeOutcome,
+  cid: string,
+  primaryVotedOut: string | null
+): number {
+  const byContestant = ep.voted_out_pocket_items_by_contestant?.[cid];
+  if (typeof byContestant === "number" && Number.isFinite(byContestant)) {
+    return byContestant;
+  }
+  if (primaryVotedOut === cid) {
+    return ep.voted_out_pocket_items ?? 0;
+  }
+  return 0;
+}
+
 function calculateContestantEpisodePoints(
   cid: string,
   ep: EpisodeOutcome,
@@ -293,8 +343,9 @@ function calculateContestantEpisodePoints(
   const postMerge = survival.post_merge;
 
   const active = ep.active_contestants ?? [];
-  const votedOut = ep.voted_out;
-  if (!active.includes(cid) && votedOut !== cid) {
+  const votedOutIds = getVotedOutIds(ep);
+  const votedOut = votedOutIds[0] ?? null;
+  if (!active.includes(cid) && !votedOutIds.includes(cid)) {
     return 0;
   }
 
@@ -372,12 +423,12 @@ function calculateContestantEpisodePoints(
   }
 
   // Voted out
-  if (ep.voted_out === cid) {
+  if (votedOutIds.includes(cid)) {
     const base = scoringConfig.tribal.voted_out_base;
     const perVote = scoringConfig.tribal.voted_out_per_vote;
     const pocketMult = scoringConfig.tribal.voted_out_pocket_multiplier;
-    const items = ep.voted_out_pocket_items ?? 0;
-    const votes = ep.voted_out_votes ?? 0;
+    const items = getPocketItemsForVotedOutContestant(ep, cid, votedOut);
+    const votes = getVotesForVotedOutContestant(ep, cid, votedOut);
     pts += base * Math.pow(pocketMult, items) + perVote * votes;
   }
 
@@ -483,8 +534,9 @@ export function calculateContestantEpisodeBreakdown(
   const postMerge = survival.post_merge;
 
   const active = ep.active_contestants ?? [];
-  const votedOut = ep.voted_out;
-  if (!active.includes(cid) && votedOut !== cid) {
+  const votedOutIds = getVotedOutIds(ep);
+  const votedOut = votedOutIds[0] ?? null;
+  if (!active.includes(cid) && !votedOutIds.includes(cid)) {
     return { total: 0, sources: [] };
   }
 
@@ -567,12 +619,12 @@ export function calculateContestantEpisodeBreakdown(
   }
 
   // Voted out
-  if (ep.voted_out === cid) {
+  if (votedOutIds.includes(cid)) {
     const base = scoringConfig.tribal.voted_out_base;
     const perVote = scoringConfig.tribal.voted_out_per_vote;
     const pocketMult = scoringConfig.tribal.voted_out_pocket_multiplier;
-    const items = ep.voted_out_pocket_items ?? 0;
-    const votes = ep.voted_out_votes ?? 0;
+    const items = getPocketItemsForVotedOutContestant(ep, cid, votedOut);
+    const votes = getVotesForVotedOutContestant(ep, cid, votedOut);
     const penalty =
       base * Math.pow(pocketMult, items) + perVote * votes;
     sources.push({ label: "Voted out", points: penalty });
@@ -681,6 +733,8 @@ export function calculateRosterPoints(
     const ep = episodeOutcomes[epIdx];
     const episodeNum = epIdx + 1;
     const epId = ep.episode_id ?? episodeNum;
+    const votedOutIds = getVotedOutIds(ep);
+    const primaryVotedOut = votedOutIds[0] ?? null;
     const phase = ep.phase ?? "pre_merge";
     const survivalPts = phase === "pre_merge" || phase === "swap" ? preMergeTribal : postMerge;
     const survivalKey = phase === "pre_merge" ? "survival_pre_merge" : "survival_swap";
@@ -689,7 +743,7 @@ export function calculateRosterPoints(
     const episodePtsByCid: Record<string, number> = {};
 
     for (const cid of roster) {
-      const isVotedOutThisEp = ep.voted_out === cid;
+      const isVotedOutThisEp = votedOutIds.includes(cid);
       const active = ep.active_contestants ?? [];
       if (!isVotedOutThisEp && !active.includes(cid)) continue;
 
@@ -797,7 +851,7 @@ export function calculateRosterPoints(
         eventBreakdown.vote_matched.points += pts;
       }
       const correctTarget = scoringConfig.tribal.correct_target_vote ?? 0;
-      if (correctTarget !== 0 && ep.voted_out && ep.vote_targets?.[cid] === ep.voted_out) {
+      if (correctTarget !== 0 && primaryVotedOut && ep.vote_targets?.[cid] === primaryVotedOut) {
         breakdown.tribal += correctTarget;
         eventBreakdown.correct_target_vote.count += 1;
         eventBreakdown.correct_target_vote.points += correctTarget;
@@ -810,12 +864,12 @@ export function calculateRosterPoints(
       }
 
       // Voted out
-      if (ep.voted_out === cid) {
+      if (votedOutIds.includes(cid)) {
         const base = scoringConfig.tribal.voted_out_base;
         const perVote = scoringConfig.tribal.voted_out_per_vote;
         const pocketMult = scoringConfig.tribal.voted_out_pocket_multiplier;
-        const items = ep.voted_out_pocket_items ?? 0;
-        const votes = ep.voted_out_votes ?? 0;
+        const items = getPocketItemsForVotedOutContestant(ep, cid, primaryVotedOut);
+        const votes = getVotesForVotedOutContestant(ep, cid, primaryVotedOut);
         const penalty =
           base * Math.pow(pocketMult, items) + perVote * votes;
         breakdown.penalties += penalty;
@@ -951,7 +1005,7 @@ export function calculateRosterPointsWithBreakdown(
       const roster = rosterForEpisode(entries, epId);
       if (!roster.includes(cid)) continue;
 
-      const isVotedOut = ep.voted_out === cid;
+      const isVotedOut = getVotedOutIds(ep).includes(cid);
       const active = ep.active_contestants ?? [];
       if (!isVotedOut && !active.includes(cid)) continue;
 
